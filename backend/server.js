@@ -6,6 +6,7 @@ const bodyparser=require('body-parser')
 const Project = require('./models/projectModel')
 const Contact = require('./models/contactModel')
 require('dotenv')
+const cors = require('cors');
 
 app.use(bodyparser.json())
 
@@ -14,6 +15,10 @@ mongoose.connect(process.env.MONGO_URL)
 .then(()=>console.log("MongoDB CONNECTED"))
 .catch(err=>console.log(err))
 
+
+app.use(cors({
+  origin: 'https://portfolio-frontend-dtcj.onrender.com'
+}));
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
