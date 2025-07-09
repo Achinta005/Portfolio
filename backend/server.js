@@ -5,10 +5,7 @@ const mongoose=require('mongoose')
 const bodyparser=require('body-parser')
 const Project = require('./models/projectModel')
 const Contact = require('./models/contactModel')
-require('dotenv').config({
-    path:process.env.NODE_ENV===
-    'production'?'.env.production':'.env'
-})
+require('dotenv')
 
 app.use(bodyparser.json())
 
