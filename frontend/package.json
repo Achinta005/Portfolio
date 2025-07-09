@@ -1,0 +1,23 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "keywords": [],
+  "author": "Achinta Hazra",
+  "license": "ISC",
+  "description": "This is the Frontend using next.js and tailwind css",
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.11",
+    "next": "^15.3.5",
+    "postcss": "^8.5.6",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tailwindcss": "^4.1.11"
+  }
+}
