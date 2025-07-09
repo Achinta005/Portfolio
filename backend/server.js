@@ -17,6 +17,10 @@ mongoose.connect(process.env.MONGO_URL)
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
+// In your Express backend (server.js or routes file)
+app.get('/health', (req, res) => {
+  res.status(200).send('Backend is alive');
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
