@@ -16,8 +16,8 @@ mongoose.connect(process.env.MONGO_URL)
 .catch(err=>console.log(err))
 
 app.use(cors({
-  // origin: 'https://portfolio-frontend-dtcj.onrender.com'  -->For Hosting comment out this line
-  origin: 'http://localhost:3001'                         //-->And comment in this line
+  origin: 'https://portfolio-frontend-dtcj.onrender.com'  //-->For Hosting comment out this line
+  // origin: 'http://localhost:3001'                         //-->And comment in this line
 }));
 app.get('/', (req, res) => {
   res.send('Hello World!')
