@@ -8,10 +8,8 @@ import ProjectsGrid from './ProjectsGrid';
 export default function Projects() {
   return (
     <div className="min-h-screen">
-      
       <ProjectsHero />
       <ProjectsGrid />
-      
     </div>
   );
 }

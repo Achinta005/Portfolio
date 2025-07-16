@@ -4,7 +4,7 @@ const port = process.env.PORT||3001;  //Server Local Port Number
 const mongoose=require('mongoose')
 const bodyparser=require('body-parser')
 const Project = require('./models/projectModel')
-const Contact = require('./models/contactModel')
+const Contact = require('./models/contact')
 require('dotenv').config()
 const cors = require('cors');
 
@@ -15,11 +15,7 @@ mongoose.connect(process.env.MONGO_URL)
 .then(()=>console.log("MongoDB CONNECTED"))
 .catch(err=>console.log(err))
 
-app.use(cors({
-  //origin: 'https://portfolio-frontend-dtcj.onrender.com'  
-
-  origin: 'http://localhost:3000'   //Accept request from frontend(http://localhost:3000)                          
-}));
+app.use(cors());
 app.get('/', (req, res) => {
   res.send('Hello World!')
   console.log("Frontend is Connected");
@@ -31,4 +27,17 @@ app.get('/health', (req, res) => {
 });
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
+})
+
+app.post('/contact',async(req,res)=>{
+  try {
+    const { name, email,subject,message } = req.body;
+
+    const newEntry = new Contact({ name, email,subject,message });
+    await newEntry.save();
+
+    res.status(200).json({ message: "Form submitted successfully!" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
 })

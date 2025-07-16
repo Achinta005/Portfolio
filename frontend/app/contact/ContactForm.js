@@ -1,138 +1,127 @@
-'use client';
+import React from "react";
+import { useForm } from "react-hook-form";
 
-import { useState } from 'react';
+const ContactForm2 = () => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm();
 
-export default function ContactForm() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState('');
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
+  const onSubmit = async (data) => {
     try {
-      const formDataToSend = new FormData();
-      Object.entries(formData).forEach(([key, value]) => {
-        formDataToSend.append(key, value);
+      const res = await fetch("http://localhost:3001/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       });
 
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        body: formDataToSend
-      });
-
-      if (response.ok) {
-        setSubmitStatus("Message sent successfully! I'll get back to you soon.");
-        setFormData({ name: '', email: '', subject: '', message: '' });
-      } else {
-        setSubmitStatus('Failed to send message. Please try again.');
-      }
+      const result = await res.json();
+      console.log(result.message);
     } catch (error) {
-      setSubmitStatus('Failed to send message. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+      console.error("Error submitting form:", error);
     }
   };
 
   return (
     <section className="py-20 bg-white">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
-        <form id="contact-form" onSubmit={handleSubmit} className="space-y-6">
+        <form
+          id="contact-form"
+          className="space-y-6"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Full Name
               </label>
+
               <input
-                type="text"
-                name="name"
-                id="name"
-                required
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 placeholder="Your name"
+                {...register("name", {
+                  required: { value: true, message: "This field is required" },
+                })}
+                type="text"
+                className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               />
+              {errors.name && (
+                <p className="text-red-700">{errors.name.message}</p>
+              )}
             </div>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Email Address
               </label>
               <input
-                type="email"
-                name="email"
-                id="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                 placeholder="your.email@example.com"
+                {...register("email", {
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: "Invalid email format",
+                  },
+                })}
+                type="text"
+                className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               />
+              {errors.email && (
+                <p className="text-red-700">{errors.email.message}</p>
+              )}
             </div>
           </div>
 
           <div>
-            <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="subject"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Subject
             </label>
             <input
-              type="text"
-              name="subject"
-              id="subject"
-              required
-              value={formData.subject}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               placeholder="What's this about?"
+              {...register("subject")}
+              type="text"
+              className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
             />
           </div>
 
           <div>
-            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              htmlFor="message"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
               Message
             </label>
             <textarea
-              name="message"
-              id="message"
-              required
               rows={6}
-              maxLength={500}
-              value={formData.message}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm resize-none"
               placeholder="Tell me about your project..."
-            ></textarea>
-            <p className="text-xs text-gray-500 mt-1">{formData.message.length}/500 characters</p>
+              {...register("message")}
+              type="text"
+              className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            />
+            <p className="text-xs text-gray-500 mt-1"></p>
           </div>
 
           <button
+            disabled={isSubmitting}
             type="submit"
-            disabled={isSubmitting || formData.message.length > 500}
-            className="w-full bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors cursor-pointer whitespace-nowrap"
+            value="submit"
+            className="w-full h-10 bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors cursor-pointer whitespace-nowrap"
           >
-            {isSubmitting ? 'Sending...' : 'Send Message'}
+            {isSubmitting ? "Submiting..." : "SUBMIT"}
           </button>
-
-          {submitStatus && (
-            <div className={`p-4 rounded-lg ${submitStatus.includes('successfully') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-              {submitStatus}
-            </div>
-          )}
         </form>
       </div>
     </section>
   );
-}
+};
+
+export default ContactForm2;

@@ -5,26 +5,26 @@ export default function ContactInfo() {
     {
       icon: 'ri-mail-line',
       title: 'Email',
-      details: 'alex.johnson@email.com',
+      details: 'achintahazra815@gmail.com',
       description: 'Send me an email anytime!'
     },
     {
       icon: 'ri-phone-line',
       title: 'Phone',
-      details: '+1 (555) 123-4567',
+      details: '+91 7602699715',
       description: 'Mon-Fri from 8am to 6pm'
     },
     {
       icon: 'ri-map-pin-line',
       title: 'Location',
-      details: 'San Francisco, CA',
+      details: 'Arambagh West Bengal',
       description: 'Available for remote work'
     }
   ];
 
   const socialLinks = [
-    { icon: 'ri-linkedin-fill', name: 'LinkedIn', url: '#' },
-    { icon: 'ri-github-fill', name: 'GitHub', url: '#' },
+    { icon: 'ri-linkedin-fill', name: 'LinkedIn', url: 'https://www.linkedin.com/in/achinta-hazra?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app' },
+    { icon: 'ri-github-fill', name: 'GitHub', url: 'https://github.com/Achinta005' },
     { icon: 'ri-twitter-fill', name: 'Twitter', url: '#' },
     { icon: 'ri-dribbble-line', name: 'Dribbble', url: '#' }
   ];
