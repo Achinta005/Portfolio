@@ -19,13 +19,13 @@ export default function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="text-left">
             <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 mb-6 w-2xl">
-              Hi, I'm <span className="text-blue-600">Achinta Hazra</span>
+              Hi, I&apos;m <span className="text-blue-600">Achinta Hazra</span>
             </h1>
             <h2 className="text-2xl lg:text-3xl text-gray-700 mb-6">
               Full Stack Developer
             </h2>
             <p className="text-lg text-gray-600 mb-8 max-w-xl">
-              I'm a Full Stack Web Developer with a passion for building dynamic, user-friendly, and scalable web applications. I specialize in creating end-to-end solutions using modern technologies across both frontend and backend. From crafting responsive interfaces to developing robust APIs, I love turning ideas into real-world digital products. I'm always exploring new tools and frameworks to improve my craft and deliver clean, efficient code.
+              I&apos;m a Full Stack Web Developer with a passion for building dynamic, user-friendly, and scalable web applications. I specialize in creating end-to-end solutions using modern technologies across both frontend and backend. From crafting responsive interfaces to developing robust APIs, I love turning ideas into real-world digital products. I'm always exploring new tools and frameworks to improve my craft and deliver clean, efficient code.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link

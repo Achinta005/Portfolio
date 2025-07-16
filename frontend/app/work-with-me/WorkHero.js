@@ -6,7 +6,7 @@ export default function WorkHero() {
   return (
     <section className="py-20 bg-gradient-to-br from-blue-600 to-purple-700 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 className="text-5xl font-bold mb-6">Let's Work Together</h1>
+        <h1 className="text-5xl font-bold mb-6">Let&apos;s Work Together</h1>
         <p className="text-xl mb-8 max-w-3xl mx-auto opacity-90">
           Ready to bring your digital vision to life? I offer comprehensive
           development and design services to help your business thrive online.

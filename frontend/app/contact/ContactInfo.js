@@ -33,10 +33,10 @@ export default function ContactInfo() {
     <section className="py-20 bg-gray-50">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Let's Connect</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">Let&apos;s Connect</h2>
           <p className="text-lg text-gray-600 mb-8">
             I'm always open to discussing new opportunities, creative projects, 
-            or potential collaborations. Don't hesitate to reach out!
+            or potential collaborations. Don&apos;t hesitate to reach out!
           </p>
         </div>
 

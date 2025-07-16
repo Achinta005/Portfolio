@@ -112,7 +112,7 @@ export default function PricingSection() {
         <div className="text-center">
           <h3 className="text-2xl font-bold text-gray-900 mb-4">Need Something Custom?</h3>
           <p className="text-lg text-gray-600 mb-6">
-            Every project is unique. Let's discuss your specific requirements 
+            Every project is unique. Let&apos;s discuss your specific requirements 
             and create a custom solution that fits your needs and budget.
           </p>
           <Link 

@@ -8,7 +8,7 @@ export default function AboutHero() {
           <div>
             <h1 className="text-5xl font-bold text-gray-900 mb-6">About Me</h1>
             <p className="text-xl text-gray-600 mb-8">
-              I'm a passionate full-stack developer and UI/UX designer with over 5 years 
+              I&apos;m a passionate full-stack developer and UI/UX designer with over 5 years 
               of experience creating digital solutions that make a difference.
             </p>
             <p className="text-lg text-gray-600 mb-6">
