@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -23,7 +22,7 @@ export default function ContactForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       const formDataToSend = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
@@ -36,7 +35,7 @@ export default function ContactForm() {
       });
 
       if (response.ok) {
-        setSubmitStatus('Message sent successfully! I\'ll get back to you soon.');
+        setSubmitStatus("Message sent successfully! I'll get back to you soon.");
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
         setSubmitStatus('Failed to send message. Please try again.');
@@ -84,7 +83,7 @@ export default function ContactForm() {
               />
             </div>
           </div>
-          
+
           <div>
             <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
               Subject
@@ -100,7 +99,7 @@ export default function ContactForm() {
               placeholder="What's this about?"
             />
           </div>
-          
+
           <div>
             <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
               Message
@@ -118,7 +117,7 @@ export default function ContactForm() {
             ></textarea>
             <p className="text-xs text-gray-500 mt-1">{formData.message.length}/500 characters</p>
           </div>
-          
+
           <button
             type="submit"
             disabled={isSubmitting || formData.message.length > 500}
@@ -126,7 +125,7 @@ export default function ContactForm() {
           >
             {isSubmitting ? 'Sending...' : 'Send Message'}
           </button>
-          
+
           {submitStatus && (
             <div className={`p-4 rounded-lg ${submitStatus.includes('successfully') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
               {submitStatus}
