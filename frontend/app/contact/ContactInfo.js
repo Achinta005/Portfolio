@@ -35,7 +35,7 @@ export default function ContactInfo() {
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-6">Let&apos;s Connect</h2>
           <p className="text-lg text-gray-600 mb-8">
-            I'm always open to discussing new opportunities, creative projects, 
+            I&apos;m always open to discussing new opportunities, creative projects, 
             or potential collaborations. Don&apos;t hesitate to reach out!
           </p>
         </div>

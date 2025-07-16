@@ -18,7 +18,7 @@ export default function AboutHero() {
             </p>
             <p className="text-lg text-gray-600 mb-8">
               I believe in writing clean, maintainable code and creating user experiences 
-              that are both beautiful and functional. When I'm not coding, you'll find me 
+              that are both beautiful and functional. When I&apos;m not coding, you&apos;ll find me 
               exploring new technologies, contributing to open-source projects, or mentoring 
               junior developers.
             </p>

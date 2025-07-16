@@ -25,7 +25,7 @@ export default function HeroSection() {
               Full Stack Developer
             </h2>
             <p className="text-lg text-gray-600 mb-8 max-w-xl">
-              I&apos;m a Full Stack Web Developer with a passion for building dynamic, user-friendly, and scalable web applications. I specialize in creating end-to-end solutions using modern technologies across both frontend and backend. From crafting responsive interfaces to developing robust APIs, I love turning ideas into real-world digital products. I'm always exploring new tools and frameworks to improve my craft and deliver clean, efficient code.
+              I&apos;m a Full Stack Web Developer with a passion for building dynamic, user-friendly, and scalable web applications. I specialize in creating end-to-end solutions using modern technologies across both frontend and backend. From crafting responsive interfaces to developing robust APIs, I love turning ideas into real-world digital products. I&apos;m always exploring new tools and frameworks to improve my craft and deliver clean, efficient code.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link
