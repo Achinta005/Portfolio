@@ -10,12 +10,12 @@ import PricingSection from './PricingSection';
 export default function WorkWithMe() {
   return (
     <div className="min-h-screen">
-      <Header />
+      
       <WorkHero />
       <ServicesSection />
       <ProcessSection />
       <PricingSection />
-      <Footer />
+      
     </div>
   );
 }

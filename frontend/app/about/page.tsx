@@ -10,11 +10,9 @@ import CertificationSection from './CertificationSection';
 export default function About() {
   return (
     <div className="min-h-screen">
-      <Header />
       <AboutHero />
       <EducationSection />
       <CertificationSection />
-      <Footer />
     </div>
   );
 }
