@@ -3,40 +3,13 @@
 export default function CertificationSection() {
   const certifications = [
     {
-      name: 'AWS Certified Solutions Architect',
-      issuer: 'Amazon Web Services',
-      year: '2023',
-      icon: 'ri-cloud-line'
+      
     },
     {
-      name: 'Google Cloud Professional Developer',
-      issuer: 'Google Cloud',
-      year: '2022',
-      icon: 'ri-google-line'
+      
     },
     {
-      name: 'Meta Frontend Developer Professional',
-      issuer: 'Meta',
-      year: '2022',
-      icon: 'ri-facebook-line'
-    },
-    {
-      name: 'MongoDB Certified Developer',
-      issuer: 'MongoDB University',
-      year: '2021',
-      icon: 'ri-database-2-line'
-    },
-    {
-      name: 'Certified Scrum Master',
-      issuer: 'Scrum Alliance',
-      year: '2021',
-      icon: 'ri-team-line'
-    },
-    {
-      name: 'Adobe Certified Expert - UX Design',
-      issuer: 'Adobe',
-      year: '2020',
-      icon: 'ri-palette-line'
+      
     }
   ];
 
