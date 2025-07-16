@@ -1,6 +1,6 @@
 const express=require('express')
 const app=express()
-const port = process.env.PORT||3000;
+const port = process.env.PORT||3001;  //Server Local Port Number
 const mongoose=require('mongoose')
 const bodyparser=require('body-parser')
 const Project = require('./models/projectModel')
@@ -16,8 +16,9 @@ mongoose.connect(process.env.MONGO_URL)
 .catch(err=>console.log(err))
 
 app.use(cors({
-  origin: 'https://portfolio-frontend-dtcj.onrender.com'  //-->For Hosting comment out this line
-  // origin: 'http://localhost:3001'                         //-->And comment in this line
+  //origin: 'https://portfolio-frontend-dtcj.onrender.com'  
+
+  origin: 'http://localhost:3000'   //Accept request from frontend(http://localhost:3000)                          
 }));
 app.get('/', (req, res) => {
   res.send('Hello World!')
