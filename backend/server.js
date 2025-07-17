@@ -36,9 +36,9 @@ mongoose.connect(process.env.MONGO_URL)
 .catch(err=>console.log(err))
 
 //Home Route
-app.get('/', (req, res) => {
-  console.log("Frontend is Connected");
-})
+// app.get('/', (req, res) => {
+//   console.log("Frontend is Connected");
+// })
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
