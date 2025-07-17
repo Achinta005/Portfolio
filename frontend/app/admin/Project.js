@@ -64,8 +64,8 @@ const Project = () => {
                 type="text"
                 className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               />
-              {errors.name && (
-                <p className="text-red-700">{errors.name.message}</p>
+              {errors.title && (
+                <p className="text-red-700">{errors.title.message}</p>
               )}
             </div>
 
@@ -83,8 +83,8 @@ const Project = () => {
                 type="text"
                 className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               />
-              {errors.email && (
-                <p className="text-red-700">{errors.email.message}</p>
+              {errors.technologies && (
+                <p className="text-red-700">{errors.technologies.message}</p>
               )}
             </div>
           </div>
@@ -99,11 +99,14 @@ const Project = () => {
             </label>
             <input
               placeholder="Give Website Image"
-              {...register("image")}
+              {...register("image",{required:{value:true,message:"This field is required"}})}
               type="file"
               accept="image/*"
               className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
             />
+            {errors.image && (
+                <p className="text-red-700">{errors.image.message}</p>
+              )}
           </div>
 
 
@@ -120,6 +123,9 @@ const Project = () => {
               type="text"
               className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
             />
+            {errors.liveUrl && (
+                <p className="text-red-700">{errors.liveUrl.message}</p>
+              )}
           </div>
 
 
@@ -136,6 +142,9 @@ const Project = () => {
               type="text"
               className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
             />
+            {errors.githubUrl && (
+                <p className="text-red-700">{errors.githubUrl.message}</p>
+              )}
           </div>
 
 

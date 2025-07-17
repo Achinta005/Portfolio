@@ -30,6 +30,9 @@ export default function Header() {
             <Link href="/work-with-me" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
               Work With Me
             </Link>
+            <Link href="/admin" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+              Admin
+            </Link>
           </nav>
 
           <button 
