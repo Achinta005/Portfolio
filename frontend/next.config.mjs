@@ -1,5 +1,10 @@
 export default {
   images: {
-    domains: ['localhost','achintahazra.shop','https://portfolio-backend-3gcq.onrender.com'],
+    domains: [
+      'localhost',
+      'achintahazra.shop',
+      'portfolio-frontend-dtcj.onrender.com',
+      'portfolio-backend-3gcq.onrender.com'
+    ],
   },
 };
