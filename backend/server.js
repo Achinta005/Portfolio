@@ -10,6 +10,8 @@ const health=require('./routes/health')
 const contact=require('./routes/contact')
 const upload=require('./routes/upload')
 const projects=require('./routes/projects')
+const contactResponse=require('./routes/contact_response')
+const resume=require('./routes/resume')
 
 //CORS POLICY
 app.use(cors({
@@ -29,6 +31,8 @@ app.use('/health',health)
 app.use('/contact',contact)
 app.use('/upload',upload)
 app.use('/projects',projects)
+app.use('/contact_response',contactResponse)
+app.use('/download/resume',resume)
 
 //connect to MongoDB
 mongoose.connect(process.env.MONGO_URL)

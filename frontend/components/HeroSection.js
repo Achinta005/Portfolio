@@ -4,6 +4,30 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function HeroSection() {
+
+  const handleDownload = async () => {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/download/resume`);
+
+    if (!response.ok) throw new Error("Download failed");
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "Achinta_Resume.pdf";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("Error downloading:", err);
+  }
+};
+
+
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div
@@ -25,15 +49,22 @@ export default function HeroSection() {
               Full Stack Developer
             </h2>
             <p className="text-lg text-gray-600 mb-8 max-w-xl">
-              I&apos;m a Full Stack Web Developer with a passion for building dynamic, user-friendly, and scalable web applications. I specialize in creating end-to-end solutions using modern technologies across both frontend and backend. From crafting responsive interfaces to developing robust APIs, I love turning ideas into real-world digital products. I&apos;m always exploring new tools and frameworks to improve my craft and deliver clean, efficient code.
+              I&apos;m a Full Stack Web Developer with a passion for building
+              dynamic, user-friendly, and scalable web applications. I
+              specialize in creating end-to-end solutions using modern
+              technologies across both frontend and backend. From crafting
+              responsive interfaces to developing robust APIs, I love turning
+              ideas into real-world digital products. I&apos;m always exploring
+              new tools and frameworks to improve my craft and deliver clean,
+              efficient code.
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link
-                href="/projects"
-                className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer whitespace-nowrap"
+              <button
+                onClick={handleDownload}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer whitespace-nowrap shadow-md hover:shadow-lg active:scale-95 transition transform duration-200 ease-in-out"
               >
                 Download My Resume
-              </Link>
+              </button>
               <Link
                 href="/contact"
                 className="border-2 border-blue-600 text-blue-600 px-8 py-3 rounded-lg hover:bg-blue-600 hover:text-white transition-colors cursor-pointer whitespace-nowrap"

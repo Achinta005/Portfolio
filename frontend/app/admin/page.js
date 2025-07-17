@@ -1,12 +1,14 @@
-import React from 'react'
-import Project from './Project'
+import React from "react";
+import Project from "./Project";
+import ContactResponse from "./ContactResponse";
 
 const page = () => {
   return (
     <div>
-        <Project/>
+      <Project />
+      <ContactResponse/>
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default page;
