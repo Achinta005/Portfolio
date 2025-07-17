@@ -1,22 +1,24 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 export default function ProjectsGrid() {
-  const projects = [
-    {
-      title: "Weather Forecast App",
-      description:
-        "Web-first weather application with location-based forecasts, interactive maps, and beautiful weather animations.",
-      image:
-        "/images/weather.jpg",
-      technologies: ["React Native", "API Integration", "Geolocation"],
-      liveUrl: "#",
-      githubUrl: "#",
-      category: "Web Development",
-    },
-  ];
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    const getProjects = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`);
+        const data = await res.json();
+        setProjects(data);
+      } catch (error) {
+        console.error("Error fetching projects:", error);
+      }
+    };
+
+    getProjects();
+  }, []);
   //Explain -----------------------------------------------------------------------------------------------------------------------------------------
   const categories = ["All", "Web Development", "Data Science"];
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -52,12 +54,13 @@ export default function ProjectsGrid() {
               className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
             >
               <Image
-                src={project.image}
+                src={`${process.env.NEXT_PUBLIC_API_URL}${project.image}`}
                 width={500}
                 height={500}
                 alt={project.title}
                 className="w-full h-48 object-cover object-top"
               />
+
               <div className="p-6">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
@@ -72,7 +75,7 @@ export default function ProjectsGrid() {
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {project.technologies.map((tech, techIndex) => (
+                  {(project.technologies || []).map((tech, techIndex) => (
                     <span
                       key={techIndex}
                       className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded"

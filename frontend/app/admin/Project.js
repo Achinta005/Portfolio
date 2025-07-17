@@ -1,7 +1,8 @@
+'use client'
 import React from "react";
 import { useForm } from "react-hook-form";
 
-const ContactForm2 = () => {
+const Project = () => {
   const {
     register,
     handleSubmit,
@@ -12,41 +13,52 @@ const ContactForm2 = () => {
   } = useForm();
 
   const onSubmit = async (data) => {
+    const formData=new FormData();
+    formData.append("title",data.title);
+    formData.append("technologies",data.technologies);
+    formData.append("image",data.image[0]);
+    formData.append("liveUrl",data.liveUrl);
+    formData.append("githubUrl",data.githubUrl);
+    formData.append("description",data.description);
+
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: formData, 
       });
 
       const result = await res.json();
-      console.log(result.message);
+      console.log("Upload success:", result);
       reset();
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Upload failed:", error);
     }
   };
+
 
   return (
     <section className="py-20 bg-white">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="text-gray-950 absolute top-20 left-130 font-bold text-3xl">Enter Project Info</h1>
         <form
           id="contact-form"
           className="space-y-6"
           onSubmit={handleSubmit(onSubmit)}
         >
+
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label
                 htmlFor="name"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Full Name
+                Project Title
               </label>
 
               <input
-                placeholder="Your name"
-                {...register("name", {
+                placeholder="Project Title"
+                {...register("title", {
                   required: { value: true, message: "This field is required" },
                 })}
                 type="text"
@@ -56,21 +68,18 @@ const ContactForm2 = () => {
                 <p className="text-red-700">{errors.name.message}</p>
               )}
             </div>
+
+
             <div>
               <label
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                Email Address
+                Technologies
               </label>
               <input
-                placeholder="your.email@example.com"
-                {...register("email", {
-                  pattern: {
-                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                    message: "Invalid email format",
-                  },
-                })}
+                placeholder="Enter Technology Used"
+                {...register("technologies", { })}
                 type="text"
                 className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               />
@@ -80,37 +89,74 @@ const ContactForm2 = () => {
             </div>
           </div>
 
+
           <div>
             <label
               htmlFor="subject"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Subject
+              Image
             </label>
             <input
-              placeholder="What's this about?"
-              {...register("subject")}
+              placeholder="Give Website Image"
+              {...register("image")}
+              type="file"
+              accept="image/*"
+              className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            />
+          </div>
+
+
+          <div>
+            <label
+              htmlFor="subject"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              LiveURL
+            </label>
+            <input
+              placeholder="liveUrl"
+              {...register("liveUrl")}
               type="text"
               className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
             />
           </div>
+
+
+          <div>
+            <label
+              htmlFor="subject"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              GitHubURL
+            </label>
+            <input
+              placeholder="githubUrl"
+              {...register("githubUrl")}
+              type="text"
+              className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            />
+          </div>
+
 
           <div>
             <label
               htmlFor="message"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Message
+              Description
             </label>
             <textarea
               rows={6}
               placeholder="Tell me about your project..."
-              {...register("message")}
+              {...register("description")}
               type="text"
               className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
             />
             <p className="text-xs text-gray-500 mt-1"></p>
           </div>
+
+
 
           <button
             disabled={isSubmitting}
@@ -126,4 +172,4 @@ const ContactForm2 = () => {
   );
 };
 
-export default ContactForm2;
+export default Project;
