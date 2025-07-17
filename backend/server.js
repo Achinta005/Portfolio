@@ -12,6 +12,8 @@ const upload=require('./routes/upload')
 const projects=require('./routes/projects')
 const contactResponse=require('./routes/contact_response')
 const resume=require('./routes/resume')
+const authRoutes = require('./routes/auth');
+const adminRoutes = require('./routes/admin');
 
 //CORS POLICY
 app.use(cors({
@@ -22,6 +24,7 @@ app.use(cors({
 
 //JSON Body Parser
 app.use(bodyparser.json())
+app.use(express.json());
 
 //Static File Hosting
 app.use('/uploads', express.static('uploads'));
@@ -33,6 +36,8 @@ app.use('/upload',upload)
 app.use('/projects',projects)
 app.use('/contact_response',contactResponse)
 app.use('/download/resume',resume)
+app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 
 //connect to MongoDB
 mongoose.connect(process.env.MONGO_URL)
