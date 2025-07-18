@@ -1,27 +1,29 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { isAuthenticated, removeToken } from '../app/lib/auth';
+import Link from "next/link";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { isAuthenticated, removeToken } from "../app/lib/auth";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
 
   useEffect(() => {
     setMounted(true);
     setIsLoggedIn(isAuthenticated());
-    
+
     // Listen for storage changes to update login state
     const handleStorageChange = () => {
       setIsLoggedIn(isAuthenticated());
     };
-    
-    window.addEventListener('storage', handleStorageChange);
-    
+
+    window.addEventListener("storage", handleStorageChange);
+
     // Also check periodically for manual token updates
     const interval = setInterval(() => {
       const newLoginState = isAuthenticated();
@@ -29,28 +31,44 @@ export default function Header() {
         setIsLoggedIn(newLoginState);
       }
     }, 1000);
-    
+
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
       clearInterval(interval);
     };
   }, [isLoggedIn]);
 
+  //close hamberger menu on outside click
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (buttonRef.current &&
+      !buttonRef.current.contains(event.target) &&
+      menuRef.current &&
+      !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleLogin = () => {
-    router.push('/login');
+    router.push("/login");
   };
 
   const handleLogout = () => {
     removeToken();
     setIsLoggedIn(false);
-    router.push('/');
+    router.push("/");
   };
 
   const handleAdminClick = () => {
     if (isLoggedIn) {
-      router.push('/admin');
+      router.push("/admin");
     } else {
-      router.push('/login');
+      router.push("/login");
     }
   };
 
@@ -63,21 +81,36 @@ export default function Header() {
             <Link href="/" className="text-2xl font-bold text-gray-900">
               <span className="font-pacifico">Welcome</span>
             </Link>
-            
+
             <nav className="hidden md:flex space-x-8">
-              <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+              <Link
+                href="/"
+                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              >
                 Home
               </Link>
-              <Link href="/about" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+              <Link
+                href="/about"
+                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              >
                 About
               </Link>
-              <Link href="/projects" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+              <Link
+                href="/projects"
+                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              >
                 Projects
               </Link>
-              <Link href="/contact" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+              <Link
+                href="/contact"
+                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              >
                 Contact
               </Link>
-              <Link href="/work-with-me" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+              <Link
+                href="/work-with-me"
+                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              >
                 Work With Me
               </Link>
               <div className="w-16 h-6 bg-gray-200 rounded animate-pulse"></div>
@@ -99,24 +132,39 @@ export default function Header() {
           <Link href="/" className="text-2xl font-bold text-gray-900">
             <span className="font-pacifico">Welcome</span>
           </Link>
-          
+
           <nav className="hidden md:flex space-x-8 items-center">
-            <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+            <Link
+              href="/"
+              className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+            >
               Home
             </Link>
-            <Link href="/about" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+            <Link
+              href="/about"
+              className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+            >
               About
             </Link>
-            <Link href="/projects" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+            <Link
+              href="/projects"
+              className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+            >
               Projects
             </Link>
-            <Link href="/contact" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+            <Link
+              href="/contact"
+              className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+            >
               Contact
             </Link>
-            <Link href="/work-with-me" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+            <Link
+              href="/work-with-me"
+              className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+            >
               Work With Me
             </Link>
-            
+
             {/* Authentication buttons */}
             {isLoggedIn ? (
               <>
@@ -143,46 +191,63 @@ export default function Header() {
             )}
           </nav>
 
-          <button 
+          {/* {HAM BUTTONS} */}
+          
+          <button
             className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onClick={() => setIsMenuOpen(!isMenuOpen)} ref={buttonRef}
           >
             <i className="ri-menu-line text-2xl"></i>
           </button>
         </div>
 
         {isMenuOpen && (
-          <div className="md:hidden pb-4">
+          <div className="md:hidden pb-4 "ref={menuRef}>
             <div className="flex flex-col space-y-4">
-              <Link href="/" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+              <Link
+                href="/"
+                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              >
                 Home
               </Link>
-              <Link href="/about" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+              <Link
+                href="/about"
+                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              >
                 About
               </Link>
-              <Link href="/projects" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+              <Link
+                href="/projects"
+                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              >
                 Projects
               </Link>
-              <Link href="/contact" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+              <Link
+                href="/contact"
+                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              >
                 Contact
               </Link>
-              <Link href="/work-with-me" className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer">
+              <Link
+                href="/work-with-me"
+                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              >
                 Work With Me
               </Link>
-              
+
               {/* Mobile authentication buttons */}
               <div className="pt-4 border-t border-gray-200">
                 {isLoggedIn ? (
                   <>
                     <button
                       onClick={handleAdminClick}
-                      className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors mb-2"
+                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors mb-2 relative left-[35vw]"
                     >
                       Admin Panel
                     </button>
                     <button
                       onClick={handleLogout}
-                      className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors"
+                      className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors relative left-[35vw]"
                     >
                       Logout
                     </button>
@@ -190,7 +255,7 @@ export default function Header() {
                 ) : (
                   <button
                     onClick={handleLogin}
-                    className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors relative left-[35vw]"
                   >
                     Login
                   </button>
