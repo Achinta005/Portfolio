@@ -15,10 +15,10 @@ const upload = multer({ storage });
 
 
 router.post("/", upload.single("image"), async (req, res) => {
-  const { title,technologies,liveUrl,githubUrl,description } = req.body;
+  const { category,title,technologies,liveUrl,githubUrl,description } = req.body;
   const image = `/uploads/${req.file.filename}`;
 
-  const newProject = new projectModel({ title,technologies,liveUrl,githubUrl,image,description });
+  const newProject = new projectModel({ category,title,technologies,liveUrl,githubUrl,image,description });
   await newProject.save();
 
   res.status(200).json({ message: "Uploaded", project: newProject });

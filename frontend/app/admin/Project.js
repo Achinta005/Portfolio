@@ -13,11 +13,13 @@ const Project = () => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-const [ButtonText, setButtonText] = useState("SUBMIT")
+  const [ButtonText, setButtonText] = useState("SUBMIT");
 
   const onSubmit = async (data) => {
-    setButtonText("Submitting...")
+    setButtonText("Submitting...");
+    console.log(data)
     const formData = new FormData();
+    formData.append("category",data.category)
     formData.append("title", data.title);
     formData.append("technologies", data.technologies);
     formData.append("image", data.image[0]);
@@ -34,15 +36,15 @@ const [ButtonText, setButtonText] = useState("SUBMIT")
       const result = await res.json();
       // console.log("Upload success:", result);
       reset();
-      setButtonText("Submitted Successfully")
+      setButtonText("Submitted Successfully");
       setTimeout(() => {
-        setButtonText("SUBMIT")
+        setButtonText("SUBMIT");
       }, 3000);
     } catch (error) {
       console.error("Upload failed:", error);
     }
   };
-// {isSubmitting && <div>Loading...</div>}
+  // {isSubmitting && <div>Loading...</div>}
   return (
     <section className="py-20 bg-white">
       <div className="max-w-2xl mx-auto w-[130vw] h-[140vh] px-4 sm:px-6 lg:px-8 border border-gray-200 rounded-2xl shadow-md hover:shadow-2xl transition duration-300 ease-in-out transform hover:scale-110">
@@ -51,7 +53,6 @@ const [ButtonText, setButtonText] = useState("SUBMIT")
           className="space-y-6 mt-24"
           onSubmit={handleSubmit(onSubmit)}
         >
-  
           <div>
             <label
               htmlFor="heading"
@@ -61,7 +62,6 @@ const [ButtonText, setButtonText] = useState("SUBMIT")
               Enter Project To Upload
             </h1>
           </div>
-
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
@@ -122,6 +122,26 @@ const [ButtonText, setButtonText] = useState("SUBMIT")
             />
             {errors.image && (
               <p className="text-red-700">{errors.image.message}</p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="subject"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Catagory
+            </label>
+            <select
+              id="color"
+              {...register("category", { required: true })}
+              className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            >
+              <option value="">-- Select Catagory --</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Data Science">Data Science</option>
+            </select>
+            {errors.liveUrl && (
+              <p className="text-red-700">{errors.liveUrl.message}</p>
             )}
           </div>
 
