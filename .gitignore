@@ -1,6 +1,8 @@
+# ===== Global =====
+
 # Node
 node_modules/
-npm-debug.log
+npm-debug.log*
 
 # Env
 .env
@@ -9,10 +11,63 @@ npm-debug.log
 # macOS
 .DS_Store
 
-# Next.js build folders
-.next/
-out/
+# Log files
+*.log
 
 # Build folders
 dist/
 build/
+.next/
+out/
+
+# Coverage
+coverage/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Yarn PnP
+.pnp.*
+/.pnp/
+/.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Vercel
+.vercel/
+
+# PEM files
+*.pem
+
+# Ignore PDF files only in the root (portfolio) folder
+/*.pdf
+
+# ===== Backend-specific =====
+
+# Ignore all files inside backend/uploads but track the folder
+/backend/uploads/*
+!/backend/uploads/.gitkeep
+
+# ===== Frontend-specific =====
+
+# Ignore frontend build artifacts
+/frontend/.next/
+/frontend/out/
+/frontend/node_modules/
+/frontend/build/
+/frontend/coverage/
+
+/frontend/.env*
+/frontend/.pnp
+/frontend/.pnp.*
+/frontend/.DS_Store
+/frontend/*.tsbuildinfo
+/frontend/next-env.d.ts
+
+/frontend/npm-debug.log*
+/frontend/yarn-debug.log*
+/frontend/yarn-error.log*
+/frontend/.pnpm-debug.log*
