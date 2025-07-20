@@ -43,6 +43,9 @@ export const metadata = {
     locale: "en_US",
     type: "website",
   },
+  icons: {
+    icon:"/fabicon.ico",
+  },
 };
 
 export default function RootLayout({ children }) {
