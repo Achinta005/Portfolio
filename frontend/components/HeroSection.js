@@ -77,7 +77,7 @@ export default function HeroSection() {
           <div className="lg:flex relative bottom-5 right-2 lg:justify-end">
             <div className="relative">
               <Image
-                src="/images/profile.jpg"
+                src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025128/profile_lz4yry.jpg"
                 alt="Profile"
                 className="w-80 h-80 rounded-full object-cover object-center shadow-2xl"
                 width={320}

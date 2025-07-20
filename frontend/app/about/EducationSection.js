@@ -10,7 +10,7 @@ export default function EducationSection() {
       year: "2022 - 2026",
       // description:
       //   "Graduated Magna Cum Laude with a focus on software engineering and web development.",
-      icon: "/images/img.jpeg",
+      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025127/img_xel2z6.jpg",
     },
   ];
 

@@ -54,7 +54,7 @@ export default function AboutHero() {
 
           <div className="flex justify-center">
             <Image
-              src="/images/workspace.jpg"
+              src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025128/workspace_lyay7t.jpg"
               width={500}
               height={500}
               alt="Workspace"
