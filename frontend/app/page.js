@@ -1,12 +1,12 @@
 import Image from "next/image";
 import HeroSection from "../components/HeroSection";
-import SkillsSection from "../components/SkillsSection";
+import InteractiveSkillsDisplay from "@/components/InteractiveSkillsDisplay";
 
 export default function Index() {
   return (
     <div>
      <HeroSection/>
-     <SkillsSection/>
+     <InteractiveSkillsDisplay/>
     </div>
   );
 }
