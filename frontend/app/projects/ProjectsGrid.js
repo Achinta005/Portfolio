@@ -54,7 +54,7 @@ export default function ProjectsGrid() {
               className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
             >
               <Image
-                src={`${process.env.NEXT_PUBLIC_API_URL}${project.image}`}
+                src={project.image}
                 width={500}
                 height={500}
                 alt={project.title}

@@ -39,15 +39,12 @@ app.use('/download/resume',resume)
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 
+
 //connect to MongoDB
 mongoose.connect(process.env.MONGO_URL)
 .then(()=>console.log("MongoDB CONNECTED"))
 .catch(err=>console.log(err))
 
-//Home Route
-// app.get('/', (req, res) => {
-//   console.log("Frontend is Connected");
-// })
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
