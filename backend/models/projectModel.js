@@ -4,6 +4,7 @@ const projectModelSchema = new mongoose.Schema({
   description: String,
   image: String,
   category: String,
+  order:Number,
   technologies: {
     type: [String],
     default: [],

@@ -25,6 +25,7 @@ const Project = () => {
     formData.append("image", data.image[0]);
     formData.append("liveUrl", data.liveUrl);
     formData.append("githubUrl", data.githubUrl);
+    formData.append("order", data.order);
     formData.append("description", data.description);
 
     try {
@@ -47,7 +48,7 @@ const Project = () => {
   // {isSubmitting && <div>Loading...</div>}
   return (
     <section className="py-20 bg-white">
-      <div className="max-w-2xl mx-auto w-[130vw] h-[140vh] px-4 sm:px-6 lg:px-8 border border-gray-200 rounded-2xl shadow-md hover:shadow-2xl transition duration-300 ease-in-out transform hover:scale-110">
+      <div className="max-w-2xl mx-auto w-[130vw] h-[170vh] px-4 sm:px-6 lg:px-8 border border-gray-200 rounded-2xl shadow-md hover:shadow-2xl transition duration-300 ease-in-out transform hover:scale-110">
         <form
           id="contact-form"
           className="space-y-6 mt-24"
@@ -178,6 +179,23 @@ const Project = () => {
             />
             {errors.githubUrl && (
               <p className="text-red-700">{errors.githubUrl.message}</p>
+            )}
+          </div>
+          <div>
+            <label
+              htmlFor="subject"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              ORDER
+            </label>
+            <input
+              placeholder="ORDER"
+              {...register("order")}
+              type="number"
+              className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+            />
+            {errors.order && (
+              <p className="text-red-700">{errors.order.message}</p>
             )}
           </div>
 
