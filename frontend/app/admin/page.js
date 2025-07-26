@@ -3,17 +3,15 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getUserFromToken, removeAuthToken, getAuthToken } from "../lib/auth";
-
 import Project from "./Project";
 import ContactResponse from "./ContactResponse";
-import TextEditor from "./TextEditor";
+import Notepad from "./Notepad";
 
 const AdminPage = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState("dashboard");
   const router = useRouter();
-
   const [documents, setDocuments] = useState([]);
   const [fetchError, setFetchError] = useState(null);
 
@@ -26,27 +24,6 @@ const AdminPage = () => {
     }
     setLoading(false);
   }, [router]);
-
-  useEffect(() => {
-    if (user) {
-      const fetchUserDocuments = async () => {
-        try {
-          const token = getAuthToken();
-          const apiUrl =
-            process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-          // This endpoint should match your backend route (e.g., /api/documents)
-          const response = await fetch(`${apiUrl}/api/auth/documents`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          if (!response.ok) throw new Error("Failed to fetch documents.");
-          setDocuments(await response.json());
-        } catch (err) {
-          setFetchError(err.message);
-        }
-      };
-      fetchUserDocuments();
-    }
-  }, [user]);
 
   const handleLogout = () => {
     removeAuthToken();
@@ -65,8 +42,7 @@ const AdminPage = () => {
     );
   }
 
-  // --- FIX STARTS HERE ---
-  // Conditionally render the full-page components for Admin
+  // Conditionally render the full-page components for Admin and user(editor here)
   if (user.role === "admin" && activeView === "projects") {
     return (
       <div className="container mx-auto p-4">
@@ -94,6 +70,32 @@ const AdminPage = () => {
       </div>
     );
   }
+  if (user.role === "admin" && activeView === "Notepad") {
+    return (
+      <div className="container mx-auto p-4">
+        <button
+          onClick={() => setActiveView("dashboard")}
+          className="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        >
+          ← Back to Dashboard
+        </button>
+        <Notepad onDocumentSaved={handleNewDocument} />
+      </div>
+    );
+  }
+  if (user.role === "editor" && activeView === "Notepad") {
+    return (
+      <div className="container mx-auto p-4">
+        <button
+          onClick={() => setActiveView("dashboard")}
+          className="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        >
+          ← Back to Dashboard
+        </button>
+        <Notepad onDocumentSaved={handleNewDocument} />
+      </div>
+    );
+  }
 
   // Main Dashboard View
   return (
@@ -117,61 +119,42 @@ const AdminPage = () => {
         </header>
 
         {fetchError && <p className="text-red-500 mb-4">{fetchError}</p>}
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div>
-            {/* === ROLE-BASED ACTION PANEL === */}
-            {/* This block is only visible to users with the 'admin' role */}
-            {user.role === "admin" && (
-              <div className="bg-white rounded-lg shadow-md p-6 space-y-4">
-                <h3 className="text-lg text-black  font-bold">
-                  Admin Controls
-                </h3>
-                <button
-                  onClick={() => setActiveView("projects")}
-                  className="text-blue-600 font-medium w-full text-left"
-                >
-                  Manage Projects →
-                </button>
-                <button
-                  onClick={() => setActiveView("messages")}
-                  className="text-green-600 font-medium w-full text-left"
-                >
-                  View Messages →
-                </button>
-              </div>
-            )}
-
-            {/* This block is only visible to users with the 'editor' role */}
-            {user.role === "editor" ||
-              ("admin" && <TextEditor onDocumentSaved={handleNewDocument} />)}
-            {user.role === "editor" && (
-              <TextEditor onDocumentSaved={handleNewDocument} />
-            )}
+        {/* Only for Admin--> */}
+        {user.role === "admin" && (
+          <div className="grid grid-cols-3 gap-6 bg-white rounded-lg shadow-2xl p-6 h-[50vh]">
+            <h3 className="col-span-3 w-[15vw]  text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 lg:relative lg:left-[38vw] h-10">
+              Admin Controls
+            </h3>
+            <button
+              onClick={() => setActiveView("projects")}
+              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-12"
+            >
+              Manage Projects →
+            </button>
+            <button
+              onClick={() => setActiveView("messages")}
+              className="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-12"
+            >
+              View Messages →
+            </button>
+            <button
+              onClick={() => setActiveView("Notepad")}
+              className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 text-center me-2 mb-2 h-12"
+            >
+              Go To Notepad →
+            </button>
           </div>
+        )}
 
-          {/* === USER-SPECIFIC DOCUMENT LIST (Visible to all authenticated roles) === */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-lg font-semibold text-black mb-4">Your Saved Documents</h3>
-            {documents.length > 0 ? (
-              <ul className="space-y-3 max-h-96 overflow-y-auto">
-                {documents.map((doc) => (
-                  <li
-                    key={doc._id}
-                    className="p-3 bg-gray-50 rounded-md border"
-                  >
-                    <p className="font-semibold text-purple-700">{doc.title}</p>
-                    <p className="text-sm text-green-600 truncate">
-                      {doc.content}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-gray-500">You have no documents.</p>
-            )}
-          </div>
-        </div>
+        {/* Only for Editor(user)--> */}
+        {user.role === "editor" && (
+          <button
+            onClick={() => setActiveView("Notepad")}
+            className="font-medium w-auto p-2 lg:relative lg:top-[8vh] lg:left-[-4vw] text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80 rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+          >
+            Go To Notepad →
+          </button>
+        )}
       </div>
     </div>
   );
