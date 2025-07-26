@@ -68,7 +68,7 @@ const RegisterPage = () => {
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="username" className="block text-sm font-medium text-purple-700 mb-1">
                 Username
               </label>
               <input
@@ -76,7 +76,7 @@ const RegisterPage = () => {
                 name="username"
                 type="text"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-purple-700 placeholder-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Choose a username"
                 value={formData.username}
                 onChange={handleChange}
@@ -84,7 +84,7 @@ const RegisterPage = () => {
             </div>
             
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="password" className="block text-sm font-medium text-green-600 mb-1">
                 Password
               </label>
               <input
@@ -92,24 +92,11 @@ const RegisterPage = () => {
                 name="password"
                 type="password"
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md placeholder-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Choose a strong password"
                 value={formData.password}
                 onChange={handleChange}
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
-              <select
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md bg-white"
-              >
-                <option value="editor">Editor</option>
-                <option value="admin">Admin</option>
-                <option value="viewer">Viewer</option>
-              </select>
             </div>
           </div>
 

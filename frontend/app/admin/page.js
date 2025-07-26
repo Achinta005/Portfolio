@@ -32,12 +32,13 @@ const AdminPage = () => {
       const fetchUserDocuments = async () => {
         try {
           const token = getAuthToken();
-          const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+          const apiUrl =
+            process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
           // This endpoint should match your backend route (e.g., /api/documents)
-          const response = await fetch(`${apiUrl}/api/auth/documents`, { 
-            headers: { 'Authorization': `Bearer ${token}` }
+          const response = await fetch(`${apiUrl}/api/auth/documents`, {
+            headers: { Authorization: `Bearer ${token}` },
           });
-          if (!response.ok) throw new Error('Failed to fetch documents.');
+          if (!response.ok) throw new Error("Failed to fetch documents.");
           setDocuments(await response.json());
         } catch (err) {
           setFetchError(err.message);
@@ -53,47 +54,64 @@ const AdminPage = () => {
   };
 
   const handleNewDocument = (newDoc) => {
-    setDocuments(prevDocs => [newDoc, ...prevDocs]);
+    setDocuments((prevDocs) => [newDoc, ...prevDocs]);
   };
 
   if (loading || !user) {
-    return <div className="min-h-screen flex items-center justify-center"><p>Loading...</p></div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
   }
-  
+
   // --- FIX STARTS HERE ---
   // Conditionally render the full-page components for Admin
-  if (user.role === 'admin' && activeView === "projects") {
+  if (user.role === "admin" && activeView === "projects") {
     return (
       <div className="container mx-auto p-4">
-        <button onClick={() => setActiveView("dashboard")} className="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+        <button
+          onClick={() => setActiveView("dashboard")}
+          className="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        >
           ← Back to Dashboard
         </button>
         <Project />
       </div>
     );
   }
-  
-  if (user.role === 'admin' && activeView === "messages") {
+
+  if (user.role === "admin" && activeView === "messages") {
     return (
       <div className="container mx-auto p-4">
-        <button onClick={() => setActiveView("dashboard")} className="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+        <button
+          onClick={() => setActiveView("dashboard")}
+          className="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        >
           ← Back to Dashboard
         </button>
         <ContactResponse />
       </div>
     );
   }
-  
+
   // Main Dashboard View
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         <header className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600">Welcome, {user.username} (Role: {user.role})</p>
+            <h1 className="text-3xl font-bold text-gray-900 p-2 text-center left-[39vw] lg:relative">
+              Dashboard
+            </h1>
+            <p className="text-emerald-700 text-xl">
+              Welcome {user.username} (Role: {user.role})
+            </p>
           </div>
-          <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          >
             Logout
           </button>
         </header>
@@ -104,29 +122,48 @@ const AdminPage = () => {
           <div>
             {/* === ROLE-BASED ACTION PANEL === */}
             {/* This block is only visible to users with the 'admin' role */}
-            {user.role === 'admin' && (
+            {user.role === "admin" && (
               <div className="bg-white rounded-lg shadow-md p-6 space-y-4">
-                <h3 className="text-lg font-semibold">Admin Controls</h3>
-                <button onClick={() => setActiveView("projects")} className="text-blue-600 font-medium w-full text-left">Manage Projects →</button>
-                <button onClick={() => setActiveView("messages")} className="text-green-600 font-medium w-full text-left">View Messages →</button>
+                <h3 className="text-lg text-black  font-bold">
+                  Admin Controls
+                </h3>
+                <button
+                  onClick={() => setActiveView("projects")}
+                  className="text-blue-600 font-medium w-full text-left"
+                >
+                  Manage Projects →
+                </button>
+                <button
+                  onClick={() => setActiveView("messages")}
+                  className="text-green-600 font-medium w-full text-left"
+                >
+                  View Messages →
+                </button>
               </div>
             )}
-            
+
             {/* This block is only visible to users with the 'editor' role */}
-            {user.role === 'editor' && (
+            {user.role === "editor" ||
+              ("admin" && <TextEditor onDocumentSaved={handleNewDocument} />)}
+            {user.role === "editor" && (
               <TextEditor onDocumentSaved={handleNewDocument} />
             )}
           </div>
 
           {/* === USER-SPECIFIC DOCUMENT LIST (Visible to all authenticated roles) === */}
           <div className="bg-white rounded-lg shadow-md p-6">
-            <h3 className="text-lg font-semibold mb-4">Your Saved Documents</h3>
+            <h3 className="text-lg font-semibold text-black mb-4">Your Saved Documents</h3>
             {documents.length > 0 ? (
               <ul className="space-y-3 max-h-96 overflow-y-auto">
-                {documents.map(doc => (
-                  <li key={doc._id} className="p-3 bg-gray-50 rounded-md border">
-                    <p className="font-semibold">{doc.title}</p>
-                    <p className="text-sm text-gray-600 truncate">{doc.content}</p>
+                {documents.map((doc) => (
+                  <li
+                    key={doc._id}
+                    className="p-3 bg-gray-50 rounded-md border"
+                  >
+                    <p className="font-semibold text-purple-700">{doc.title}</p>
+                    <p className="text-sm text-green-600 truncate">
+                      {doc.content}
+                    </p>
                   </li>
                 ))}
               </ul>
