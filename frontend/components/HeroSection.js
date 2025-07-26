@@ -4,29 +4,28 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function HeroSection() {
-
   const handleDownload = async () => {
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/download/resume`);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/download/resume`
+      );
 
-    if (!response.ok) throw new Error("Download failed");
+      if (!response.ok) throw new Error("Download failed");
 
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "Achinta_Resume.pdf";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.URL.revokeObjectURL(url);
-  } catch (err) {
-    console.error("Error downloading:", err);
-  }
-};
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
 
-
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "Achinta_Resume.pdf";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Error downloading:", err);
+    }
+  };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -42,9 +41,10 @@ export default function HeroSection() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="text-left">
-            <h1 className="lg:text-6xl text-3xl mt-4 lg:mt-0 font-bold text-gray-900 mb-6 w-2xl">
+            <h1 className="lg:text-6xl text-3xl mt-4 lg:mt-0 font-bold text-gray-900 mb-6 w-2xl ">
               Hi, I&apos;m <span className="text-blue-600">Achinta Hazra</span>
             </h1>
+
             <h2 className="text-xl lg:text-3xl text-gray-700 mb-6">
               Full Stack Developer
             </h2>
@@ -75,19 +75,32 @@ export default function HeroSection() {
           </div>
 
           <div className="lg:flex relative bottom-5 right-2 lg:justify-end">
-            <div className="relative">
-              <Image
-                src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025128/profile_lz4yry.jpg"
-                alt="Profile"
-                className="w-80 h-80 rounded-full object-cover object-center shadow-2xl"
-                width={320}
-                height={320}
-              />
-              <div className="absolute -bottom-4 -right-4 bg-blue-600 text-white p-4 rounded-full">
-                <div className="w-8 h-8 flex items-center justify-center">
-                  <i className="ri-code-s-slash-line text-2xl"></i>
-                </div>
-              </div>
+            <div className="relative z-20">
+                    <Image
+                      src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025128/profile_lz4yry.jpg"
+                      alt="A professional headshot of the portfolio owner"
+                      className="w-80 h-80 rounded-full object-cover object-center shadow-2xl"
+                      width={320}
+                      height={320}
+                      priority
+                    />
+                    <div className="absolute -bottom-4 -right-4 bg-blue-600 text-white p-4 rounded-full shadow-lg">
+                      <div className="w-8 h-8 flex items-center justify-center">
+                        <i className="ri-code-s-slash-line text-2xl"></i>
+                      </div>
+                    </div>
+                  </div>
+            <div
+              className="
+              absolute top-[-4.2vh] left-[17.6vw] w-85 h-85 z-10
+              transform translate-x-4 translate-y-4 /* Offset to peek out from behind */
+              rounded-full
+              border-4 border-dotted border-white
+              bg-gradient-to-tr from-pink-500 via-red-500 to-yellow-500
+              shadow-2xl
+              transition-all duration-300
+              hover:brightness-125
+              hover:shadow-[0_0_40px_rgba(255,255,100,0.6)] animate-spin animate-infinite">
             </div>
           </div>
         </div>
