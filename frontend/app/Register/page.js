@@ -6,7 +6,8 @@ import { useRouter } from 'next/navigation';
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
     username: '',
-    password: ''
+    password: '',
+    role:"editor"
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -96,6 +97,19 @@ const RegisterPage = () => {
                 value={formData.password}
                 onChange={handleChange}
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border rounded-md bg-white"
+              >
+                <option value="editor">Editor</option>
+                <option value="admin">Admin</option>
+                <option value="viewer">Viewer</option>
+              </select>
             </div>
           </div>
 

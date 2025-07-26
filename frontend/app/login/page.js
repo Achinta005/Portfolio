@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { setToken } from "../lib/auth"; // Assuming this file exists from your code
+import { setAuthToken } from "../lib/auth"; // Assuming this file exists from your code
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -43,7 +43,7 @@ const LoginPage = () => {
         // Assuming setToken saves the token to localStorage
         // e.g., localStorage.setItem('token', token);
         if (typeof setToken === "function") {
-          setToken(data.token);
+          setAuthToken(data.token);
         } else {
           localStorage.setItem("token", data.token);
         }

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { isAuthenticated, removeToken } from "../app/lib/auth";
+import { isAuthenticated, removeAuthToken } from "../app/lib/auth";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -59,7 +59,7 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    removeToken();
+    removeAuthToken();
     setIsLoggedIn(false);
     router.push("/");
   };
