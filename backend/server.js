@@ -13,7 +13,7 @@ const projects=require('./routes/projects')
 const contactResponse=require('./routes/contact_response')
 const resume=require('./routes/resume')
 const authRoutes = require('./routes/auth');
-const adminRoutes = require('./routes/admin');
+const connectDB=require('./config/db')
 
 //CORS POLICY
 app.use(cors({
@@ -37,13 +37,10 @@ app.use('/projects',projects)
 app.use('/contact_response',contactResponse)
 app.use('/download/resume',resume)
 app.use('/api/auth', authRoutes);
-app.use('/api/admin', adminRoutes);
 
 
 //connect to MongoDB
-mongoose.connect(process.env.MONGO_URL)
-.then(()=>console.log("MongoDB CONNECTED"))
-.catch(err=>console.log(err))
+connectDB();
 
 
 app.listen(port, () => {
