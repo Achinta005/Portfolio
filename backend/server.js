@@ -17,7 +17,7 @@ const connectDB=require('./config/db')
 
 //CORS POLICY
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://achintahazra.shop', 'https://www.achintahazra.shop/','https://portfolio-achinta-hazras-projects.vercel.app/','https://portfolio-git-main-achinta-hazras-projects.vercel.app/','https://portfolio-sooty-xi-67.vercel.app/'],
+  origin: ['http://localhost:3000', 'https://achintahazra.shop', 'https://www.achintahazra.shop','https://portfolio-achinta-hazras-projects.vercel.app','https://portfolio-git-main-achinta-hazras-projects.vercel.app','https://portfolio-sooty-xi-67.vercel.app'],
   methods: ['GET', 'POST', 'OPTIONS'],
   credentials: true,
 }));
