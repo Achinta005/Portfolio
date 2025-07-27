@@ -17,16 +17,16 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-bold mb-4 ">Quick Links</h4>
             <div className="space-y-2">
-              <Link href="/" className="text-blue-600 hover:text-white transition-colors cursor-pointer block">
+              <Link href="/" className="hover:text-blue-600 dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer block w-fit">
                 Home
               </Link>
-              <Link href="/about" className="text-blue-600 hover:text-white transition-colors cursor-pointer block">
+              <Link href="/about" className="hover:text-blue-600 dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer block w-fit">
                 About
               </Link>
-              <Link href="/projects" className="text-blue-600 hover:text-white transition-colors cursor-pointer block">
+              <Link href="/projects" className="hover:text-blue-600 dark:text-gray-400 dark:hover:text-white  transition-colors cursor-pointer block w-fit">
                 Projects
               </Link>
-              <Link href="/contact" className="text-blue-600 hover:text-white transition-colors cursor-pointer block">
+              <Link href="/contact" className="hover:text-blue-600 dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer block w-fit">
                 Contact
               </Link>
             </div>
@@ -35,22 +35,22 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-bold mb-4">Connect</h4>
             <div className="flex space-x-4">
-              <a href="https://www.linkedin.com/in/achinta-hazra?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" className="dark:text-gray-400 hover:text-white transition-colors cursor-pointer">
+              <a href="https://www.linkedin.com/in/achinta-hazra?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" className="dark:text-gray-400 dark:hover:text-white hover:text-blue-600 transition-colors cursor-pointer">
                 <div className="w-6 h-6 flex items-center justify-center">
                   <i className="ri-linkedin-fill"></i>
                 </div>
               </a>
-              <a href="https://github.com/Achinta005" className="dark:text-gray-400 hover:text-white transition-colors cursor-pointer">
+              <a href="https://github.com/Achinta005" className="dark:text-gray-400 dark:hover:text-white  hover:text-blue-600 transition-colors cursor-pointer">
                 <div className="w-6 h-6 flex items-center justify-center">
                   <i className="ri-github-fill"></i>
                 </div>
               </a>
-              <a href="#" className="dark:text-gray-400 hover:text-white transition-colors cursor-pointer">
+              <a href="#" className="dark:text-gray-400 dark:hover:text-white hover:text-blue-600 transition-colors cursor-pointer">
                 <div className="w-6 h-6 flex items-center justify-center">
                   <i className="ri-twitter-fill"></i>
                 </div>
               </a>
-              <a href="mailto:achintahazra8515@gmail.com" className="dark:text-gray-400 hover:text-white transition-colors cursor-pointer">
+              <a href="mailto:achintahazra8515@gmail.com" className="dark:text-gray-400 dark:hover:text-white hover:text-blue-600 transition-colors cursor-pointer">
                 <div className="w-6 h-6 flex items-center justify-center">
                   <i className="ri-mail-fill"></i>
                 </div>
@@ -60,7 +60,7 @@ export default function Footer() {
         </div>
         
         <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-          <p className="text-gray-400">
+          <p className="dark:text-gray-400 ">
             © 2025 Portfolio. All rights reserved.
           </p>
         </div>

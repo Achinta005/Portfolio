@@ -42,8 +42,7 @@ export default function HeroSection() {
         style={{
           backgroundImage: `url('https://res.cloudinary.com/dc1fkirb4/image/upload/v1753586063/nikita-kachanovsky-OVbeSXRk_9E-unsplash_rk0yhg.jpg`,
         }}
-      >
-      </div>
+      ></div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -68,15 +67,14 @@ export default function HeroSection() {
             <div className="flex flex-wrap gap-4">
               <button
                 onClick={handleDownload}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer whitespace-nowrap shadow-md hover:shadow-lg active:scale-95 transition transform duration-200 ease-in-out"
+                className="border-2 border-blue-600 text-blue-600 dark:text-white px-8 py-3 rounded-lg hover:bg-blue-600 hover:text-white cursor-pointer whitespace-nowrap transition-transform  duration-300 ease-in-out hover:scale-105"
               >
                 Download My Resume
               </button>
 
-
               <Link
                 href="/contact"
-                className="border-2 border-blue-600 text-blue-600 dark:text-white px-8 py-3 rounded-lg hover:bg-blue-600 hover:text-white transition-colors cursor-pointer whitespace-nowrap"
+                className="border-2 border-blue-600 text-blue-600 dark:text-white px-8 py-3 rounded-lg hover:bg-blue-600 hover:text-white cursor-pointer whitespace-nowrap transition-transform  duration-300 ease-in-out hover:scale-105"
               >
                 Get In Touch
               </Link>
@@ -85,22 +83,7 @@ export default function HeroSection() {
 
           <div className="relative w-80 h-80 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 lg:left-[15vw]">
             {/* Decorative circle */}
-            <div
-              className="
-    absolute
-    -inset-1             /* shift out 0.25rem on all sides */
-      w-[calc(100%+0.5rem)] /* increase both width & height by 0.5rem */
-      h-[calc(100%+0.5rem)]
-    rounded-full
-    border-4 border-dotted border-white
-    bg-gradient-to-tr from-pink-500 via-red-500 to-yellow-500
-    shadow-2xl
-    animate-spin
-    hover:brightness-125
-    hover:shadow-[0_0_40px_rgba(255,255,100,0.6)]
-    transition
-  "
-            ></div>
+            <div className="absolute -inset-1 w-[calc(100%+0.5rem)] h-[calc(100%+0.5rem)] rounded-full border-4 border-dotted border-white bg-gradient-to-tr from-pink-500 via-red-500 to-yellow-500 shadow-2xl animate-spin hover:brightness-125 hover:shadow-[0_0_40px_rgba(255,255,100,0.6)] transition"></div>
 
             {/* Profile Image */}
             <div className="relative z-10 w-full h-full">
@@ -112,15 +95,7 @@ export default function HeroSection() {
                 height={320}
                 priority
               />
-              <div
-                className="
-      absolute
-      -bottom-1 -right-1
-      bg-blue-600 text-white p-4 rounded-full shadow-lg
-      flex items-center justify-center
-      text-2xl
-    "
-              >
+              <div className=" absolute -bottom-1 -right-1 bg-blue-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center text-2xl">
                 <i className="ri-code-s-slash-line" />
               </div>
             </div>
