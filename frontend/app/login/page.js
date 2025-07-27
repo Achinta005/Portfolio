@@ -61,13 +61,13 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-800">
       <div className="max-w-md w-full space-y-8 p-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2 dark:text-gray-100">
             Welcome Back
           </h2>
-          <p className="text-gray-600">Sign in to access your admin panel</p>
+          <p className="text-gray-600 dark:text-gray-300">Sign in to access your admin panel</p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -131,7 +131,7 @@ const LoginPage = () => {
           <button
             // This onClick handler is the crucial part
             onClick={() => router.push("/Register")}
-            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            className="text-blue-600 dark:text-blue-700 hover:text-blue-800 text-sm font-medium"
           >
             Don&apos;t have an account? Register now
           </button>

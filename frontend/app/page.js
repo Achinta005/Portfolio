@@ -7,8 +7,6 @@ export default function Index() {
     <div>
      <HeroSection/>
      <InteractiveSkillsDisplay/>
-
-     
     </div>
   );
 }

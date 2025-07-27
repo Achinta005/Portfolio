@@ -56,13 +56,13 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-800">
       <div className="max-w-md w-full space-y-8 p-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2 dark:text-gray-100">
             Create an Account
           </h2>
-          <p className="text-gray-600">Get started by creating your admin account</p>
+          <p className="text-gray-600 dark:text-gray-300">Get started by creating your admin account</p>
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

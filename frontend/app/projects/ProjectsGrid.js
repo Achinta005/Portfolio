@@ -29,7 +29,7 @@ export default function ProjectsGrid() {
       : projects.filter((project) => project.category === selectedCategory);
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-white dark:bg-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-wrap justify-center gap-4 mb-12">
           {categories.map((category) => (
@@ -38,8 +38,8 @@ export default function ProjectsGrid() {
               onClick={() => setSelectedCategory(category)}
               className={`px-6 py-2 rounded-full transition-colors cursor-pointer whitespace-nowrap ${
                 selectedCategory === category
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  ? "bg-blue-600 dark:bg-gray-900 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200 dark:hover:bg-gray-500 dark:hover:text-white"
               }`}
             >
               {category}
@@ -51,7 +51,7 @@ export default function ProjectsGrid() {
           {filteredProjects.map((project, index) => (
             <div
               key={index}
-              className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+              className="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
             >
               <Image
                 src={project.image}
@@ -63,14 +63,14 @@ export default function ProjectsGrid() {
 
               <div className="p-6">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
+                  <span className="text-sm text-blue-600 bg-blue-100 dark:bg-gray-400 px-3 py-1 rounded-full">
                     {project.category}
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                <h3 className="text-xl font-bold text-gray-900 mb-3 dark:text-gray-100">
                   {project.title}
                 </h3>
-                <p className="text-gray-600 mb-4 text-sm leading-relaxed">
+                <p className="text-gray-600 mb-4 text-sm leading-relaxed dark:text-gray-300">
                   {project.description}
                 </p>
 
@@ -78,7 +78,7 @@ export default function ProjectsGrid() {
                   {(project.technologies || []).map((tech, techIndex) => (
                     <span
                       key={techIndex}
-                      className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded"
+                      className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded dark:bg-gray-400 dark:text-black"
                     >
                       {tech}
                     </span>
@@ -99,10 +99,10 @@ export default function ProjectsGrid() {
                     href={project.githubUrl}
                     className="flex items-center text-gray-600 hover:text-gray-800 transition-colors cursor-pointer"
                   >
-                    <div className="w-4 h-4 flex items-center justify-center mr-1">
+                    <div className="w-4 h-4 flex items-center justify-center mr-1 dark:text-gray-300">
                       <i className="ri-github-line"></i>
                     </div>
-                    Code
+                    <p className="dark:text-gray-300">Code</p>
                   </a>
                 </div>
               </div>

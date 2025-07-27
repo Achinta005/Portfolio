@@ -6,11 +6,11 @@ export default function BlogPage() {
   const posts = getAllPosts();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-800">
       <div className="max-w-6xl mx-auto px-6 py-12">
         <div className="mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Blog</h1>
-          <p className="text-lg text-gray-600 max-w-2xl">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4 dark:text-gray-100">Blog</h1>
+          <p className="text-lg text-gray-600 max-w-2xl dark:text-gray-300">
             Thoughts on web development, technology, and building great user experiences.
           </p>
         </div>
@@ -19,10 +19,10 @@ export default function BlogPage() {
           {posts.map((post) => (
             <article 
               key={post.slug}
-              className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-200"
+              className="bg-white dark:bg-gray-900 border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-200"
             >
               <div className="p-6">
-                <div className="flex items-center text-sm text-gray-500 mb-3">
+                <div className="flex items-center text-sm text-gray-500 mb-3 dark:text-gray-300">
                   <Calendar className="w-4 h-4 mr-2" />
                   <span>{new Date(post.date).toLocaleDateString('en-US', { 
                     year: 'numeric', 
@@ -33,11 +33,11 @@ export default function BlogPage() {
                   <span>{post.readTime}</span>
                 </div>
                 
-                <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+                <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 dark:text-gray-100">
                   {post.title}
                 </h2>
                 
-                <p className="text-gray-700 mb-4 leading-relaxed line-clamp-3">
+                <p className="text-gray-700 mb-4 leading-relaxed line-clamp-3 dark:text-gray-400">
                   {post.excerpt}
                 </p>
                 
@@ -45,7 +45,7 @@ export default function BlogPage() {
                   {post.tags.slice(0, 3).map((tag) => (
                     <span 
                       key={tag}
-                      className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full"
+                      className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full dark:bg-gray-400 dark:text-black"
                     >
                       {tag}
                     </span>

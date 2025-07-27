@@ -112,12 +112,12 @@ export default function Header() {
             >
               Contact
             </Link>
-            <Link
+            {/* <Link
               href="/work-with-me"
               className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
             >
               Work With Me
-            </Link>
+            </Link> */}
 
             {/* Authentication buttons */}
             {isLoggedIn ? (

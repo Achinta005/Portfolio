@@ -45,7 +45,7 @@ const AdminPage = () => {
   // Conditionally render the full-page components for Admin and user(editor here)
   if (user.role === "admin" && activeView === "projects") {
     return (
-      <div className="container mx-auto p-4">
+      <div className="p-4 dark:bg-gray-700">
         <button
           onClick={() => setActiveView("dashboard")}
           className="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
@@ -59,7 +59,7 @@ const AdminPage = () => {
 
   if (user.role === "admin" && activeView === "messages") {
     return (
-      <div className="container mx-auto p-4">
+      <div className="p-6 dark:bg-gray-800">
         <button
           onClick={() => setActiveView("dashboard")}
           className="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
@@ -72,7 +72,7 @@ const AdminPage = () => {
   }
   if (user.role === "admin" && activeView === "Notepad") {
     return (
-      <div className="container mx-auto p-4">
+      <div className="p-8 dark:bg-gray-800">
         <button
           onClick={() => setActiveView("dashboard")}
           className="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
@@ -99,14 +99,14 @@ const AdminPage = () => {
 
   // Main Dashboard View
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-800">
       <div className="container mx-auto px-4 py-8">
         <header className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 p-2 text-center left-[39vw] lg:relative">
+            <h1 className="text-3xl font-bold text-gray-900 p-2 text-center left-[39vw] lg:relative dark:text-gray-100">
               Dashboard
             </h1>
-            <p className="text-emerald-700 text-xl">
+            <p className="text-emerald-700 text-xl dark:text-gray-100">
               Welcome {user.username} (Role: {user.role})
             </p>
           </div>
@@ -121,7 +121,7 @@ const AdminPage = () => {
         {fetchError && <p className="text-red-500 mb-4">{fetchError}</p>}
         {/* Only for Admin--> */}
         {user.role === "admin" && (
-          <div className="grid grid-cols-3 gap-6 bg-white rounded-lg shadow-2xl p-6 h-[50vh]">
+          <div className="grid grid-cols-3 gap-6 bg-white rounded-lg shadow-2xl p-6 h-[50vh] dark:bg-gray-900">
             <h3 className="col-span-3 w-[15vw]  text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 lg:relative lg:left-[38vw] h-10">
               Admin Controls
             </h3>
@@ -150,7 +150,7 @@ const AdminPage = () => {
         {user.role === "editor" && (
           <button
             onClick={() => setActiveView("Notepad")}
-            className="font-medium w-auto p-2 lg:relative lg:top-[8vh] lg:left-[-4vw] text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80 rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+            className="font-medium w-auto p-2 lg:relative lg:top-[20vh] lg:left-[42.5vw] text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80 rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
           >
             Go To Notepad →
           </button>

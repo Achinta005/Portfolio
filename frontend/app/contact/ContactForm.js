@@ -28,7 +28,7 @@ const ContactForm2 = () => {
   };
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-white dark:bg-gray-800">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <form
           id="contact-form"
@@ -39,7 +39,7 @@ const ContactForm2 = () => {
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-100"
               >
                 Full Name
               </label>
@@ -50,7 +50,7 @@ const ContactForm2 = () => {
                   required: { value: true, message: "This field is required" },
                 })}
                 type="text"
-                className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full text-gray-950 px-4 py-3 border dark:text-gray-100 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               />
               {errors.name && (
                 <p className="text-red-700">{errors.name.message}</p>
@@ -59,7 +59,7 @@ const ContactForm2 = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
+                className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-100"
               >
                 Email Address
               </label>
@@ -72,7 +72,7 @@ const ContactForm2 = () => {
                   },
                 })}
                 type="text"
-                className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full text-gray-950 px-4 py-3 border dark:text-gray-100 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               />
               {errors.email && (
                 <p className="text-red-700">{errors.email.message}</p>
@@ -83,7 +83,7 @@ const ContactForm2 = () => {
           <div>
             <label
               htmlFor="subject"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-100"
             >
               Subject
             </label>
@@ -91,23 +91,23 @@ const ContactForm2 = () => {
               placeholder="What's this about?"
               {...register("subject")}
               type="text"
-              className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="w-full text-gray-950 px-4 py-3 border dark:text-gray-100 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
             />
           </div>
 
           <div>
             <label
               htmlFor="message"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-100"
             >
               Message
             </label>
             <textarea
               rows={6}
-              placeholder="Tell me about your project..."
+              placeholder="What Do You Want To Tell Me..."
               {...register("message")}
               type="text"
-              className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="w-full text-gray-950 px-4 py-3 border dark:text-gray-100 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
             />
             <p className="text-xs text-gray-500 mt-1"></p>
           </div>

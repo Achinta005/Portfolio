@@ -84,15 +84,15 @@ const Notepad = ({ onDocumentSaved }) => {
   //Modifiaction stop//////////////////////
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h3 className="text-lg font-bold text-black mb-4 text-center">
+    <div className="bg-white rounded-lg shadow-md p-6 dark:bg-gray-900">
+      <h3 className="text-lg font-bold text-black mb-4 text-center dark:text-gray-100">
         Your Personal NotePad
       </h3>
       <form onSubmit={handleSubmit}>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         {success && <p className="text-green-500 text-sm mb-4">{success}</p>}
         <div className="mb-4">
-          <label className="block text-black text-sm font-bold mb-2">
+          <label className="block text-black text-sm font-bold mb-2 dark:text-gray-100">
             Title
           </label>
           <input
@@ -104,7 +104,7 @@ const Notepad = ({ onDocumentSaved }) => {
           />
         </div>
         <div className="mb-6">
-          <label className="block text-black text-sm font-bold mb-2">
+          <label className="block text-black text-sm font-bold mb-2 dark:text-gray-100">
             Content
           </label>
           <textarea
@@ -124,14 +124,14 @@ const Notepad = ({ onDocumentSaved }) => {
         </button>
       </form>
       {/* === USER-SPECIFIC DOCUMENT LIST (Visible to all authenticated roles) === */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold text-black mb-4">
+      <div className="bg-white rounded-lg shadow-md p-6 top-7 dark:bg-gray-800">
+        <h3 className="text-lg font-semibold text-black mb-4 dark:text-gray-100">
           Your Saved Documents
         </h3>
         {documents.length > 0 ? (
           <ul className="space-y-3 max-h-96 overflow-y-auto">
             {documents.map((doc) => (
-              <li key={doc._id} className="p-3 bg-gray-50 rounded-md border">
+              <li key={doc._id} className="p-3 bg-gray-50 rounded-md border dark:bg-gray-900">
                 <p className="font-semibold text-purple-700">{doc.title}</p>
                 <p className="text-sm text-green-600 truncate">{doc.content}</p>
               </li>
