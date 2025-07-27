@@ -2,6 +2,8 @@
 @import "tailwindcss";
 @import "tailwindcss-animated";
 
+@custom-variant dark (&:is(.dark *));
+
 /* Custom scrollbar styles */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
@@ -18,4 +20,37 @@
   background-color: #555;
 }
 
+@keyframes typing {
+  0% {
+    width: 0%;
+    visibility: hidden;
+  }
+  100% {
+    width: 100%;
+  }
+}
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+  100% {
+    border-color: black;
+  }
+}
+@keyframes blink-dark {
+  50% {
+    border-color: transparent;
+  }
+  100% {
+    border-color: white;
+  }
+}
+
+@layer utilities {
+  .animate-typing {
+    animation: typing 3s steps(50) infinite alternate,
+               blink 0.7s infinite;
+  }
+  
+}
 

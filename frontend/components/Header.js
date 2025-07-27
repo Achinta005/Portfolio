@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { isAuthenticated, removeAuthToken } from "../app/lib/auth";
+import DarkModeToggle from "@/components/DarkModeToggle";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -72,47 +73,48 @@ export default function Header() {
   };
   
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50">
+    <header className="bg-white dark:bg-gray-900 shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          <Link href="/" className="text-2xl font-bold text-gray-900">
+          <Link href="/" className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             <span className="font-pacifico">Welcome</span>
           </Link>
 
           <nav className="hidden md:flex space-x-8 items-center">
+            <DarkModeToggle/>
             <Link
               href="/"
-              className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
             >
               Home
             </Link>
             <Link
               href="/about"
-              className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
             >
               About
             </Link>
             <Link
               href="/projects"
-              className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
             >
               Projects
             </Link>
             <Link
               href="/blog"
-              className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
             >
             Blogs
             </Link>
             <Link
               href="/contact"
-              className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
             >
               Contact
             </Link>
             <Link
               href="/work-with-me"
-              className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+              className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
             >
               Work With Me
             </Link>
@@ -122,13 +124,13 @@ export default function Header() {
               <>
                 <button
                   onClick={handleAdminClick}
-                  className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+                  className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
                 >
                   Admin Panel
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+                  className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
                 >
                   Logout
                 </button>
@@ -136,7 +138,7 @@ export default function Header() {
             ) : (
               <button
                 onClick={handleLogin}
-                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+                className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
               >
                 Login
               </button>
