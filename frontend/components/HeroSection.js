@@ -32,7 +32,7 @@ export default function HeroSection() {
       <div
         className="absolute inset-0 bg-cover md:bg-center bg-no-repeat dark:hidden"
         style={{
-          backgroundImage: `url('https://readdy.ai/api/search-image?query=Modern%20minimalist%20professional%20workspace%20setup%20with%20clean%20desk%2C%20laptop%2C%20plants%2C%20and%20soft%20natural%20lighting%20creating%20a%20peaceful%20productive%20environment%20with%20warm%20tones%20and%20contemporary%20design%20elements%20suitable%20for%20creative%20professional&width=1920&height=1080&seq=hero-bg-001&orientation=landscape')`,
+          backgroundImage: `url('https://res.cloudinary.com/dc1fkirb4/image/upload/v1753725224/4aef09407787d130f312a623ab753ea9_vfacg7.jpg')`,
         }}
       >
         <div className="absolute dark:hidden inset-0 bg-white/80"></div>
