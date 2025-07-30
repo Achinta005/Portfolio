@@ -16,29 +16,12 @@ const authRoutes = require('./routes/auth');
 const connectDB=require('./config/db')
 
 //CORS POLICY
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://achintahazra.shop', 'https://www.achintahazra.shop','https://portfolio-achinta-hazras-projects.vercel.app','https://portfolio-git-main-achinta-hazras-projects.vercel.app','https://portfolio-sooty-xi-67.vercel.app'],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  // credentials: true,
+}));
 
-const allowedOrigins = [
-  'http://localhost:3000',
-  'https://achintahazra.shop',
-  'https://www.achintahazra.shop',
-  'https://portfolio-achinta-hazras-projects.vercel.app',
-  'https://portfolio-git-main-achinta-hazras-projects.vercel.app',
-  'https://portfolio-sooty-xi-67.vercel.app',
-  'https://portfolio-c1a8fubjn-achinta-hazras-projects.vercel.app'
-];
-
-const dynamicCors = cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
-      callback(null, true);
-    } else {
-      callback(new Error('CORS Not Allowed'));
-    }
-  },
-  credentials: true, // or false if your GET does not use cookies
-});
-
-app.use(dynamicCors);
 
 
 //JSON Body Parser
