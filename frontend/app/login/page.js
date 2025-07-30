@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { setAuthToken } from "../lib/auth"; // Assuming this file exists from your code
+import { setAuthToken,getAuthToken } from "../lib/auth"; // Assuming this file exists from your code
+import Image from "next/image";
+import { useSearchParams } from 'next/navigation';
+
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -59,6 +62,31 @@ const LoginPage = () => {
       setLoading(false);
     }
   };
+  //extracting token from params and store it as a token in localStorage
+const searchParams = useSearchParams();
+useEffect(() => {
+  const run = async () => {
+    console.log("useEffect is running");
+
+    const tokenFromUrl = searchParams.get("token");
+    if (tokenFromUrl && tokenFromUrl.split(".").length === 3) {
+      setAuthToken(tokenFromUrl);
+    }
+
+    const token = getAuthToken();
+    if (!token || token.split(".").length !== 3) {
+      console.warn("Invalid or missing token:", token);
+      return;
+    }
+    router.push("/admin")
+  };
+
+  run();
+}, [searchParams, router]);
+ 
+  const handleLogin=()=>{
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/google`;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-800">
@@ -67,7 +95,9 @@ const LoginPage = () => {
           <h2 className="text-3xl font-bold text-gray-900 mb-2 dark:text-gray-100">
             Welcome Back
           </h2>
-          <p className="text-gray-600 dark:text-gray-300">Sign in to access your admin panel</p>
+          <p className="text-gray-600 dark:text-gray-300">
+            Sign in to access your admin panel
+          </p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -120,12 +150,25 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium dark:text-white bg-gray-300 dark:bg-blue-600 hover:bg-gray-400 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>
-
+        <button
+          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium dark:text-white bg-gray-300 dark:bg-blue-600 hover:bg-gray-400 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed h-9"
+          onClick={handleLogin}
+        >
+          <Image
+            src="/icons8-google-144.png"
+            alt="Google logo"
+            width={22}
+            height={30}
+            priority
+            className="relative left-[-10px]"
+          />
+          Sign in with Google
+        </button>
         {/* --- THIS IS THE FIX --- */}
         <div className="text-center">
           <button
@@ -137,6 +180,8 @@ const LoginPage = () => {
           </button>
         </div>
         {/* ----------------------- */}
+
+        
       </div>
     </div>
   );
