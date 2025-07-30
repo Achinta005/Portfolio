@@ -16,7 +16,6 @@ const authRoutes = require('./routes/auth');
 const connectDB=require('./config/db')
 
 //CORS POLICY
-const cors = require('cors');
 
 const corsWithCredentials = cors({
   origin: [
