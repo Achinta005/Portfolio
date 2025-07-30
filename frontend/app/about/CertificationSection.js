@@ -74,7 +74,7 @@ export default function CertificationSection() {
           {certifications.map((cert, index) => (
             <div
               key={index}
-              className="bg-gray-50 dark:bg-gray-900 p-6 rounded-xl hover:bg-white hover:shadow-lg transition-all duration-300 cursor-pointer"
+              className="bg-gray-50 dark:bg-gray-900 p-6 rounded-xl hover:bg-white hover:shadow-lg transition-all duration-300"
             >
               <div className="flex items-center mb-4">
                 <div className="w-10 h-8 flex items-center justify-center bg-blue-100 rounded-lg mr-3 flex-shrink-0">
@@ -87,7 +87,7 @@ export default function CertificationSection() {
                 <div className="flex-1">
                   <button
                     onClick={() => openFile(cert.path)}
-                    className="font-bold text-left text-blue-600 text-sm leading-tight dark:text-gray-400 hover:text-blue-600"
+                    className="font-bold text-left text-blue-600 text-sm leading-tight dark:text-gray-400 hover:text-blue-600  cursor-pointer"
                     type="button"
                   >
                     {cert.name}
