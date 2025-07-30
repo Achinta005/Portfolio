@@ -76,12 +76,13 @@ export default function Header() {
     <header className="bg-white dark:bg-gray-900 shadow-sm sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          <Link href="/" className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <Link href="/" className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex">
             <span className="font-pacifico">Welcome</span>
+            <span className="md:hidden absolute top-4 right-12"><DarkModeToggle/></span>
           </Link>
 
-          <nav className="hidden md:flex space-x-8 items-center">
-            <DarkModeToggle/>
+          <nav className="hidden md:flex space-x-8 items-center ">
+            <span className=" top-5 right-10"><DarkModeToggle/></span>
             <Link
               href="/"
               className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
@@ -151,49 +152,54 @@ export default function Header() {
             className="md:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)} ref={buttonRef}
           >
-            <i className="ri-menu-line text-2xl"></i>
+            <i className="ri-menu-line text-2xl dark:text-amber-50"></i>
           </button>
         </div>
 
         {isMenuOpen && (
           <div className="md:hidden pb-4 "ref={menuRef}>
             <div className="flex flex-col space-y-4">
+              <div className="flex gap-10">
+                
               <Link
                 href="/"
-                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+                className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
               >
                 Home
               </Link>
               <Link
                 href="/about"
-                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+                className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
               >
                 About
               </Link>
               <Link
                 href="/projects"
-                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+                className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
               >
                 Projects
               </Link>
+              </div>
+              <div className="flex gap-10">
               <Link
                 href="/blog"
-                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+                className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
               >
                 Blogs
               </Link>
               <Link
                 href="/contact"
-                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+                className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
               >
                 Contact
               </Link>
-              <Link
+              {/* <Link
                 href="/work-with-me"
-                className="text-gray-700 hover:text-blue-600 transition-colors cursor-pointer"
+                className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
               >
                 Work With Me
-              </Link>
+              </Link> */}
+              </div>
 
               {/* Mobile authentication buttons */}
               <div className="pt-4 border-t border-gray-200">

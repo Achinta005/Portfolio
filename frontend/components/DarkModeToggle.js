@@ -1,6 +1,9 @@
 'use client';  // for Next.js App Router, enables hooks
-
+import "@theme-toggles/react/css/Classic.css";
+import { Classic } from "@theme-toggles/react";
 import { useEffect, useState } from 'react';
+import "@theme-toggles/react/css/Lightbulb.css"
+import { Lightbulb } from "@theme-toggles/react"
 
 export default function DarkModeToggle() {
   const [isDark, setIsDark] = useState(false);
@@ -27,16 +30,29 @@ export default function DarkModeToggle() {
   };
 
   return (
-    <button
-      onClick={toggleDarkMode}
-      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="w-12 h-6 rounded-full p-1 bg-gray-300 dark:bg-gray-700 flex items-center cursor-pointer transition-colors hover:bg-cyan-500"
-    >
-      <span
-        className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
-          isDark ? 'translate-x-6' : 'translate-x-0'
-        }`}
-      />
-    </button>
+   <div>
+  {/* Mobile toggle: visible on < md */}
+  <Classic
+    toggled={isDark}
+    onToggle={toggleDarkMode}
+    duration={750}
+    className="md:hidden w-8 h-8"
+    aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+  />
+
+  {/* Desktop toggle: visible on ≥ md */}
+  <button
+    onClick={toggleDarkMode}
+    aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+    className="hidden md:flex w-12 h-6 rounded-full p-1 bg-gray-300 dark:bg-gray-700 items-center cursor-pointer transition-colors hover:bg-cyan-500"
+  >
+    <span
+      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform ${
+        isDark ? 'translate-x-6' : 'translate-x-0'
+      }`}
+    />
+  </button>
+</div>
+
   );
 }
