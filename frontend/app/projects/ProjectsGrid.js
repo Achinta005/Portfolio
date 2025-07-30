@@ -9,7 +9,10 @@ export default function ProjectsGrid() {
   useEffect(() => {
     const getProjects = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`);
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`,{
+          method:"GET",
+          credentials:"include"
+        });
         const data = await res.json();
         setProjects(data);
       } catch (error) {
