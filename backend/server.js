@@ -24,6 +24,7 @@ const allowedOrigins = [
   'https://portfolio-achinta-hazras-projects.vercel.app',
   'https://portfolio-git-main-achinta-hazras-projects.vercel.app',
   'https://portfolio-sooty-xi-67.vercel.app',
+  'https://portfolio-c1a8fubjn-achinta-hazras-projects.vercel.app'
 ];
 
 const dynamicCors = cors({
