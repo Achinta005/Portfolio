@@ -17,38 +17,27 @@ const connectDB=require('./config/db')
 
 //CORS POLICY
 
-const corsWithCredentials = cors({
-  origin: [
-    'http://localhost:3000',
-    'https://achintahazra.shop',
-    'https://www.achintahazra.shop',
-    'https://portfolio-achinta-hazras-projects.vercel.app',
-    'https://portfolio-git-main-achinta-hazras-projects.vercel.app',
-    'https://portfolio-sooty-xi-67.vercel.app',
-  ],
-  credentials: true,
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://achintahazra.shop',
+  'https://www.achintahazra.shop',
+  'https://portfolio-achinta-hazras-projects.vercel.app',
+  'https://portfolio-git-main-achinta-hazras-projects.vercel.app',
+  'https://portfolio-sooty-xi-67.vercel.app',
+];
+
+const dynamicCors = cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS Not Allowed'));
+    }
+  },
+  credentials: true, // or false if your GET does not use cookies
 });
 
-const corsWithoutCredentials = cors({
-  origin: [
-    'http://localhost:3000',
-    'https://achintahazra.shop',
-    'https://www.achintahazra.shop',
-    'https://portfolio-achinta-hazras-projects.vercel.app',
-    'https://portfolio-git-main-achinta-hazras-projects.vercel.app',
-    'https://portfolio-sooty-xi-67.vercel.app',
-  ],
-  credentials: false,
-});
-
-// Apply different CORS policies based on method
-app.use((req, res, next) => {
-  if (req.method === 'GET') {
-    corsWithoutCredentials(req, res, next);
-  } else {
-    corsWithCredentials(req, res, next);
-  }
-});
+app.use(dynamicCors);
 
 
 //JSON Body Parser
