@@ -28,7 +28,7 @@ app.use(
       'https://portfolio-91hnq85ho-achinta-hazras-projects.vercel.app'
     ],
     methods: ["GET", "POST", "OPTIONS"],
-    // credentials: true,
+    credentials: true,
   })
 );
 app.get('/',(req,res)=>{
