@@ -201,7 +201,6 @@ export default function Header() {
               </Link> */}
               </div>
 
-
               {/* Mobile authentication buttons */}
               <div className="pt-4 border-t border-gray-200">
                 {isLoggedIn ? (
