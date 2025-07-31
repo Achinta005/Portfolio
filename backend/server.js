@@ -31,9 +31,11 @@ app.use(
     credentials: true,
   })
 );
+
 app.get('/',(req,res)=>{
   res.send("hi this is backend !")
 })
+
 //JSON Body Parser
 app.use(bodyparser.json());
 app.use(express.json());
