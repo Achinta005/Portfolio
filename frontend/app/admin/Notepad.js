@@ -129,7 +129,7 @@ const Notepad = ({ onDocumentSaved }) => {
           Your Saved Documents
         </h3>
         {documents.length > 0 ? (
-          <ul className="space-y-3 max-h-96 overflow-y-auto">
+          <ul className="space-y-3 max-h-96 overflow-y-auto custom-scrollbar">
             {documents.map((doc) => (
               <li key={doc._id} className="p-3 bg-gray-50 rounded-md border dark:bg-gray-900">
                 <p className="font-semibold text-purple-700">{doc.title}</p>

@@ -87,7 +87,7 @@ export default function CertificationSection() {
                 <div className="flex-1">
                   <button
                     onClick={() => openFile(cert.path)}
-                    className="font-bold text-left text-blue-600 text-sm leading-tight dark:text-gray-400 hover:text-blue-600  cursor-pointer"
+                    className="font-bold text-left text-blue-600 text-sm leading-tight hover:text-blue-600  cursor-pointer"
                     type="button"
                   >
                     {cert.name}
