@@ -1,11 +1,12 @@
 "use client";
 
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { setAuthToken,getAuthToken } from "../lib/auth"; // Assuming this file exists from your code
+import { setAuthToken, getAuthToken } from "../lib/auth"; // Assuming this file exists from your code
 import Image from "next/image";
-import React, { Suspense } from 'react';
+import React, { Suspense } from "react";
 import OAuth from "./oAuth";
+import Link from "next/link";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -64,6 +65,12 @@ const LoginPage = () => {
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-800">
+      <Link
+        href="/"
+        className="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 absolute top-2 left-2"
+      >
+        HOME
+      </Link>
       <div className="max-w-md w-full space-y-8 p-8">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-2 dark:text-gray-100">
@@ -130,8 +137,8 @@ const LoginPage = () => {
           </button>
         </form>
         <Suspense fallback={<div>Loading dashboard...</div>}>
-      <OAuth />
-    </Suspense>
+          <OAuth />
+        </Suspense>
         {/* --- THIS IS THE FIX --- */}
         <div className="text-center">
           <button
@@ -143,8 +150,6 @@ const LoginPage = () => {
           </button>
         </div>
         {/* ----------------------- */}
-
-        
       </div>
     </div>
   );

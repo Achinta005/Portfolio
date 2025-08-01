@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { isAuthenticated, removeAuthToken } from "../app/lib/auth";
-import DarkModeToggle from "@/components/DarkModeToggle";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,10 +40,12 @@ export default function Header() {
   //close hamberger menu on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (buttonRef.current &&
-      !buttonRef.current.contains(event.target) &&
-      menuRef.current &&
-      !menuRef.current.contains(event.target)) {
+      if (
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target) &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target)
+      ) {
         setIsMenuOpen(false);
       }
     };
@@ -71,45 +72,49 @@ export default function Header() {
       router.push("/login");
     }
   };
-  
+
   return (
-    <header className="bg-white dark:bg-gray-900 shadow-sm sticky top-0 z-50">
+    <header className="bg-transparent dark:bg-gray-800 lg:dark:bg-transparent lg:fixed top-0 z-50 right-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          <Link href="/" className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex">
-            <span className="font-pacifico">Welcome</span>
-            <span className="md:hidden absolute top-4 right-12"><DarkModeToggle/></span>
-          </Link>
+          <Link
+            href="/"
+            className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex"
+          ></Link>
 
           <nav className="hidden md:flex space-x-8 items-center ">
-            <span className=" top-5 right-10"><DarkModeToggle/></span>
             <Link
-              href="/"
-              className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
+              href="#home"
+              className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+               hover:bg-white/20 transition"
             >
               Home
             </Link>
             <Link
-              href="/about"
-              className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
+              href="#about"
+              className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+               hover:bg-white/20 transition"
             >
               About
             </Link>
             <Link
-              href="/projects"
-              className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
+              href="#projects"
+              className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+               hover:bg-white/20 transition"
             >
               Projects
             </Link>
             <Link
-              href="/blog"
-              className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
+              href="#blogs"
+              className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+               hover:bg-white/20 transition"
             >
-            Blogs
+              Blogs
             </Link>
             <Link
-              href="/contact"
-              className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
+              href="#contact"
+              className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+               hover:bg-white/20 transition"
             >
               Contact
             </Link>
@@ -125,13 +130,15 @@ export default function Header() {
               <>
                 <button
                   onClick={handleAdminClick}
-                  className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
+                  className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+               hover:bg-white/20 transition"
                 >
                   Admin Panel
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
+                  className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+               hover:bg-white/20 transition"
                 >
                   Logout
                 </button>
@@ -139,7 +146,8 @@ export default function Header() {
             ) : (
               <button
                 onClick={handleLogin}
-                className="text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
+                className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+               hover:bg-white/20 transition"
               >
                 Login
               </button>
@@ -147,53 +155,53 @@ export default function Header() {
           </nav>
 
           {/* {HAM BUTTONS} */}
-          
+
           <button
             className="md:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)} ref={buttonRef}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            ref={buttonRef}
           >
             <i className="ri-menu-line text-2xl dark:text-amber-50"></i>
           </button>
         </div>
 
         {isMenuOpen && (
-          <div className="md:hidden pb-4 "ref={menuRef}>
+          <div className="md:hidden pb-4 " ref={menuRef}>
             <div className="flex flex-col space-y-4">
               <div className="flex gap-10">
-                
-              <Link
-                href="/"
-                className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
-              >
-                Home
-              </Link>
-              <Link
-                href="/about"
-                className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
-              >
-                About
-              </Link>
-              <Link
-                href="/projects"
-                className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
-              >
-                Projects
-              </Link>
+                <Link
+                  href="#home"
+                  className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
+                >
+                  Home
+                </Link>
+                <Link
+                  href="#about"
+                  className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
+                >
+                  About
+                </Link>
+                <Link
+                  href="#projects"
+                  className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
+                >
+                  Projects
+                </Link>
               </div>
               <div className="flex gap-10">
-              <Link
-                href="/blog"
-                className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
-              >
-                Blogs
-              </Link>
-              <Link
-                href="/contact"
-                className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
-              >
-                Contact
-              </Link>
-              {/* <Link
+                <Link
+                  href="#blogs"
+                  className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
+                >
+                  Blogs
+                </Link>
+                <Link
+                  href="#contact"
+                  className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
+                >
+                  Contact
+                </Link>
+                {/* <Link
                 href="/work-with-me"
                 className="hover:underline text-gray-700 dark:text-gray-100 hover:text-blue-600 transition-colors cursor-pointer"
               >

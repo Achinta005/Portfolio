@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import DarkModeToggle from "./DarkModeToggle";
 
 export default function HeroSection() {
   const handleDownload = async () => {
@@ -28,6 +29,7 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <span className="hidden lg:flex top-25 right-12 z-50 absolute"><DarkModeToggle/></span>
       <div
         className="absolute inset-0 bg-cover md:bg-center bg-no-repeat dark:hidden"
         style={{

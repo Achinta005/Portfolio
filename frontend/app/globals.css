@@ -55,3 +55,14 @@
 }
 
 
+section {
+  scroll-margin-top: 4rem; /* adjust to your header’s height */
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+
