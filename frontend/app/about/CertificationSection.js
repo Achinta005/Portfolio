@@ -61,10 +61,10 @@ export default function CertificationSection() {
     <section className="py-20 ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4 dark:text-gray-100">
+          <h2 className="text-4xl font-bold text-yellow-100 mb-4">
             Certifications
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto dark:text-gray-300">
+          <p className="text-xl text-gray-800 max-w-3xl mx-auto dark:text-gray-300">
             Professional certifications that validate my expertise and
             commitment to continuous learning.
           </p>
@@ -74,7 +74,7 @@ export default function CertificationSection() {
           {certifications.map((cert, index) => (
             <div
               key={index}
-              className="bg-gray-50 dark:bg-gray-900 p-6 rounded-xl hover:bg-white hover:shadow-lg transition-all duration-300"
+              className="bg-white/40 p-6 rounded-xl hover:bg-white/80 hover:shadow-lg transition-all duration-300"
             >
               <div className="flex items-center mb-4">
                 <div className="w-10 h-8 flex items-center justify-center bg-blue-100 rounded-lg mr-3 flex-shrink-0">

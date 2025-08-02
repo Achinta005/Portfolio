@@ -39,7 +39,7 @@ const ContactForm2 = () => {
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-100"
+                className="block text-sm font-medium text-gray-800 mb-2 "
               >
                 Full Name
               </label>
@@ -50,7 +50,7 @@ const ContactForm2 = () => {
                   required: { value: true, message: "This field is required" },
                 })}
                 type="text"
-                className="w-full text-gray-950 px-4 py-3 border dark:text-gray-100 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
               />
               {errors.name && (
                 <p className="text-red-700">{errors.name.message}</p>
@@ -59,7 +59,7 @@ const ContactForm2 = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-100"
+                className="block text-sm font-medium text-gray-800 mb-2 "
               >
                 Email Address
               </label>
@@ -83,7 +83,7 @@ const ContactForm2 = () => {
           <div>
             <label
               htmlFor="subject"
-              className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-100"
+              className="block text-sm font-medium text-gray-800 mb-2 "
             >
               Subject
             </label>
@@ -98,7 +98,7 @@ const ContactForm2 = () => {
           <div>
             <label
               htmlFor="message"
-              className="block text-sm font-medium text-gray-700 mb-2 dark:text-gray-100"
+              className="block text-sm font-medium text-gray-800 mb-2 "
             >
               Message
             </label>

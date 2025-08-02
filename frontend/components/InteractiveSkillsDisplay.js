@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 
 const InteractiveSkillsDisplay = () => {
   const [hoveredCategory, setHoveredCategory] = useState(null);
@@ -171,9 +172,9 @@ const InteractiveSkillsDisplay = () => {
 
     return (
       <div
-        className={`absolute inset-0 bg-white dark:bg-gray-200 rounded-lg border-2 border-orange-400 p-4 transform transition-all duration-500 ease-in-out ${
+        className={`absolute inset-0 bg-white rounded-lg border-2 border-orange-400 p-4 transform transition-all duration-500 ease-in-out ${
           isVisible
-            ? "scale-100 opacity-100"
+            ? "scale-100 opacity-100 animate-jump-in"
             : "scale-95 opacity-0 pointer-events-none"
         }`}
       >
@@ -264,51 +265,67 @@ const InteractiveSkillsDisplay = () => {
   };
 
   return (
-   <div className="relative min-h-screen p-8 overflow-hidden">
-  {/* <div
-    className="absolute inset-0 bg-cover md:bg-center bg-no-repeat hidden dark:block"
-    style={{
-      backgroundImage: `url('https://res.cloudinary.com/dc1fkirb4/image/upload/v1753586859/atanas-teodosiev-EzoGykQmUYI-unsplash_xsnufs.jpg')`,
-    }}
-  >
-    <div className="absolute inset-0 bg-gray-400/10"></div>
-  </div> */}
-
-  <div className="max-w-4xl mx-auto relative z-10">
-    <h1 className="text-4xl font-bold text-center mb-12 text-gray-800 animate-fade-in dark:text-gray-100">
-      Skills Journey
-    </h1>
-
-    {/* rest of your content */}
-    <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-4">
-      {Object.entries(skillsData).map(([category, data], index) => (
-        <div
-          key={category}
-          className="relative group cursor-pointer"
-          onMouseEnter={() => setHoveredCategory(category)}
-          onMouseLeave={() => setHoveredCategory(null)}
+    <div className="relative min-h-screen p-8 overflow-hidden">
+      <div className="max-w-4xl mx-auto relative z-10">
+        <motion.div
+          rel="noopener noreferrer"
+          initial={{ opacity: 0, scale: 0 }}
+      whileInView={{
+        opacity: 1,
+        scale: [1, 1.1, 0.95, 1],  // pops up, squashes, settles
+        y: [0, -40, 10, 0],        // jumps up, overshoots, lands
+      }}
+      transition={{
+        duration: 1.2,
+        ease: "easeOut",
+        times: [0, 0.4, 0.7, 1],
+        repeat: 0,
+      }}
         >
-          {/* Small container with just text */}
-          <div
-            className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg hover:shadow-xl p-4 h-24 flex items-center justify-center transition-all duration-500 ease-in-out transform ${
-              hoveredCategory === category
-                ? "scale-110 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-2xl"
-                : "hover:scale-105 hover:bg-gray-50"
-            }`}
-          >
-            <h3
-              className={`font-bold text-center transition-all duration-300 ${
-                hoveredCategory === category
-                  ? "text-white text-lg"
-                  : "text-gray-800 dark:text-gray-100 text-base"
-              }`}
-            >
-              {data.title}
-            </h3>
-          </div>
+          <h1 className="text-4xl font-bold text-center mb-12 text-yellow-100">
+            Skills Journey
+          </h1>
+          <span></span>
+        </motion.div>
 
-          <div
-            className={`
+        {/* rest of your content */}
+        <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-4">
+          {Object.entries(skillsData).map(([category, data], index) => (
+            <div
+              key={category}
+              className="relative group cursor-pointer"
+              onMouseEnter={() => setHoveredCategory(category)}
+              onMouseLeave={() => setHoveredCategory(null)}
+            >
+              {/* Small container with just text */}
+              <motion.div
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
+                <div
+                  className={`bg-white/30 backdrop-blur-md rounded-lg shadow-lg hover:shadow-xl p-4 h-24 flex items-center justify-center transition-all duration-500 ease-in-out transform ${
+                    hoveredCategory === category
+                      ? "scale-110 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-2xl"
+                      : "hover:scale-105 hover:bg-gray-50"
+                  }`}
+                >
+                  <h3
+                    className={`font-bold text-center transition-all duration-300 justify-center ${
+                      hoveredCategory === category
+                        ? "text-white text-lg"
+                        : "text-purple-800 text-base font-bold"
+                    }`}
+                  >
+                    {data.title}
+                  </h3>
+                </div>
+                <span></span>
+              </motion.div>
+
+              <div
+                className={`
               absolute top-0 transition-all duration-500 ease-in-out
               ${
                 hoveredCategory === category
@@ -321,24 +338,23 @@ const InteractiveSkillsDisplay = () => {
               ${index % 2 === 1 ? "transform -translate-x-full" : ""}
               max-w-[calc(100vw-2rem)]
             `}
-          >
-            <FlowChart
-              flow={data.flow}
-              isVisible={hoveredCategory === category}
-            />
-          </div>
+              >
+                <FlowChart
+                  flow={data.flow}
+                  isVisible={hoveredCategory === category}
+                />
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
 
-    <div className="mt-12 text-center">
-      <p className="text-gray-600 dark:text-gray-300 text-lg animate-bounce">
-        Hover to explore My learning path! ✨
-      </p>
+        <div className="mt-12 text-center">
+          <p className="text-green-800 text-lg animate-bounce font-bold">
+            Hover to explore My learning path! ✨
+          </p>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-
   );
 };
 

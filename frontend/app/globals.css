@@ -36,18 +36,10 @@ body::-webkit-scrollbar {
     visibility: hidden;
   }
   100% {
-    width: 100%;
+    width: 75%;
   }
 }
 @keyframes blink {
-  50% {
-    border-color: transparent;
-  }
-  100% {
-    border-color: white;
-  }
-}
-@keyframes blink-dark {
   50% {
     border-color: transparent;
   }

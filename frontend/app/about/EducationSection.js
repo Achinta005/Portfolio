@@ -18,8 +18,8 @@ export default function EducationSection() {
     <section className="py-20 ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4 dark:text-gray-100">Education</h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto dark:text-gray-300">
+          <h2 className="text-4xl font-bold text-yellow-100 mb-4">Education</h2>
+          <p className="text-xl text-gray-800 max-w-3xl mx-auto dark:text-gray-300">
             My academic foundation in computer science and continuous learning
             journey.
           </p>
@@ -29,7 +29,7 @@ export default function EducationSection() {
           {education.map((edu, index) => (
             <div
               key={index}
-              className="bg-white dark:bg-gray-900 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+              className="bg-white/40 p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
             >
               <div className="flex items-start mb-6">
                 <div className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-lg mr-4 flex-shrink-0 overflow-hidden">
