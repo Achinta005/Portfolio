@@ -41,8 +41,7 @@ export default function HeroSection() {
                 transition={{ duration: 0.5, ease: "easeOut" }}
                 style={{ display: "inline-block" }}
               >
-                Hi, I&apos;m{" "}
-                Achinta Hazra
+                Hi, I&apos;m Achinta Hazra
               </motion.span>
             </h1>
 
@@ -73,33 +72,41 @@ export default function HeroSection() {
                 deliver clean, efficient code.
               </motion.span>
             </p>
-            <div className="flex flex-wrap gap-7">
-              <button onClick={handleDownload}>
-                <motion.div
-                  className="box border-2 border-blue-600 text-blue-600 dark:text-white px-2 py-3 rounded-lg"
-                  whileHover={{ scale: 1.3 }}
-                  transition={{ duration: 0.3 }}
-                  style={{
-                    display: "inline-block",
-                    cursor: "pointer",
-                  }}
+            <div className="flex flex-wrap gap-6">
+              <motion.div
+                rel="noopener noreferrer"
+                className="connect-button"
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
+                <button
+                  onClick={handleDownload}
+                  rel="noopener noreferrer"
+                  className="button-connect"
                 >
                   Download My Resume
-                </motion.div>
-              </button>
-              <Link href="/contact">
-                <motion.div
-                  className="box border-2 border-blue-600 text-blue-600 dark:text-white px-3 py-3 rounded-lg"
-                  whileHover={{ scale: 1.3 }}
-                  transition={{ duration: 0.3 }}
-                  style={{
-                    display: "inline-block",
-                    cursor: "pointer",
-                  }}
+                  <span></span>
+                </button>
+                <span></span>
+              </motion.div>
+              <motion.div
+                rel="noopener noreferrer"
+                className="connect-button"
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
+                <Link
+                  href="#contact"
+                  rel="noopener noreferrer"
+                  className="connect-button"
                 >
-                  Get In Touch
-                </motion.div>
-              </Link>
+                  <button>Get In Touch</button>
+                  <span></span>
+                </Link>
+                <span></span>
+              </motion.div>
             </div>
           </div>
 
@@ -126,9 +133,7 @@ export default function HeroSection() {
               </div>
             </motion.span>
             {/* Decorative circle */}
-            <div
-              className="absolute -inset-1 w-[calc(100%+0.5rem)] h-[calc(100%+0.5rem)] rounded-full border-4 border-dotted border-white bg-gradient-to-tr from-green-950 via-green-500 to-white shadow-2xl hover:brightness-125 hover:shadow-[0_0_40px_rgba(255,255,100,0.6)] transition z-8 animate-spin"
-            ></div>
+            <div className="absolute -inset-1 w-[calc(100%+0.5rem)] h-[calc(100%+0.5rem)] rounded-full border-4 border-dotted border-white bg-gradient-to-tr from-green-950 via-green-500 to-white shadow-2xl hover:brightness-125 hover:shadow-[0_0_40px_rgba(255,255,100,0.6)] transition z-8 animate-spin"></div>
           </div>
         </div>
       </div>
