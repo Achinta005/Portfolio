@@ -8,32 +8,32 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="text-xl font-bold mb-4 font-pacifico">Achinta Hazra</h3>
-            <p className="dark:text-gray-400 text-gray-800">
+            <h3 className="text-xl font-bold mb-4 font-pacifico text-yellow-100">Achinta Hazra</h3>
+            <p className="font-semibold text-gray-800">
               Building amazing digital experiences with passion and creativity.
             </p>
           </div>
           
           <div>
-            <h4 className="text-lg font-bold mb-4 ">Quick Links</h4>
+            <h4 className="text-lg font-bold mb-4 text-yellow-100">Quick Links</h4>
             <div className="space-y-2">
-              <Link href="/" className="hover:text-blue-600 dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer block w-fit">
+              <Link href="/#home" className="hover:text-blue-600 font-semibold dark:hover:text-white transition-colors cursor-pointer block w-fit">
                 Home
               </Link>
-              <Link href="/about" className="hover:text-blue-600 dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer block w-fit">
+              <Link href="/#about" className="hover:text-blue-600 font-semibold dark:hover:text-white transition-colors cursor-pointer block w-fit">
                 About
               </Link>
-              <Link href="/projects" className="hover:text-blue-600 dark:text-gray-400 dark:hover:text-white  transition-colors cursor-pointer block w-fit">
+              <Link href="/#projects" className="hover:text-blue-600 font-semibold dark:hover:text-white  transition-colors cursor-pointer block w-fit">
                 Projects
               </Link>
-              <Link href="/contact" className="hover:text-blue-600 dark:text-gray-400 dark:hover:text-white transition-colors cursor-pointer block w-fit">
+              <Link href="/#contact" className="hover:text-blue-600 font-semibold dark:hover:text-white transition-colors cursor-pointer block w-fit">
                 Contact
               </Link>
             </div>
           </div>
           
           <div>
-            <h4 className="text-lg font-bold mb-4">Connect</h4>
+            <h4 className="text-lg font-bold mb-4 text-yellow-100">Connect</h4>
             <div className="flex space-x-4">
               <a href="https://www.linkedin.com/in/achinta-hazra?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" className="dark:text-gray-400 dark:hover:text-white hover:text-blue-600 transition-colors cursor-pointer">
                 <div className="w-6 h-6 flex items-center justify-center">

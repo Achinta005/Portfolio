@@ -270,17 +270,17 @@ const InteractiveSkillsDisplay = () => {
         <motion.div
           rel="noopener noreferrer"
           initial={{ opacity: 0, scale: 0 }}
-      whileInView={{
-        opacity: 1,
-        scale: [1, 1.1, 0.95, 1],  // pops up, squashes, settles
-        y: [0, -40, 10, 0],        // jumps up, overshoots, lands
-      }}
-      transition={{
-        duration: 1.2,
-        ease: "easeOut",
-        times: [0, 0.4, 0.7, 1],
-        repeat: 0,
-      }}
+          whileInView={{
+            opacity: 1,
+            scale: [1, 1.1, 0.95, 1], // pops up, squashes, settles
+            y: [0, -40, 10, 0], // jumps up, overshoots, lands
+          }}
+          transition={{
+            duration: 1.2,
+            ease: "easeOut",
+            times: [0, 0.4, 0.7, 1],
+            repeat: 0,
+          }}
         >
           <h1 className="text-4xl font-bold text-center mb-12 text-yellow-100">
             Skills Journey
@@ -289,7 +289,7 @@ const InteractiveSkillsDisplay = () => {
         </motion.div>
 
         {/* rest of your content */}
-        <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-2">
           {Object.entries(skillsData).map(([category, data], index) => (
             <div
               key={category}
@@ -305,7 +305,7 @@ const InteractiveSkillsDisplay = () => {
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
                 <div
-                  className={`bg-white/30 backdrop-blur-md rounded-lg shadow-lg hover:shadow-xl p-4 h-24 flex items-center justify-center transition-all duration-500 ease-in-out transform ${
+                  className={`bg-white/30 backdrop-blur-md rounded-lg shadow-lg hover:shadow-xl p-4 h-24 flex items-center justify-center transition-all duration-500 ease-in-out transform lg:w-full w-[35vw] ${
                     hoveredCategory === category
                       ? "scale-110 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-2xl"
                       : "hover:scale-105 hover:bg-gray-50"
@@ -349,7 +349,7 @@ const InteractiveSkillsDisplay = () => {
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-green-800 text-lg animate-bounce font-bold">
+          <p className="text-green-800 lg:text-lg animate-bounce font-bold text-sm">
             Hover to explore My learning path! ✨
           </p>
         </div>

@@ -1,19 +1,12 @@
-"use client";
-import Image from "next/image";
-import { easeOut, motion } from "framer-motion";
-import useIsMobile from "@/components/useIsMobile";
-import AboutHeroMobile from "./AboutHeroMobile";
+import React from 'react'
+import { motion,easeOut } from 'framer-motion'
+import Image from 'next/image'
 
-export default function AboutHero() {
-  const isMobile = useIsMobile(1024);//Defining brek point for mobile
-  return isMobile?(
-    <div>
-      <AboutHeroMobile/>
-    </div>
-  ):(
-    <section className="py-8 ">
-      <div className="lg:max-w-7xl w-[90vw] mx-auto px-4 lg:px-0">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-white/20 rounded-lg backdrop-blur-md">
+const AboutHeroMobile = () => {
+  return (
+    <div><section className="py-8 ">
+      <div className="w-[90vw] mx-auto px-4">
+        <div className="grid grid-cols-1  gap-12 items-center bg-white/20 rounded-lg backdrop-blur-md">
           <div className="p-8">
             <motion.div
               rel="noopener noreferrer"
@@ -169,26 +162,19 @@ export default function AboutHero() {
               </div>
             </div>
           </div>
-          <motion.div
-            
-            initial={{ opacity: 0, x: 150 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: easeOut }}
-            
-          >
-            <div className="flex justify-center p-0 bg-white/30 rounded-lg shadow-lg w-fit transform duration-500 hover:translate-x-5 hover:-translate-y-5 pointer-events-none">
               <Image
                 src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025128/workspace_lyay7t.jpg"
                 width={500}
                 height={500}
                 alt="Workspace"
-                className="shadow-2xl object-cover object-top rounded-lg transform duration-500 hover:-translate-x-10 hover:translate-y-10 pointer-events-auto"
+                className="shadow-2xl rounded-[20vh] "
               />
-            </div>
-            <span></span>
-          </motion.div>
+            
         </div>
       </div>
     </section>
-  );
+    </div>
+  )
 }
+
+export default AboutHeroMobile

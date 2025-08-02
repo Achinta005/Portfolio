@@ -21,7 +21,7 @@ export default function BlogPost({ params }) {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-800">
       <div className="max-w-4xl mx-auto px-6 py-12">
         <Link 
-          href="/blog"
+          href="/#blogs"
           className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
