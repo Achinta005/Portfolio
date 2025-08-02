@@ -30,7 +30,7 @@ export default function ContactInfo() {
   ];
 
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-800">
+    <section className="py-20">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-6 dark:text-gray-100">Let&apos;s Connect</h2>

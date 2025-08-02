@@ -130,14 +130,14 @@ export default function Header() {
               <>
                 <button
                   onClick={handleAdminClick}
-                  className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+                  className=" bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800   font-semibold
                hover:bg-white/20 transition"
                 >
                   Admin Panel
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+                  className=" bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800   font-semibold
                hover:bg-white/20 transition"
                 >
                   Logout
@@ -146,7 +146,7 @@ export default function Header() {
             ) : (
               <button
                 onClick={handleLogin}
-                className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+                className=" bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800   font-semibold
                hover:bg-white/20 transition"
               >
                 Login

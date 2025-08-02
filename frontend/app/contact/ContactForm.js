@@ -28,7 +28,7 @@ const ContactForm2 = () => {
   };
 
   return (
-    <section className="py-20 bg-white dark:bg-gray-800">
+    <section className="py-20">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <form
           id="contact-form"

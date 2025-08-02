@@ -264,15 +264,15 @@ const InteractiveSkillsDisplay = () => {
   };
 
   return (
-   <div className="relative min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8 overflow-hidden">
-  <div
+   <div className="relative min-h-screen p-8 overflow-hidden">
+  {/* <div
     className="absolute inset-0 bg-cover md:bg-center bg-no-repeat hidden dark:block"
     style={{
       backgroundImage: `url('https://res.cloudinary.com/dc1fkirb4/image/upload/v1753586859/atanas-teodosiev-EzoGykQmUYI-unsplash_xsnufs.jpg')`,
     }}
   >
     <div className="absolute inset-0 bg-gray-400/10"></div>
-  </div>
+  </div> */}
 
   <div className="max-w-4xl mx-auto relative z-10">
     <h1 className="text-4xl font-bold text-center mb-12 text-gray-800 animate-fade-in dark:text-gray-100">
