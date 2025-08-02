@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import { motion,easeOut } from 'framer-motion'
 import Link from 'next/link';
