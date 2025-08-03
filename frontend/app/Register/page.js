@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
+import * as THREE from "three"
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -58,20 +60,77 @@ const RegisterPage = () => {
     }
   };
 
+  const vantaRef = useRef(null);
+    const [vantaEffect, setVantaEffect] = useState(null);
+  
+    useEffect(() => {
+      async function loadVanta() {
+        if (!window.VANTA) {
+          await new Promise((resolve) => {
+            const script = document.createElement("script");
+            script.src =
+              "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js";
+            script.onload = resolve;
+            document.body.appendChild(script);
+          });
+        }
+  
+        if (!vantaEffect && window.VANTA && vantaRef.current) {
+          setVantaEffect(
+            window.VANTA.NET({
+              el: vantaRef.current,
+              THREE: THREE,
+              mouseControls: true,
+              touchControls: true,
+              gyroControls: false,
+              minHeight: 200.0,
+              minWidth: 200.0,
+              scale: 1.0,
+              scaleMobile: 1.0,
+              backgroundColor: 0x0,
+              points: 20.0,
+              maxDistance: 10.0,
+              spacing: 20.0,
+            })
+          );
+        }
+      }
+  
+      loadVanta();
+  
+      return () => {
+        if (vantaEffect) vantaEffect.destroy();
+      };
+    }, [vantaEffect]);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-800">
+    <>
+    <div
+        ref={vantaRef}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: -1,
+          overflow: "hidden",
+        }}
+      />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <div className="min-h-screen flex items-center justify-center  dark:bg-gray-800">
       <Link
         href="/"
-        className="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 absolute top-2 left-2"
+        className="mb-4 px-4 py-2 bg-white/20 text-white rounded hover:bg-white/60 absolute top-2 left-2"
       >
         HOME
       </Link>
       <div className="max-w-md w-full space-y-8 p-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2 dark:text-gray-100">
+          <h2 className="text-3xl font-bold text-gray-100 mb-2">
             Create an Account
           </h2>
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-gray-200">
             Get started by creating your admin account
           </p>
         </div>
@@ -174,7 +233,11 @@ const RegisterPage = () => {
         </div>
       </div>
     </div>
+      </div>
+    
+    </>
   );
+  
 };
 
 export default RegisterPage;

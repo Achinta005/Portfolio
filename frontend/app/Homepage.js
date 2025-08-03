@@ -10,27 +10,25 @@ import Contact from "./contact/page";
 
 export default function Homepage() {
   return (
-
-      <div>
-        <Header />
-        <section id="home">
-          <HeroSection />
-          <InteractiveSkillsDisplay />
-        </section>
-        <section id="about">
-          <About />
-        </section>
-        <section id="projects">
-          <Projects />
-        </section>
-        <section id="blogs">
-          <BlogPage />
-        </section>
-        <section id="contact">
-          <Contact />
-        </section>
-        <Footer />
-      </div>
-    
+    <div>
+      <Header />
+      <section id="home">
+        <HeroSection />
+        <InteractiveSkillsDisplay />
+      </section>
+      <section id="about">
+        <About />
+      </section>
+      <section id="projects">
+        <Projects />
+      </section>
+      <section id="blogs">
+        <BlogPage />
+      </section>
+      <section id="contact">
+        <Contact />
+      </section>
+      <Footer />
+    </div>
   );
 }

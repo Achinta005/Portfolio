@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import Homepage from "./Homepage"; 
+import Homepage from "./Homepage";
 
 export default function Page() {
   const vantaRef = useRef(null);
