@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { PanelTopOpen, PanelBottomOpen } from "lucide-react";
 
 // Custom Skill Node Component with GLB 3D models
-const SkillNode = ({ skill, onHover, isHovered }) => {
+const SkillNode = ({ skill, onHover, isHovered, isVisible }) => {
   const stageColors = {
     "1st": "#10b981",
     "2nd": "#ef4444",
@@ -43,29 +43,39 @@ const SkillNode = ({ skill, onHover, isHovered }) => {
         onMouseLeave={() => onHover(null)}
       >
         <div className="text-center p-3 w-80 h-48 flex flex-col items-center justify-center">
-          {/* 3D Model Placeholder */}
+          {/* 3D Model Container - Only render model-viewer when category is expanded */}
           <div
             className="w-32 h-32 rounded-lg flex items-center justify-center"
             style={{ backgroundColor: `${skill.color}20`, color: skill.color }}
           >
-            <model-viewer
-            src={getSkillModelPath(skill.skill)}
-            camera-controls="true"
-            auto-rotate="true"
-            auto-rotate-delay="1000"
-            rotation-per-second="30deg"
-            interaction-prompt="none"
-            style={{ 
-              width: '200px', 
-              height: '200px', 
-              background: 'transparent',
-              '--poster-color': 'transparent'
-            }}
-            exposure="1"
-            shadow-intensity="1"
-            environment-image="neutral"
-            loading="eager"
-          />
+            {isVisible ? (
+              <model-viewer
+                src={getSkillModelPath(skill.skill)}
+                camera-controls="true"
+                auto-rotate="true"
+                auto-rotate-delay="1000"
+                rotation-per-second="30deg"
+                interaction-prompt="none"
+                style={{ 
+                  width: '200px', 
+                  height: '200px', 
+                  background: 'transparent',
+                  '--poster-color': 'transparent'
+                }}
+                exposure="1"
+                shadow-intensity="1"
+                environment-image="neutral"
+                loading="lazy"
+              />
+            ) : (
+              // Fallback placeholder when model is not loaded
+              <div 
+                className="w-full h-full rounded-lg flex items-center justify-center text-4xl font-bold"
+                style={{ color: skill.color }}
+              >
+                {skill.skill.charAt(0)}
+              </div>
+            )}
           </div>
 
           {/* Skill Name */}
@@ -472,6 +482,7 @@ const SimplifiedSkillsGrid = () => {
                         skill={skill}
                         onHover={setHoveredNode}
                         isHovered={hoveredNode === skill.id}
+                        isVisible={expandedCategory === category}
                       />
                     </div>
                   ))}
