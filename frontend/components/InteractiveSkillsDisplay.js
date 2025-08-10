@@ -1,361 +1,570 @@
 "use client";
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { PanelTopOpen, PanelBottomOpen } from "lucide-react";
 
-const InteractiveSkillsDisplay = () => {
-  const [hoveredCategory, setHoveredCategory] = useState(null);
+// Custom Skill Node Component with GLB 3D models
+const SkillNode = ({ skill, onHover, isHovered }) => {
+  const stageColors = {
+    "1st": "#10b981",
+    "2nd": "#ef4444",
+    "3rd": "#3b82f6",
+    "4th": "#f59e0b",
+  };
+
+  // Map skills to their GLB file paths
+  const getSkillModelPath = (skillName) => {
+    const modelPaths = {
+      "HTML":"/html_logo_3d_model.glb",
+      "CSS":"/css_logo_3d_model.glb",
+      "JavaScript":"/backup_looking_glass_display_concept_1.glb",
+      "React":"/react_logo.glb",
+      "Tailwind CSS":"/3.glb",
+      "Node.js":"/0.glb",
+      "Express.js":"/the_rust_lang_on_mini_cpu.glb",
+      "Python":"/python.glb",
+      "MySQL":"/backup_looking_glass_display_concept_1.glb",
+      "MongoDB": "/backup_looking_glass_display_concept_1.glb",
+      "Next.js":"/the_rust_lang_on_mini_cpu.glb",
+      "JWT":"/the_rust_lang_on_mini_cpu.glb",
+      "OAuth":"/backup_looking_glass_display_concept_1.glb",
+      "C":"/c.glb",
+      'Java':"/java.glb",
+      "Git":"/3d_github_logo.glb",
+    };
+    return modelPaths[skillName];
+  };
+
+  return (
+    <div className="relative">
+      {/* Main Node */}
+      <div
+        className="w-full h-full rounded-xl shadow-lg cursor-pointer flex items-center justify-center relative overflow-visible transition-all duration-300 hover:scale-105 hover:-translate-y-1 top-10 bg-gradient-to-br from-slate-100 to-slate-200"
+        onMouseEnter={() => onHover(skill.id)}
+        onMouseLeave={() => onHover(null)}
+      >
+        <div className="text-center p-3 w-80 h-48 flex flex-col items-center justify-center">
+          {/* 3D Model Placeholder */}
+          <div
+            className="w-32 h-32 rounded-lg flex items-center justify-center"
+            style={{ backgroundColor: `${skill.color}20`, color: skill.color }}
+          >
+            <model-viewer
+            src={getSkillModelPath(skill.skill)}
+            camera-controls="true"
+            auto-rotate="true"
+            auto-rotate-delay="1000"
+            rotation-per-second="30deg"
+            interaction-prompt="none"
+            style={{ 
+              width: '200px', 
+              height: '200px', 
+              background: 'transparent',
+              '--poster-color': 'transparent'
+            }}
+            exposure="1"
+            shadow-intensity="1"
+            environment-image="neutral"
+            loading="eager"
+          />
+          </div>
+
+          {/* Skill Name */}
+          <div
+            className="mt-2 text-sm font-bold text-center"
+            style={{ color: skill.color }}
+          >
+            {skill.skill}
+          </div>
+        </div>
+
+        {/* Glow effect when hovered */}
+        {isHovered && (
+          <div
+            className="absolute inset-0 rounded-xl animate-pulse"
+            style={{
+              background: `radial-gradient(circle, ${skill.color}20 0%, transparent 70%)`,
+              filter: "blur(8px)",
+            }}
+          />
+        )}
+      </div>
+
+      {/* Animated Detail Card */}
+      {isHovered && (
+        <div
+          className="absolute bg-white rounded-xl shadow-2xl border-2 p-6 min-w-80 max-w-96 z-50 transition-all duration-300"
+          style={{
+            borderColor: skill.color,
+            top: "200px",
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+        >
+          {/* Arrow pointer */}
+          <div
+            className="absolute -top-3 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-white rotate-45 border-l-2 border-t-2"
+            style={{
+              borderColor: skill.color,
+            }}
+          />
+          <div className="text-center">
+            <h3
+              className="font-bold text-xl mb-3"
+              style={{ color: skill.color }}
+            >
+              {skill.skill}
+            </h3>
+
+            <p className="text-gray-700 text-sm mb-4 leading-relaxed">
+              {skill.description}
+            </p>
+
+            {/* Animated Progress Bar */}
+            <div className="mb-4">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-semibold text-gray-700">
+                  Proficiency Level
+                </span>
+                <span
+                  className="text-sm font-bold"
+                  style={{ color: skill.color }}
+                >
+                  {skill.proficiency}%
+                </span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                <div
+                  className="h-3 rounded-full transition-all duration-1000 ease-out"
+                  style={{
+                    background: `linear-gradient(90deg, ${skill.color} 0%, ${skill.color}80 100%)`,
+                    width: `${skill.proficiency}%`,
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Stage Badge */}
+            <div
+              className="inline-flex items-center px-4 py-2 rounded-full text-white text-sm font-bold shadow-lg"
+              style={{ backgroundColor: stageColors[skill.stage] }}
+            >
+              <span className="mr-2">🎯</span>
+              {skill.stage} Stage in {skill.category}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const SimplifiedSkillsGrid = () => {
+  const [hoveredNode, setHoveredNode] = useState(null);
+  const [expandedCategory, setExpandedCategory] = useState(null);
+
+  const handleBackgroundClick = (e) => {
+    // Close if clicking on background or any element that's not a category title
+    if (!e.target.closest(".category-title")) {
+      setExpandedCategory(null);
+    }
+  };
 
   const skillsData = {
     frontend: {
       title: "Frontend",
-      flow: [
+      description:
+        "User interface technologies and frameworks for creating engaging web experiences.",
+      experienceLevel: 90,
+      skills: [
         {
+          id: "frontend-0",
           stage: "1st",
           skill: "HTML",
-          description: "Structure & Markup",
+          description:
+            "Structure & Markup - The foundation of web development, creating semantic and accessible content structures.",
           color: "#e34c26",
           proficiency: 100,
+          category: "Frontend",
         },
         {
+          id: "frontend-1",
           stage: "2nd",
           skill: "CSS",
-          description: "Styling & Design",
+          description:
+            "Styling & Design - Advanced styling techniques, animations, and responsive design principles.",
           color: "#1572b6",
           proficiency: 100,
+          category: "Frontend",
         },
         {
+          id: "frontend-2",
           stage: "3rd",
           skill: "JavaScript",
-          description: "Interactivity",
+          description:
+            "Interactivity - Modern ES6+ features, DOM manipulation, and asynchronous programming.",
           color: "#f7df1e",
           proficiency: 95,
+          category: "Frontend",
         },
         {
+          id: "frontend-3",
           stage: "4th",
           skill: "React",
-          description: "Component Framework",
+          description:
+            "Component Framework - Building dynamic user interfaces with hooks, state management, and component architecture.",
           color: "#61dafb",
           proficiency: 90,
+          category: "Frontend",
         },
       ],
     },
     backend: {
       title: "Backend",
-      flow: [
+      description:
+        "Server-side technologies for building robust and scalable applications.",
+      experienceLevel: 82,
+      skills: [
         {
+          id: "backend-0",
           stage: "1st",
           skill: "Node.js",
-          description: "Runtime Environment",
+          description:
+            "Runtime Environment - Server-side JavaScript runtime for building scalable network applications.",
           color: "#339933",
           proficiency: 85,
+          category: "Backend",
         },
         {
+          id: "backend-1",
           stage: "2nd",
-          skill: "Express JS",
-          description: "Web Framework",
+          skill: "Express.js",
+          description:
+            "Web Framework - Minimal and flexible Node.js web application framework with robust features.",
           color: "#000000",
           proficiency: 85,
+          category: "Backend",
         },
         {
+          id: "backend-2",
           stage: "3rd",
           skill: "Python",
-          description: "Server Language",
+          description:
+            "Server Language - Versatile programming language for web development, automation, and data processing.",
           color: "#3776ab",
           proficiency: 80,
+          category: "Backend",
         },
       ],
     },
     database: {
       title: "Database",
-      flow: [
+      description:
+        "Data storage and management solutions for modern applications.",
+      experienceLevel: 95,
+      skills: [
         {
+          id: "database-0",
           stage: "1st",
-          skill: "My SQL",
-          description: "Relational Database",
-          color: "#47a248",
+          skill: "MySQL",
+          description:
+            "Relational Database - Structured query language for managing relational database systems.",
+          color: "#00618a",
           proficiency: 100,
+          category: "Database",
         },
         {
+          id: "database-1",
           stage: "2nd",
           skill: "MongoDB",
-          description: "NoSQL Database",
+          description:
+            "NoSQL Database - Document-oriented database for flexible, scalable data storage solutions.",
           color: "#47a248",
           proficiency: 100,
+          category: "Database",
         },
       ],
     },
     framework: {
       title: "Framework",
-      flow: [
+      description: "Modern frameworks and libraries for efficient development.",
+      experienceLevel: 70,
+      skills: [
         {
+          id: "framework-0",
           stage: "1st",
           skill: "React",
-          description: "Component Based User Interface Library",
-          color: "#47a248",
+          description:
+            "Component Based UI Library - Building reusable components and managing application state effectively.",
+          color: "#61dafb",
           proficiency: 70,
+          category: "Framework",
         },
         {
+          id: "framework-1",
           stage: "2nd",
           skill: "Next.js",
-          description: "Full Stack React Production Framework",
-          color: "#47a248",
+          description:
+            "Full Stack Framework - Production-ready React framework with SSR, routing, and deployment optimization.",
+          color: "#000000",
           proficiency: 70,
+          category: "Framework",
+        },
+        {
+          id: "framework-2",
+          stage: "3rd",
+          skill: "Tailwind CSS",
+          description: "Utility-first CSS framework for rapid UI development.",
+          color: "#06b6d4",
+          proficiency: 70,
+          category: "Framework",
         },
       ],
     },
     authentication: {
       title: "Authentication",
-      flow: [
+      description: "Security protocols and authentication mechanisms.",
+      experienceLevel: 70,
+      skills: [
         {
+          id: "auth-0",
           stage: "1st",
           skill: "JWT",
-          description: "JSON Web Token Authentication Standard",
-          color: "#47a248",
+          description:
+            "Token Authentication - Secure method for transmitting information between parties as JSON objects.",
+          color: "#000000",
           proficiency: 70,
+          category: "Authentication",
         },
         {
+          id: "auth-1",
           stage: "2nd",
           skill: "OAuth",
-          description: "Open Authorization Protocol For Security",
-          color: "#47a248",
+          description:
+            "Authorization Protocol - Industry-standard protocol for authorization and secure API access.",
+          color: "#4285f4",
           proficiency: 70,
+          category: "Authentication",
         },
       ],
     },
     programming: {
       title: "Programming",
-      flow: [
+      description:
+        "Core programming languages and computer science fundamentals.",
+      experienceLevel: 85,
+      skills: [
         {
+          id: "prog-0",
           stage: "1st",
           skill: "C",
-          description: "Low Level System Programming Language",
-          color: "#47a248",
+          description:
+            "System Programming - Low-level programming language for system software and embedded applications.",
+          color: "#a8b9cc",
           proficiency: 100,
+          category: "Programming",
         },
         {
+          id: "prog-1",
           stage: "2nd",
           skill: "Java",
-          description: "Object Oriented Enterprise Programming Language",
-          color: "#47a248",
+          description:
+            "Enterprise Programming - Object-oriented language for large-scale enterprise applications.",
+          color: "#ed8b00",
           proficiency: 70,
+          category: "Programming",
         },
         {
+          id: "prog-2",
           stage: "3rd",
           skill: "Python",
-          description: "Versatile High Level Programming Language",
-          color: "#1572b6",
+          description:
+            "High-Level Programming - Versatile language for web development, data science, and automation.",
+          color: "#3776ab",
           proficiency: 80,
+          category: "Programming",
         },
       ],
     },
     versioncontrol: {
       title: "Version Control",
-      flow: [
+      description: "Code versioning and collaboration tools.",
+      experienceLevel: 90,
+      skills: [
         {
+          id: "vc-0",
           stage: "1st",
           skill: "Git",
-          description: "Distributed Version Control System Tool",
+          description:
+            "Distributed Version Control - Essential tool for tracking changes and collaborating on software projects.",
           color: "#f05032",
           proficiency: 90,
+          category: "Version Control",
         },
       ],
     },
   };
 
-  const FlowChart = ({ flow, isVisible }) => {
-    const stageColors = {
-      "1st": "#10b981",
-      "2nd": "#ef4444",
-      "3rd": "#3b82f6",
-      "4th": "#f59e0b",
-    };
-
-    return (
-      <div
-        className={`absolute inset-0 bg-white rounded-lg border-2 border-orange-400 p-4 transform transition-all duration-500 ease-in-out ${
-          isVisible
-            ? "scale-100 opacity-100 animate-jump-in"
-            : "scale-95 opacity-0 pointer-events-none"
-        }`}
-      >
-        <div className="h-full flex flex-col justify-center space-y-3">
-          {flow.map((item, index) => (
-            <div key={index} className="relative">
-              <div className="flex items-center">
-                {/* Proficiency circle */}
-                <div
-                  className="relative w-12 h-12 flex-shrink-0 transform transition-all duration-700 ease-out"
-                  style={{ transitionDelay: `${index * 100}ms` }}
-                >
-                  {/* Background circle */}
-                  <svg
-                    className="w-12 h-12 transform -rotate-90"
-                    viewBox="0 0 36 36"
-                  >
-                    <path
-                      className="text-gray-200"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      fill="transparent"
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                    {/* Progress circle */}
-                    <path
-                      className="transition-all duration-1000 ease-out"
-                      stroke={stageColors[item.stage]}
-                      strokeWidth="3"
-                      fill="transparent"
-                      strokeDasharray={`${item.proficiency}, 100`}
-                      strokeLinecap="round"
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      style={{
-                        transitionDelay: `${index * 200}ms`,
-                        strokeDasharray: `${item.proficiency} 100`,
-                      }}
-                    />
-                  </svg>
-                  {/* Percentage text */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-xs font-bold text-gray-700">
-                      {item.proficiency}%
-                    </span>
-                  </div>
-                </div>
-
-                {/* Arrow path */}
-                <div className="flex-1 ml-2">
-                  <div
-                    className="bg-gradient-to-r from-orange-400 to-orange-500 text-white px-3 py-2 rounded-lg relative shadow-sm transform transition-all duration-700 ease-out hover:scale-105"
-                    style={{ transitionDelay: `${index * 150}ms` }}
-                  >
-                    {/* Arrow pointer */}
-                    <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-1.5 w-0 h-0 border-t-2 border-b-2 border-r-4 border-transparent border-r-orange-400"></div>
-
-                    <div className="font-semibold text-sm">{item.skill}</div>
-                    <div className="text-xs opacity-90">{item.description}</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Connecting curve */}
-              {index < flow.length - 1 && (
-                <div className="flex justify-center my-1">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    className="transform transition-all duration-700 ease-out"
-                    style={{ transitionDelay: `${index * 200}ms` }}
-                  >
-                    <path
-                      d="M 10 2 Q 15 10 10 18"
-                      stroke="#fb923c"
-                      strokeWidth="2"
-                      fill="none"
-                      className="animate-pulse"
-                    />
-                  </svg>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <div className="relative min-h-screen p-8 overflow-hidden">
-      <div className="max-w-4xl mx-auto relative z-10">
-        <motion.div
-          rel="noopener noreferrer"
-          initial={{ opacity: 0, scale: 0 }}
-          whileInView={{
-            opacity: 1,
-            scale: [1, 1.1, 0.95, 1], // pops up, squashes, settles
-            y: [0, -40, 10, 0], // jumps up, overshoots, lands
-          }}
-          transition={{
-            duration: 1.2,
-            ease: "easeOut",
-            times: [0, 0.4, 0.7, 1],
-            repeat: 0,
-          }}
-        >
-          <h1 className="text-4xl font-bold text-center mb-12 text-yellow-100">
-            Skills Journey
-          </h1>
-          <span></span>
-        </motion.div>
+    <div className="min-h-screen p-4 bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 rounded-4xl">
+      {/* Header */}
+      <div className="text-center py-8">
+        <h1 className="text-4xl font-extrabold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-transparent mb-4">
+          My Skills Journey
+        </h1>
+        <p className="text-white text-lg">
+          Click on categories and hover over skills to explore! ✨
+        </p>
+      </div>
 
-        {/* rest of your content */}
-        <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-2">
-          {Object.entries(skillsData).map(([category, data], index) => (
-            <div
-              key={category}
-              className="relative group cursor-pointer"
-              onMouseEnter={() => setHoveredCategory(category)}
-              onMouseLeave={() => setHoveredCategory(null)}
-            >
-              {/* Small container with just text */}
-              <motion.div
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, scale: 0 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
+      {/* Skills Grid */}
+      <div className="max-w-7xl mx-auto">
+        <div onClick={handleBackgroundClick} className="space-y-8">
+          {Object.entries(skillsData).map(([category, data]) => (
+            <div key={category} className="flex flex-col items-center w-full">
+              {/* Category Title */}
+              <h2
+                className="category-title text-2xl font-bold text-white text-center mb-4 px-4 py-2 bg-white/20 backdrop-blur-lg rounded-lg shadow-sm cursor-pointer transition-all duration-300 hover:bg-white/30 w-[20vw] flex justify-center"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setExpandedCategory(
+                    expandedCategory === category ? null : category
+                  );
+                }}
               >
-                <div
-                  className={`bg-white/30 backdrop-blur-md rounded-lg shadow-lg hover:shadow-xl p-4 h-24 flex items-center justify-center transition-all duration-500 ease-in-out transform lg:w-full w-[35vw] ${
-                    hoveredCategory === category
-                      ? "scale-110 bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-2xl"
-                      : "hover:scale-105 hover:bg-gray-50"
-                  }`}
+                {data.title}
+                <span
+                  className={`transition-transform duration-300 relative text-sm top-[6px] right-[-10px]`}
                 >
-                  <h3
-                    className={`font-bold text-center transition-all duration-300 justify-center ${
-                      hoveredCategory === category
-                        ? "text-white text-lg"
-                        : "text-purple-800 text-base font-bold"
-                    }`}
-                  >
-                    {data.title}
-                  </h3>
-                </div>
-                <span></span>
-              </motion.div>
+                  {expandedCategory === category ? (
+                    <PanelBottomOpen />
+                  ) : (
+                    <PanelTopOpen />
+                  )}
+                </span>
+              </h2>
 
+              {/* Skills and Info Card Container */}
               <div
-                className={`
-              absolute top-0 transition-all duration-500 ease-in-out
-              ${
-                hoveredCategory === category
-                  ? "h-auto min-h-96 z-30"
-                  : "h-24 z-10"
-              }
-              md:left-1/2 md:transform md:-translate-x-1/2 md:w-80 md:-translate-y-4
-              ${index % 2 === 0 ? "left-0" : "right-0"} 
-              w-80
-              ${index % 2 === 1 ? "transform -translate-x-full" : ""}
-              max-w-[calc(100vw-2rem)]
-            `}
+                className={`flex flex-col lg:flex-row items-start gap-6 transition-all duration-500 ease-in-out  w-full ${
+                  expandedCategory === category
+                    ? "max-h-screen opacity-100"
+                    : "max-h-0 opacity-0"
+                }`}
               >
-                <FlowChart
-                  flow={data.flow}
-                  isVisible={hoveredCategory === category}
-                />
+                {/* Skills Container */}
+                <div className="grid grid-cols-4 gap-8 justify-center z-10">
+                  {data.skills.map((skill, index) => (
+                    <div
+                      key={skill.id}
+                      className={`transition-all duration-300 ${
+                        expandedCategory === category
+                          ? "translate-y-0 opacity-100 scale-100"
+                          : "translate-y-4 opacity-0 scale-95"
+                      }`}
+                      style={{
+                        transitionDelay:
+                          expandedCategory === category
+                            ? `${index * 100}ms`
+                            : "0ms",
+                      }}
+                    >
+                      <SkillNode
+                        skill={skill}
+                        onHover={setHoveredNode}
+                        isHovered={hoveredNode === skill.id}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Info Card - Right Side */}
+                <div
+                  className={`flex-shrink-0 w-full lg:w-80 bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-xl transition-all duration-500 ${
+                    expandedCategory === category
+                      ? "translate-x-0 opacity-100 scale-100"
+                      : "translate-x-8 opacity-0 scale-95"
+                  }`}
+                  style={{
+                    transitionDelay:
+                      expandedCategory === category ? "300ms" : "0ms",
+                  }}
+                >
+                  <h3 className="text-lg font-bold text-white mb-4">
+                    {data.title} Overview
+                  </h3>
+
+                  <div className="space-y-3">
+                    <p className="text-white/80 text-sm">{data.description}</p>
+
+                    <div className="border-t border-white/20 pt-3">
+                      <h4 className="text-white font-semibold mb-2">
+                        Skills Count
+                      </h4>
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center">
+                          <span className="text-blue-400 font-bold text-sm">
+                            {data.skills.length}
+                          </span>
+                        </div>
+                        <span className="text-white/70 text-sm">
+                          {data.skills.length === 1
+                            ? "Technology"
+                            : "Technologies"}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Currently Hovered Skill Details */}
+                    {hoveredNode &&
+                      data.skills.find((skill) => skill.id === hoveredNode) && (
+                        <div className="border-t border-white/20 pt-3">
+                          <h4 className="text-white font-semibold mb-2">
+                            Currently Viewing
+                          </h4>
+                          <div className="bg-white/5 rounded-lg p-3">
+                            <p className="text-blue-300 font-medium">
+                              {
+                                data.skills.find(
+                                  (skill) => skill.id === hoveredNode
+                                )?.skill
+                              }
+                            </p>
+                            <p className="text-white/60 text-xs mt-1">
+                              {
+                                data.skills.find(
+                                  (skill) => skill.id === hoveredNode
+                                )?.description
+                              }
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                    {/* Experience Level */}
+                    <div className="border-t border-white/20 pt-3">
+                      <h4 className="text-white font-semibold mb-2">
+                        Experience Level
+                      </h4>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 bg-white/10 rounded-full h-2">
+                          <div
+                            className="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full transition-all duration-300"
+                            style={{ width: `${data.experienceLevel}%` }}
+                          />
+                        </div>
+                        <span className="text-white/70 text-xs">
+                          {data.experienceLevel}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
-        </div>
-
-        <div className="mt-12 text-center">
-          <p className="text-green-800 lg:text-lg animate-bounce font-bold text-sm">
-            Hover to explore My learning path! ✨
-          </p>
         </div>
       </div>
     </div>
   );
 };
-
-export default InteractiveSkillsDisplay;
+export default SimplifiedSkillsGrid;

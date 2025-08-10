@@ -74,6 +74,7 @@ export default function RootLayout({ children }) {
             }),
           }}
         />
+        <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
