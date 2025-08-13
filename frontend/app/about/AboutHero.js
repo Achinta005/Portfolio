@@ -154,7 +154,7 @@ export default function AboutHero() {
                   whileInView={{ opacity: 1, scale: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: easeOut }}
                 >
-                  <h3 className="text-2xl font-bold text-blue-600 mb-2">10+</h3>
+                  <h3 className="text-2xl font-bold text-blue-600 mb-2">20+</h3>
                   <span></span>
                 </motion.div>
                 <motion.div

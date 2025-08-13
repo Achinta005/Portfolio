@@ -31,11 +31,11 @@ export default function HeroSection() {
     }
   };
 
-  return isMobile?(
+  return isMobile ? (
     <div>
-      <HeroSectionMobile/>
+      <HeroSectionMobile />
     </div>
-  ): (
+  ) : (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -59,7 +59,7 @@ export default function HeroSection() {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 style={{ display: "inline-block" }}
               >
-                Full Stack Developer
+                Developer & Learner
               </motion.span>
             </h2>
             <p className=" text-gray-200 mb-8 max-w-xl lg:text-gray-200 lg:text-lg">
@@ -69,7 +69,7 @@ export default function HeroSection() {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 style={{ display: "inline-block" }}
               >
-                I&apos;m a Full Stack Web Developer with a passion for building
+                I&apos;m Developer with a passion for building
                 dynamic, user-friendly, and scalable web applications. I
                 specialize in creating end-to-end solutions using modern
                 technologies across both frontend and backend. From crafting
@@ -117,30 +117,20 @@ export default function HeroSection() {
             </div>
           </div>
 
-          <div className="relative w-80 h-80 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 lg:left-[15vw]">
-            <motion.span
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false }} // triggers animation every time in view
-              transition={{ duration: 1, ease: "easeOut" }}
-              className="relative z-10"
-            >
-              <div className=" w-full h-full">
-                <Image
-                  src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025128/profile_lz4yry.jpg"
-                  alt="A professional headshot"
-                  className="w-full h-full rounded-full object-cover object-center shadow-2xl"
-                  width={320}
-                  height={320}
-                  priority
-                />
-                <div className=" absolute -bottom-1 -right-1 bg-blue-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center text-2xl">
-                  <i className="ri-code-s-slash-line" />
-                </div>
+          <div className=" w-80 h-80 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 lg:left-[15vw] relative ">
+            <div className=" w-full h-full">
+              <Image
+                src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025128/profile_lz4yry.jpg"
+                alt="A professional headshot"
+                className="w-full h-full rounded-full object-cover object-center shadow-2xl"
+                width={320}
+                height={320}
+                priority
+              />
+              <div className=" absolute -bottom-0 -right-0 bg-blue-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center text-2xl">
+                <i className="ri-code-s-slash-line" />
               </div>
-            </motion.span>
-            {/* Decorative circle */}
-            <div className="absolute -inset-1 w-[calc(100%+0.5rem)] h-[calc(100%+0.5rem)] rounded-full border-4 border-dotted border-white bg-gradient-to-tr from-green-950 via-green-500 to-white shadow-2xl hover:brightness-125 hover:shadow-[0_0_40px_rgba(255,255,100,0.6)] transition z-8 animate-spin"></div>
+            </div>
           </div>
         </div>
       </div>
