@@ -40,7 +40,7 @@ export default function HeroSection() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="text-left bg-white/5 backdrop-blur-md p-8 shadow-lg lg:w-[55vw] w-[75vw] rounded-lg lg:rounded-r-full">
-            <h1 className="lg:text-[3.4rem] text-3xl mt-4 lg:mt-0 font-bold text-yellow-100 mb-6 w-2xl overflow-hidden whitespace-nowrap border-r-4 border-white pr-5 animate-typing dark:text-gray-100">
+            <h1 className="lg:text-[3.4rem] text-3xl mt-4 lg:mt-0 font-bold text-green-600 mb-6 w-2xl overflow-hidden whitespace-nowrap border-r-4 border-white pr-5 animate-typing dark:text-gray-100">
               <motion.span
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}

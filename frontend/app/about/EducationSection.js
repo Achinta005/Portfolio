@@ -25,7 +25,7 @@ export default function EducationSection() {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: easeOut }}
           >
-            <h2 className="text-4xl font-bold text-yellow-100 mb-4">
+            <h2 className="text-4xl font-bold text-gray-100 mb-4">
               Education
             </h2>
             <span></span>
@@ -36,7 +36,7 @@ export default function EducationSection() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: easeOut }}
           >
-            <p className="text-xl text-gray-800 max-w-3xl mx-auto dark:text-gray-300">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto ">
               My academic foundation in computer science and continuous learning
               journey.
             </p>
@@ -77,7 +77,7 @@ export default function EducationSection() {
                       <p className="text-gray-700 dark:text-gray-400 font-semibold mb-1">
                         {edu.college}
                       </p>
-                      <p className="text-gray-500 text-sm dark:text-gray-400">
+                      <p className="text-gray-800 text-sm ">
                         {edu.year}
                       </p>
                     </div>

@@ -79,7 +79,7 @@ export default function CertificationSection() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: easeOut }}
           >
-            <p className="text-xl text-gray-800 max-w-3xl mx-auto dark:text-gray-300">
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto dark:text-gray-300">
               Professional certifications that validate my expertise and
               commitment to continuous learning.
             </p>
@@ -96,7 +96,7 @@ export default function CertificationSection() {
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: easeOut }}
             >
-              <div className="bg-white/40 p-6 rounded-xl hover:bg-white/80 hover:shadow-lg transition-all duration-300">
+              <div className="bg-white/60 p-6 rounded-xl hover:bg-white/80 hover:shadow-lg transition-all duration-300">
                 <div className="flex items-center mb-4">
                   <div className="w-10 h-8 flex items-center justify-center bg-blue-100 rounded-lg mr-3 flex-shrink-0">
                     <img

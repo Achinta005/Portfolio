@@ -13,7 +13,7 @@ export default function Page() {
       if (!window.VANTA) {
         await new Promise((resolve) => {
           const script = document.createElement("script");
-          script.src = "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.clouds.min.js";
+          script.src = "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js";
           script.onload = resolve;
           document.body.appendChild(script);
         });
@@ -21,16 +21,22 @@ export default function Page() {
 
       if (!vantaEffect && window.VANTA && vantaRef.current) {
         setVantaEffect(
-          window.VANTA.CLOUDS({
-            el: vantaRef.current,
-            THREE: THREE,
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.0,
-            minWidth: 200.0,
-          })
-        );
+                  window.VANTA.NET({
+                    el: vantaRef.current,
+                    THREE: THREE,
+                    mouseControls: true,
+                    touchControls: true,
+                    gyroControls: false,
+                    minHeight: 200.0,
+                    minWidth: 200.0,
+                    scale: 1.0,
+                    scaleMobile: 1.0,
+                    backgroundColor: 0x0,
+                    points: 20.0,
+                    maxDistance: 10.0,
+                    spacing: 20.0,
+                  })
+                );
       }
     }
 

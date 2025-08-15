@@ -13,7 +13,7 @@ export default function AboutHero() {
   ):(
     <section className="py-8 ">
       <div className="lg:max-w-7xl w-[90vw] mx-auto px-4 lg:px-0">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-white/20 rounded-lg backdrop-blur-md">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-white/10 rounded-lg backdrop-blur-md">
           <div className="p-8">
             <motion.div
               rel="noopener noreferrer"
@@ -33,7 +33,7 @@ export default function AboutHero() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, ease: easeOut }}
             >
-              <p className="text-xl text-gray-700 lg:font-semiboldbold mb-8">
+              <p className="text-xl text-gray-200 lg:font-semiboldbold mb-8">
                 Hi, I&apos;m a passionate Full Stack Web Developer with a strong
                 foundation in building responsive, scalable, and user-centric
                 web applications. I specialize in crafting seamless experiences
@@ -49,7 +49,7 @@ export default function AboutHero() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, ease: easeOut }}
             >
-              <p className="text-lg lg:font-semiboldbold text-gray-700 mb-6 ">
+              <p className="text-lg lg:font-semiboldbold text-gray-200 mb-6 ">
                 I thrive on transforming complex problems into elegant,
                 efficient solutions. With hands-on experience in frontend tools
                 like React and Tailwind CSS, and robust backend integrations
@@ -65,7 +65,7 @@ export default function AboutHero() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.7, ease: easeOut }}
             >
-              <p className="text-lg lg:font-semiboldbold text-gray-700 mb-8 ">
+              <p className="text-lg lg:font-semiboldbold text-gray-200 mb-8 ">
                 From building intuitive UI components to deploying secure
                 servers, I enjoy taking ideas from concept to production. Clean
                 code, performance optimization, and continuous learning are at
@@ -79,7 +79,7 @@ export default function AboutHero() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: easeOut }}
             >
-              <p className="text-lg lg:font-semiboldbold text-gray-700 mb-8 ">
+              <p className="text-lg lg:font-semiboldbold text-gray-200 mb-8 ">
                 Let&apos;s create impactful digital experiences—one line of code
                 at a time.
               </p>
@@ -94,7 +94,7 @@ export default function AboutHero() {
                   whileInView={{ opacity: 1, scale: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: easeOut }}
                 >
-                  <h3 className="text-2xl font-bold text-blue-600 mb-2">10+</h3>
+                  <h3 className="text-2xl font-bold text-green-600 mb-2">10+</h3>
                   <span></span>
                 </motion.div>
                 <motion.div
@@ -103,7 +103,7 @@ export default function AboutHero() {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: easeOut }}
                 >
-                  <p className="text-gray-700 ">Projects Completed</p>
+                  <p className="text-gray-100 ">Projects Completed</p>
                   <span></span>
                 </motion.div>
               </div>
@@ -114,7 +114,7 @@ export default function AboutHero() {
                   whileInView={{ opacity: 1, scale: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: easeOut }}
                 >
-                  <h3 className="text-2xl font-bold text-blue-600 mb-2">1+</h3>
+                  <h3 className="text-2xl font-bold text-green-600 mb-2">1+</h3>
                   <span></span>
                 </motion.div>
                 <motion.div
@@ -123,7 +123,7 @@ export default function AboutHero() {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: easeOut }}
                 >
-                  <p className="text-gray-700 ">Years of Practical Learning</p>
+                  <p className="text-gray-100 ">Years of Practical Learning</p>
                   <span></span>
                 </motion.div>
               </div>
@@ -134,7 +134,7 @@ export default function AboutHero() {
                   whileInView={{ opacity: 1, scale: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: easeOut }}
                 >
-                  <h3 className="text-2xl font-bold text-blue-600 mb-2">3+</h3>
+                  <h3 className="text-2xl font-bold text-green-600 mb-2">3+</h3>
                   <span></span>
                 </motion.div>
                 <motion.div
@@ -143,7 +143,7 @@ export default function AboutHero() {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: easeOut }}
                 >
-                  <p className="text-gray-700 ">Team Collaborations</p>
+                  <p className="text-gray-100 ">Team Collaborations</p>
                   <span></span>
                 </motion.div>
               </div>
@@ -154,7 +154,7 @@ export default function AboutHero() {
                   whileInView={{ opacity: 1, scale: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: easeOut }}
                 >
-                  <h3 className="text-2xl font-bold text-blue-600 mb-2">20+</h3>
+                  <h3 className="text-2xl font-bold text-green-600 mb-2">20+</h3>
                   <span></span>
                 </motion.div>
                 <motion.div
@@ -163,7 +163,7 @@ export default function AboutHero() {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: easeOut }}
                 >
-                  <p className="text-gray-700 ">Technologies Mastered</p>
+                  <p className="text-gray-100 ">Technologies Mastered</p>
                   <span></span>
                 </motion.div>
               </div>

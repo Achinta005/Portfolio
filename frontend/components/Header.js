@@ -79,41 +79,41 @@ export default function Header() {
         <div className="flex justify-between items-center py-4">
           <Link
             href="/"
-            className="text-2xl font-bold text-gray-900 dark:text-gray-100 flex"
+            className="text-2xl font-bold text-gray-100 flex"
           ></Link>
 
           <nav className="hidden md:flex space-x-8 items-center ">
             <Link
               href="#home"
-              className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+              className=" bg-white/10 backdrop-blur-lg rounded-lg px-4 py-2 text-green-500 font-semibold
                hover:bg-white/20 transition"
             >
               Home
             </Link>
             <Link
               href="#about"
-              className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+              className=" bg-white/10 backdrop-blur-lg rounded-lg px-4 py-2 text-green-500 font-semibold
                hover:bg-white/20 transition"
             >
               About
             </Link>
             <Link
               href="#projects"
-              className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+              className="bg-white/10  backdrop-blur-lg rounded-lg px-4 py-2 text-green-500 font-semibold
                hover:bg-white/20 transition"
             >
               Projects
             </Link>
             <Link
               href="#blogs"
-              className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+              className="bg-white/10 backdrop-blur-lg rounded-lg px-4 py-2 text-green-500 font-semibold
                hover:bg-white/20 transition"
             >
               Blogs
             </Link>
             <Link
               href="#contact"
-              className="dark:bg-white/10 bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800  dark:text-white font-semibold
+              className="bg-white/10 backdrop-blur-lg rounded-lg px-4 py-2 text-green-500 font-semibold
                hover:bg-white/20 transition"
             >
               Contact
@@ -130,14 +130,14 @@ export default function Header() {
               <>
                 <button
                   onClick={handleAdminClick}
-                  className=" bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800   font-semibold
+                  className=" bg-white/10 backdrop-blur-lg rounded-lg px-4 py-2 text-green-500   font-semibold
                hover:bg-white/20 transition"
                 >
                   Admin Panel
                 </button>
                 <button
                   onClick={handleLogout}
-                  className=" bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800   font-semibold
+                  className=" bg-white/10 backdrop-blur-lg rounded-lg px-4 py-2 text-green-500  font-semibold
                hover:bg-white/20 transition"
                 >
                   Logout
@@ -146,7 +146,7 @@ export default function Header() {
             ) : (
               <button
                 onClick={handleLogin}
-                className=" bg-white/40 backdrop-blur-lg rounded-lg px-4 py-2 text-gray-800   font-semibold
+                className=" bg-white/10 backdrop-blur-lg rounded-lg px-4 py-2 text-green-500   font-semibold
                hover:bg-white/20 transition"
               >
                 Login

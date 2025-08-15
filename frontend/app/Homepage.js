@@ -1,6 +1,5 @@
 "use client";
 import HeroSection from "../components/HeroSection";
-import InteractiveSkillsDisplay from "@/components/InteractiveSkillsDisplay";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import About from "./about/page";
@@ -14,7 +13,6 @@ export default function Homepage() {
       <Header />
       <section id="home">
         <HeroSection />
-        <InteractiveSkillsDisplay />
       </section>
       <section id="about">
         <About />
