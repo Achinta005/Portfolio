@@ -68,7 +68,7 @@ const SkillNode = ({
           </div>
 
           {/* Button Container */}
-          <div className="flex-1 flex items-center justify-center  rounded-b-lg w-full sm:hidden">
+          <div className="flex-1 flex items-center justify-center  rounded-b-lg w-full">
             <button
               className={`cursor-pointer  rounded-full transition-all duration-200 ${
                 isDetailOpen ? "text-black rotate-180" : ""
