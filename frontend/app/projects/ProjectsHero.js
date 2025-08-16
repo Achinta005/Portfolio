@@ -23,7 +23,7 @@ export default function ProjectsHero() {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: easeOut }}
         >
-          <p className="text-xl text-gray-800 max-w-3xl mx-auto dark:text-gray-300">
+          <p className="text-xl text-gray-200 max-w-3xl mx-auto dark:text-gray-300">
             A showcase of my recent work spanning web applications.Each project
             represents a unique challenge and solution.
           </p>

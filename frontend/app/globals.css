@@ -203,18 +203,41 @@ section > * {
 }
 
 @keyframes scroll-categories {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-50%);
-    }
+  0% {
+    transform: translateX(0);
   }
+  100% {
+    transform: translateX(-50%);
+  }
+}
 
+.animate-scroll-categories {
+  animation: scroll-categories 20s linear infinite;
+  /* Ensure smooth animation */
+  will-change: transform;
+}
+
+/* Mobile devices - faster animation */
+@media (max-width: 640px) {
   .animate-scroll-categories {
-    animation: scroll-categories 20s linear infinite;
+    animation: scroll-categories 10s linear infinite;
   }
+}
 
-  .animate-scroll-categories:hover {
-    animation-play-state: paused;
+/* Pause animation on hover */
+.animate-scroll-categories:hover {
+  animation-play-state: paused;
+}
+
+/* Optional: Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .animate-scroll-categories {
+    animation-duration: 60s;
   }
+}
+
+  @layer utilities {
+  .custom-gradient-border {
+    border-image: linear-gradient(to right, #ec4899, #8b5cf6, #3b82f6) 1;
+  }
+}

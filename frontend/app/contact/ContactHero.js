@@ -22,7 +22,7 @@ export default function ContactHero() {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: easeOut }}
         >
-          <p className="text-xl text-gray-800 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
             Ready to start your next project? I&apos;d love to hear from you.
             Let&apos;s discuss how we can bring your ideas to life.
           </p>

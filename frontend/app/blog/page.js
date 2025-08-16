@@ -26,7 +26,7 @@ export default function BlogPage() {
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: easeOut }}
           >
-            <p className="relative text-lg font-semibold lg:left-[12vw] text-gray-800 max-w-2xl">
+            <p className="relative text-lg font-semibold lg:left-[12vw] text-gray-200 max-w-2xl">
               Thoughts on web development, technology, and building great user
               experiences.
             </p>
@@ -45,7 +45,7 @@ export default function BlogPage() {
             >
               <article className="bg-white/20 border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-200">
                 <div className="p-6">
-                  <div className="flex items-center text-sm text-gray-800 mb-3">
+                  <div className="flex items-center text-sm text-gray-300 mb-3">
                     <Calendar className="w-4 h-4 mr-2" />
                     <span>
                       {new Date(post.date).toLocaleDateString("en-US", {
@@ -58,11 +58,11 @@ export default function BlogPage() {
                     <span>{post.readTime}</span>
                   </div>
 
-                  <h2 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+                  <h2 className="text-xl font-bold text-gray-200 mb-3 line-clamp-2">
                     {post.title}
                   </h2>
 
-                  <p className="text-gray-800 mb-4 leading-relaxed line-clamp-3 dark:text-gray-400">
+                  <p className="text-gray-400 mb-4 leading-relaxed line-clamp-3 dark:text-gray-400">
                     {post.excerpt}
                   </p>
 
@@ -70,7 +70,7 @@ export default function BlogPage() {
                     {post.tags.slice(0, 3).map((tag) => (
                       <span
                         key={tag}
-                        className="px-2 py-1 bg-white/60 text-gray-700 text-xs rounded-full dark:bg-gray-400 dark:text-black"
+                        className="px-2 py-1 bg-white/10 text-green-500 text-xs rounded-full dark:bg-gray-400 dark:text-black"
                       >
                         {tag}
                       </span>
@@ -97,10 +97,10 @@ export default function BlogPage() {
             <button className="px-4 py-2 bg-blue-600 text-white rounded-md">
               1
             </button>
-            <button className="px-4 py-2 bg-white/20 text-gray-700 rounded-md hover:bg-gray-300">
+            <button className="px-4 py-2 bg-white/20 text-gray-300 rounded-md hover:bg-gray-300">
               2
             </button>
-            <button className="px-4 py-2 bg-white/20 text-gray-700 rounded-md hover:bg-gray-300">
+            <button className="px-4 py-2 bg-white/20 text-gray-300 rounded-md hover:bg-gray-300">
               3
             </button>
           </div>

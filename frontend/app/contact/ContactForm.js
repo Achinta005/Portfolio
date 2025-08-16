@@ -36,11 +36,11 @@ const ContactForm2 = () => {
           className="space-y-6"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-800 mb-2 "
+                className="block text-sm font-medium text-green-800 mb-2 "
               >
                 Full Name
               </label>
@@ -51,7 +51,7 @@ const ContactForm2 = () => {
                   required: { value: true, message: "This field is required" },
                 })}
                 type="text"
-                className="w-full text-gray-950 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full text-gray-100 px-4 py-3 border border-purple-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-semibold"
               />
               {errors.name && (
                 <p className="text-red-700">{errors.name.message}</p>
@@ -60,7 +60,7 @@ const ContactForm2 = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-800 mb-2 "
+                className="block text-sm font-medium text-green-800 mb-2 "
               >
                 Email Address
               </label>
@@ -73,7 +73,7 @@ const ContactForm2 = () => {
                   },
                 })}
                 type="text"
-                className="w-full text-gray-950 px-4 py-3 border dark:text-gray-100 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                className="w-full text-gray-100 px-4 py-3 border dark:text-gray-100 border-purple-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-semibold"
               />
               {errors.email && (
                 <p className="text-red-700">{errors.email.message}</p>
@@ -84,7 +84,7 @@ const ContactForm2 = () => {
           <div>
             <label
               htmlFor="subject"
-              className="block text-sm font-medium text-gray-800 mb-2 "
+              className="block text-sm font-medium text-green-800 mb-2 "
             >
               Subject
             </label>
@@ -92,23 +92,23 @@ const ContactForm2 = () => {
               placeholder="What's this about?"
               {...register("subject")}
               type="text"
-              className="w-full text-gray-950 px-4 py-3 border dark:text-gray-100 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="w-full text-gray-100 px-4 py-3 border dark:text-gray-100 border-purple-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-semibold"
             />
           </div>
 
           <div>
             <label
               htmlFor="message"
-              className="block text-sm font-medium text-gray-800 mb-2 "
+              className="block text-sm font-medium text-green-800 mb-2 "
             >
               Message
             </label>
             <textarea
-              rows={6}
+              rows={4}
               placeholder="What Do You Want To Tell Me..."
               {...register("message")}
               type="text"
-              className="w-full text-gray-950 px-4 py-3 border dark:text-gray-100 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+              className="w-full text-gray-100 px-4 py-3 border dark:text-gray-100 border-purple-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-semibold"
             />
             <p className="text-xs text-gray-500 mt-1"></p>
           </div>
@@ -117,7 +117,7 @@ const ContactForm2 = () => {
             disabled={isSubmitting}
             type="submit"
             value="submit"
-            className="w-full h-10 bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors cursor-pointer whitespace-nowrap"
+            className="w-fit h-10 bg-white/10 text-green-700 px-4 py-2 rounded-lg hover:bg-white/20 disabled:bg-gray-400 transition-colors cursor-pointer whitespace-nowrap font-bold relative left-[17vw]"
           >
             {isSubmitting ? "Submiting..." : "SUBMIT"}
           </button>

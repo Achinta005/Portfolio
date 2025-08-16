@@ -33,8 +33,8 @@ export default function ContactInfo() {
     <section className="py-20">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-yellow-200 mb-6">Let&apos;s Connect</h2>
-          <p className="text-lg text-gray-800 mb-8 dark:text-gray-300">
+          <h2 className="text-3xl font-bold text-gray-200 mb-6">Let&apos;s Connect</h2>
+          <p className="text-lg text-gray-300 mb-8 dark:text-gray-300">
             I&apos;m always open to discussing new opportunities, creative projects, 
             or potential collaborations. Don&apos;t hesitate to reach out!
           </p>
@@ -44,28 +44,28 @@ export default function ContactInfo() {
           {contactMethods.map((method, index) => (
             <div key={index} className="flex items-start">
               <div className="w-12 h-12 flex items-center justify-center bg-white/30 rounded-lg mr-4 flex-shrink-0">
-                <i className={`${method.icon} text-xl text-blue-600`}></i>
+                <i className={`${method.icon} text-xl text-green-600`}></i>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-1 dark:text-gray-100">{method.title}</h3>
+                <h3 className="text-lg font-semibold text-green-600 mb-1 dark:text-gray-100">{method.title}</h3>
                 <p className="text-blue-600 font-medium mb-1">{method.details}</p>
-                <p className="text-gray-600 text-sm dark:text-gray-300">{method.description}</p>
+                <p className="text-gray-300 text-sm dark:text-gray-300">{method.description}</p>
               </div>
             </div>
           ))}
         </div>
 
         <div>
-          <h3 className="text-xl font-semibold text-yellow-200">Follow Me</h3>
+          <h3 className="text-xl font-semibold text-yellow-100 mb-5">Follow Me</h3>
           <div className="flex space-x-4">
             {socialLinks.map((social, index) => (
               <a
                 key={index}
                 href={social.url}
-                className="w-10 h-10 flex items-center justify-center bg-white/30 hover:bg-white/60  rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+                className="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/60  rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
                 title={social.name}
               >
-                <i className={`${social.icon} text-xl text-blue-800 dark:text-gray-950 hover:text-blue-600`}></i>
+                <i className={`${social.icon} text-xl text-green-600 dark:text-gray-950 hover:text-blue-600`}></i>
               </a>
             ))}
           </div>

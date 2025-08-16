@@ -7,49 +7,49 @@ export default function CertificationSection() {
       name: "Full Stack Web Devolopment",
       issuer: "Teachnook",
       year: "2023",
-      icon: "/1630662755102.jpeg",
+      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755346694/1630662755102_c5fstb.jpg",
       path: "/Teachnook COURSE Completion Certificate _ Achinta Hazra.pdf",
     },
     {
       name: "Internship Training Program on ADVANCE JAVA",
       issuer: "AUTODESK CADEASY",
       year: "2024",
-      icon: "/cadeasy.png",
+      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
       path: "/Advance Java.pdf",
     },
     {
       name: "Internship Training Program on CORE JAVA",
       issuer: "AUTODESK CADEASY",
       year: "2024",
-      icon: "/cadeasy.png",
+      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
       path: "/Full Stack Data Science using Python.pdf",
     },
     {
       name: "FULL STACK DATA SCIENCE USING PYTHON",
       issuer: "AUTODESK CADEASY",
       year: "2024",
-      icon: "/cadeasy.png",
+      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
       path: "/ML using Python.pdf",
     },
     {
       name: "MACHINE LEARNING USING PYTHON",
       issuer: "AUTODESK CADEASY",
       year: "2024",
-      icon: "/cadeasy.png",
+      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
       path: "/Advance Java.pdf",
     },
     {
       name: "IEEE Student Chapter",
       issuer: "The Institution Of Engineer",
       year: "2023",
-      icon: "/Institution_of_Engineers_(India)_Logo.svg",
+      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755346757/Institution_of_Engineers__India__Logo_lv3eix.svg",
       path: "/IEEE.pdf",
     },
     {
       name: "IEEE Seminar",
       issuer: "DIATM",
       year: "2023",
-      icon: "/Institution_of_Engineers_(India)_Logo.svg",
+      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755346757/Institution_of_Engineers__India__Logo_lv3eix.svg",
       path: "/IEI Seminar.pdf",
     },
   ];
@@ -96,7 +96,7 @@ export default function CertificationSection() {
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: easeOut }}
             >
-              <div className="bg-white/60 p-6 rounded-xl hover:bg-white/80 hover:shadow-lg transition-all duration-300">
+              <div className="bg-white/10 p-6 rounded-xl hover:bg-white/20 hover:shadow-lg transition-all duration-300">
                 <div className="flex items-center mb-4">
                   <div className="w-10 h-8 flex items-center justify-center bg-blue-100 rounded-lg mr-3 flex-shrink-0">
                     <img
@@ -115,10 +115,10 @@ export default function CertificationSection() {
                     </button>
                   </div>
                 </div>
-                <p className="text-gray-950 font-medium text-sm mb-1 dark:text-gray-400">
+                <p className="text-gray-100 font-medium text-sm mb-1 dark:text-gray-400">
                   {cert.issuer}
                 </p>
-                <p className="text-gray-800 text-xs dark:text-gray-600">
+                <p className="text-gray-300 text-xs dark:text-gray-600">
                   {cert.year}
                 </p>
                 <span></span>

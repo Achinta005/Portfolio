@@ -44,7 +44,7 @@ useEffect(() => {
           onClick={handleLogin}
         >
           <Image
-            src="/icons8-google-144.png"
+            src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/icons8-google-144_mqwd4m.png"
             alt="Google logo"
             width={22}
             height={30}

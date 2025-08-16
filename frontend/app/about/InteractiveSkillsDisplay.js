@@ -53,14 +53,14 @@ const SkillNode = ({
       {/* Main Node */}
       <BackgroundGradient>
         <div
-          className="w-40 h-44 rounded-2xl shadow-lg flex flex-col items-center justify-center relative overflow-visible transition-all duration-300 hover:scale-105 hover:-translate-y-1 bg-gradient-to-br from-blue-300 to-red-200"
+          className="lg:w-40 lg:h-44 w-20 h-24 rounded-2xl shadow-lg flex flex-col items-center justify-center relative overflow-visible transition-all duration-300 hover:scale-105 hover:-translate-y-1 bg-gradient-to-br from-blue-300 to-red-200"
           onMouseEnter={() => onHover(skill.id)}
           onMouseLeave={() => onHover(null)}
         >
           {/* Content Container */}
-          <div className="text-center p-3 w-full h-36 flex flex-col items-center justify-center rounded-2xl">
+          <div className="text-center p-3 w-full h-36 lg:flex lg:flex-col lg:items-center lg:justify-center rounded-2xl">
             {/* Skill Icon Container */}
-            <div className="w-full h-full rounded-lg flex items-center justify-center mb-2 mt-5">
+            <div className="w-full h-full rounded-lg flex items-center justify-center lg:mb-2 lg:mt-5 mt-12">
               <span className="h-32 w-32">
                 <img src={skill.image} alt={skill.skill} />
               </span>
@@ -68,7 +68,7 @@ const SkillNode = ({
           </div>
 
           {/* Button Container */}
-          <div className="flex-1 flex items-center justify-center  rounded-b-lg w-full">
+          <div className="flex-1 flex items-center justify-center  rounded-b-lg w-full sm:hidden">
             <button
               className={`cursor-pointer  rounded-full transition-all duration-200 ${
                 isDetailOpen ? "text-black rotate-180" : ""
@@ -190,7 +190,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#e34c26",
           proficiency: 100,
           category: "Frontend",
-          image: "/icons8-html-600.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345765/icons8-html-600_g9tthk.png",
         },
         {
           id: "frontend-1",
@@ -201,7 +201,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#1572b6",
           proficiency: 100,
           category: "Frontend",
-          image: "/icons8-css-600.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/icons8-css-600_g0pql0.png",
         },
         {
           id: "frontend-2",
@@ -212,7 +212,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#f7df1e",
           proficiency: 95,
           category: "Frontend",
-          image: "/icons8-javascript-600.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345765/icons8-javascript-600_ntxhgq.png",
         },
         {
           id: "frontend-3",
@@ -223,7 +223,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#61dafb",
           proficiency: 90,
           category: "Frontend",
-          image: "/icons8-react-600.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345770/icons8-react-600_wzbkes.png",
         },
       ],
     },
@@ -242,7 +242,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#339933",
           proficiency: 85,
           category: "Backend",
-          image: "/icons8-node-js-600.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345768/icons8-node-js-600_cziqse.png",
         },
         {
           id: "backend-1",
@@ -253,7 +253,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#000000",
           proficiency: 85,
           category: "Backend",
-          image: "/icons8-express-js-600.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/icons8-express-js-600_tpyesx.png",
         },
         {
           id: "backend-2",
@@ -264,7 +264,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#3776ab",
           proficiency: 80,
           category: "Backend",
-          image: "/icons8-python-600.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345769/icons8-python-600_efkdzt.png",
         },
       ],
     },
@@ -283,7 +283,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#00618a",
           proficiency: 100,
           category: "Database",
-          image: "/icons8-mysql-600.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345767/icons8-mysql-600_cj4vmc.png",
         },
         {
           id: "database-1",
@@ -294,7 +294,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#47a248",
           proficiency: 100,
           category: "Database",
-          image: "/icons8-mongodb-600.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345766/icons8-mongodb-600_k2lpxo.png",
         },
       ],
     },
@@ -312,7 +312,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#000000",
           proficiency: 70,
           category: "Framework",
-          image: "/icons8-nextjs-600.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345768/icons8-nextjs-600_oxnqhk.png",
         },
         {
           id: "framework-2",
@@ -322,7 +322,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#06b6d4",
           proficiency: 70,
           category: "Framework",
-          image: "/icons8-tailwind-css-600.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345770/icons8-tailwind-css-600_x4eyux.png",
         },
       ],
     },
@@ -340,7 +340,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#000000",
           proficiency: 70,
           category: "Authentication",
-          image: "/icons8-json-web-token-600.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345765/icons8-json-web-token-600_njxszh.png",
         },
         {
           id: "auth-1",
@@ -351,7 +351,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#4285f4",
           proficiency: 70,
           category: "Authentication",
-          image: "/oauth-svgrepo-com.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345771/oauth-svgrepo-com_jwdq2t.png",
         },
       ],
     },
@@ -370,7 +370,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#a8b9cc",
           proficiency: 100,
           category: "Programming",
-          image: "/icons8-c-600.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/icons8-c-600_erdce2.png",
         },
         {
           id: "prog-1",
@@ -381,7 +381,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#ed8b00",
           proficiency: 70,
           category: "Programming",
-          image: "/icons8-java-600.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345765/icons8-java-600_xg83ki.png",
         },
       ],
     },
@@ -399,7 +399,7 @@ const SimplifiedSkillsGrid = () => {
           color: "#f05032",
           proficiency: 90,
           category: "Version Control",
-          image: "/icons8-git-600.png",
+          image: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/icons8-git-600_w3fdrr.png",
         },
       ],
     },
@@ -441,7 +441,7 @@ const SimplifiedSkillsGrid = () => {
               key={category}
               className="flex flex-col items-center min-w-fit flex-shrink-0"
             >
-              <h2 className="text-2xl font-bold text-white text-center mb-4 px-4 py-5 backdrop-blur-lg rounded-lg shadow-sm bg-white/20 min-w-[200px] flex justify-center items-center gap-2">
+              <h2 className="lg:text-2xl text-sm font-bold text-white text-center mb-4 lg:px-4 px-1 py-5 backdrop-blur-lg rounded-lg shadow-sm bg-white/20 lg:min-w-[200px] min-w-[100px] flex justify-center items-center gap-2">
                 {data.title}
               </h2>
             </div>
@@ -452,7 +452,7 @@ const SimplifiedSkillsGrid = () => {
               key={`${category}-duplicate`}
               className="flex flex-col items-center min-w-fit flex-shrink-0"
             >
-              <h2 className="text-2xl font-bold text-white text-center mb-4 px-4 py-5 backdrop-blur-lg rounded-lg shadow-sm bg-white/20 min-w-[200px] flex justify-center items-center gap-2">
+              <h2 className="lg:text-2xl text-sm font-bold text-white text-center mb-4 lg:px-4 px-1 py-5 backdrop-blur-lg rounded-lg shadow-sm bg-white/20 min-w-[200px] flex justify-center items-center gap-2">
                 {data.title}
               </h2>
             </div>
@@ -462,7 +462,7 @@ const SimplifiedSkillsGrid = () => {
 
       {/* Skills Grid - All Skills from All Categories */}
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-center gap-6 flex-wrap">
+        <div className="flex justify-center lg:gap-6 gap-1.5 flex-wrap">
           {allSkills.map((skill, index) => (
             <div
               key={skill.id}

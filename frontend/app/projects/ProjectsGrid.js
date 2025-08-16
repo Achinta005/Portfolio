@@ -50,8 +50,8 @@ export default function ProjectsGrid() {
               onClick={() => setSelectedCategory(category)}
               className={`px-6 py-2 rounded-full transition-colors cursor-pointer whitespace-nowrap ${
                 selectedCategory === category
-                  ? "bg-blue-600 dark:bg-gray-900 text-white"
-                  : "bg-white/20 text-gray-800 hover:bg-gray-200 "
+                  ? "bg-blue-600  text-white"
+                  : "bg-white/20 text-gray-300 hover:bg-gray-700 "
               }`}
             >
               {category}
@@ -86,14 +86,14 @@ export default function ProjectsGrid() {
 
                   <div className="flex flex-col p-8">
                     <div className="relative right-[-27vw] mb-5 mt-4">
-                      <span className="text-sm text-blue-600 font-semibold bg-white/50 p-2 rounded-full">
+                      <span className="text-sm text-green-600 font-semibold bg-white/10 p-2 rounded-full">
                         {project.category}
                       </span>
                     </div>
                     <h3 className="text-xl font-bold text-yellow-100 mb-3">
                       {project.title}
                     </h3>
-                    <p className="text-gray-800 font-semibold mb-4 text-sm leading-relaxed">
+                    <p className="text-gray-400 font-semibold mb-4 text-sm leading-relaxed">
                       {project.description}
                     </p>
                     <div className="mt-auto">
@@ -101,7 +101,7 @@ export default function ProjectsGrid() {
                         {(project.technologies || []).map((tech, techIndex) => (
                           <span
                             key={techIndex}
-                            className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded dark:bg-gray-400 dark:text-black"
+                            className="text-xs bg-white/20 text-green-600 px-2 py-1 rounded dark:bg-gray-400 dark:text-black"
                           >
                             {tech}
                           </span>
