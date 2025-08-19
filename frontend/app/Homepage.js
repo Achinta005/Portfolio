@@ -9,7 +9,7 @@ import Contact from "./contact/page";
 
 export default function Homepage() {
   return (
-    <div style={{ transform: "scale(0.9)", transformOrigin: "top center" }}>
+    <div>
       <Header />
       <section id="home">
         <HeroSection />
