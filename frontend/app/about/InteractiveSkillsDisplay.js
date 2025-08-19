@@ -421,7 +421,7 @@ const SimplifiedSkillsGrid = () => {
   };
 
   return (
-    <div className="min-h-screen p-4 ">
+    <div className="min-h-screen w-full">
       {/* Header */}
       <div className="text-center py-8">
         <h1 className="text-4xl font-extrabold bg-gradient-to-r from-white via-blue-200 to-purple-200 bg-clip-text text-green-600 mb-4">

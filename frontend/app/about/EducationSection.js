@@ -45,7 +45,7 @@ export default function EducationSection() {
 
   return (
     <section className="py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto px-1 sm:px-2 lg:px-4">
         <div className="text-center mb-16">
           <motion.div
             rel="noopener noreferrer"
@@ -70,7 +70,7 @@ export default function EducationSection() {
           </motion.div>
         </div>
 
-        <div className="w-full relative lg:left-40 left-[-15vw]">
+        <div className="w-full relative lg:left-16 left-[-15vw]">
           <Timeline className="relative">
             {education.map((edu, index) => (
               <TimelineItem key={index} className="relative z-10">
@@ -112,7 +112,7 @@ export default function EducationSection() {
                     transition={{ duration: 0.8, ease: easeOut }}
                   >
                     <div className="flex justify-center p-0 rounded-lg shadow-lg w-full pointer-events-none">
-                      <div className="relative shadow-2xl w-full max-w-4xl object-cover object-top rounded-2xl pointer-events-auto bg-white/10 p-2 md:rounded-3xl md:p-3">
+                      <div className="relative shadow-2xl w-full max-w-3xl object-cover object-top rounded-2xl pointer-events-auto bg-white/10 p-2 md:rounded-3xl md:p-3">
                         {/* Glowing Effect */}
                         <GlowingEffect
                           spread={80}
@@ -124,7 +124,7 @@ export default function EducationSection() {
                         />
 
                         {/* Content Container with Glowing Border */}
-                        <div className="border-0.75 relative flex h-full lg:w-[80vw] max-sm:w-[75vw] flex-col justify-between lg:gap-6 overflow-hidden rounded-xl lg:p-8">
+                        <div className="border-0.75 relative flex h-full lg:w-[60vw] max-sm:w-[75vw] flex-col justify-between lg:gap-6 overflow-hidden rounded-xl lg:p-8">
                           <div className="lg:flex lg:flex-row lg:items-start sm:flex sm:flex-col gap-6">
                             <div className="w-24 h-24 flex items-center justify-center bg-blue-100 rounded-lg flex-shrink-0 overflow-hidden border-4 border-amber-50 max-lg:mx-auto mb-4">
                               <Image
