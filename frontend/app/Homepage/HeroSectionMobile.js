@@ -4,7 +4,7 @@ import { motion, easeOut } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 
-const HeroSectionMobile = () => {
+const HerosectionMobile = () => {
   const handleDownload = async () => {
     try {
       const response = await fetch(
@@ -138,4 +138,4 @@ const HeroSectionMobile = () => {
   );
 };
 
-export default HeroSectionMobile;
+export default HerosectionMobile;

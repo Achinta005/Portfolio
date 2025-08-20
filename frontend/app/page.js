@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import Homepage from "./Homepage";
+import Homepage from "./Homepage/page";
+import Header from "../components/Navbar";
 
 export default function Page() {
   const vantaRef = useRef(null);
@@ -63,6 +64,7 @@ export default function Page() {
       />
       <div style={{ position: "relative", zIndex: 1 }}>
         <Homepage />
+      <Header />
       </div>
     </>
   );

@@ -1,12 +1,12 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
 import { motion } from "framer-motion";
-import useIsMobile from "./useIsMobile";
-import HeroSectionMobile from "./HeroSectionMobile";
+import useIsMobile from "@/components/useIsMobile";
+import HerosectionMobile from "./HeroSectionMobile";
+import Footer from "@/components/Footer";
 
-export default function HeroSection() {
+export default function Herosection() {
   const isMobile = useIsMobile(1024);
   const handleDownload = async () => {
     try {
@@ -33,7 +33,7 @@ export default function HeroSection() {
 
   return isMobile ? (
     <div>
-      <HeroSectionMobile />
+      <HerosectionMobile />
     </div>
   ) : (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden ">
@@ -120,7 +120,7 @@ export default function HeroSection() {
           <div className=" w-80 h-80 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 lg:left-[15vw] relative ">
             <div className=" w-full h-full">
               <Image
-                src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025128/profile_lz4yry.jpg"
+                src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755695343/profile_kxt3ue.png"
                 alt="A professional headshot"
                 className="w-full h-full rounded-full object-cover object-center shadow-2xl"
                 width={320}
