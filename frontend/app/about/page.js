@@ -1,18 +1,77 @@
+"use client";
 
-'use client';
-
-import AboutHero from './AboutHero';
-import EducationSection from './EducationSection';
-import CertificationSection from './CertificationSection';
-import InteractiveSkillsDisplay from './InteractiveSkillsDisplay'
+import AboutHero from "./AboutHero";
+import EducationSection from "./EducationSection";
+import CertificationSection from "./CertificationSection";
+import InteractiveSkillsDisplay from "./InteractiveSkillsDisplay";
+import { useEffect, useRef, useState } from "react";
+import Header from "@/components/Navbar";
+import * as THREE from "three";
 
 export default function About() {
+  const vantaRef = useRef(null);
+  const [vantaEffect, setVantaEffect] = useState(null);
+
+  useEffect(() => {
+    async function loadVanta() {
+      if (!window.VANTA) {
+        await new Promise((resolve) => {
+          const script = document.createElement("script");
+          script.src =
+            "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js";
+          script.onload = resolve;
+          document.body.appendChild(script);
+        });
+      }
+
+      if (!vantaEffect && window.VANTA && vantaRef.current) {
+        setVantaEffect(
+          window.VANTA.NET({
+            el: vantaRef.current,
+            THREE: THREE,
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.0,
+            minWidth: 200.0,
+            scale: 1.0,
+            scaleMobile: 1.0,
+            backgroundColor: 0x0,
+            points: 20.0,
+            maxDistance: 10.0,
+            spacing: 20.0,
+          })
+        );
+      }
+    }
+
+    loadVanta();
+
+    return () => {
+      if (vantaEffect) vantaEffect.destroy();
+    };
+  }, [vantaEffect]);
   return (
-    <div className="min-h-screen">
-      <AboutHero />
-      <InteractiveSkillsDisplay/>
-      <EducationSection />
-      <CertificationSection />
-    </div>
+    <>
+      <div
+        ref={vantaRef}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: -1,
+          overflow: "hidden",
+        }}
+      />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <AboutHero />
+        <InteractiveSkillsDisplay />
+        <EducationSection />
+        <CertificationSection />
+        <Header/>
+      </div>
+    </>
   );
 }

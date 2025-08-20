@@ -289,7 +289,7 @@ export default function CertificationSection() {
               transition={{ duration: 0.8, ease: easeOut }}
             >
               <PinContainer
-                title="CHECK CERTIFICATE"
+                title="VIEW CERTIFICATE"
                 onClick={() => openCertificatePopup(cert)}
               >
                 <div className="flex items-center mb-4">

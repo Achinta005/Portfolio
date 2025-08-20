@@ -1,17 +1,79 @@
-'use client';
+"use client";
 
-import ContactHero from './ContactHero';
-import ContactForm from './ContactForm';
-import ContactInfo from './ContactInfo';
+import ContactHero from "./ContactHero";
+import ContactForm from "./ContactForm";
+import ContactInfo from "./ContactInfo";
+import { useEffect, useRef, useState } from "react";
+import * as THREE from "three";
+import Header from "@/components/Navbar";
 
 export default function Contact() {
+  const vantaRef = useRef(null);
+  const [vantaEffect, setVantaEffect] = useState(null);
+
+  useEffect(() => {
+    async function loadVanta() {
+      if (!window.VANTA) {
+        await new Promise((resolve) => {
+          const script = document.createElement("script");
+          script.src =
+            "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js";
+          script.onload = resolve;
+          document.body.appendChild(script);
+        });
+      }
+
+      if (!vantaEffect && window.VANTA && vantaRef.current) {
+        setVantaEffect(
+          window.VANTA.NET({
+            el: vantaRef.current,
+            THREE: THREE,
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.0,
+            minWidth: 200.0,
+            scale: 1.0,
+            scaleMobile: 1.0,
+            backgroundColor: 0x0,
+            points: 20.0,
+            maxDistance: 10.0,
+            spacing: 20.0,
+          })
+        );
+      }
+    }
+
+    loadVanta();
+
+    return () => {
+      if (vantaEffect) vantaEffect.destroy();
+    };
+  }, [vantaEffect]);
   return (
-    <div className="min-h-screen bg-white/10 backdrop-blur-md rounded-lg">
-      <ContactHero />
-      <div className="grid grid-cols-1 lg:grid-cols-2">
-        <ContactForm/>
-        <ContactInfo />
+    <>
+      <div
+        ref={vantaRef}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: -1,
+          overflow: "hidden",
+        }}
+      />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <div className="min-h-screen rounded-lg">
+          <ContactHero />
+          <div className="grid grid-cols-1 lg:grid-cols-2">
+            <ContactForm />
+            <ContactInfo />
+            <Header/>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
