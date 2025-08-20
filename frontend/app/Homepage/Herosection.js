@@ -4,7 +4,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import useIsMobile from "@/components/useIsMobile";
 import HerosectionMobile from "./HeroSectionMobile";
-import Footer from "@/components/Footer";
 
 export default function Herosection() {
   const isMobile = useIsMobile(1024);
@@ -79,7 +78,7 @@ export default function Herosection() {
                 deliver clean, efficient code.
               </motion.span>
             </p>
-            <div className="flex flex-wrap gap-6">
+            <div className="flex flex-wrap gap-28 relative left-10">
               <motion.div
                 rel="noopener noreferrer"
                 className="connect-button"
@@ -105,7 +104,7 @@ export default function Herosection() {
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
                 <Link
-                  href="#contact"
+                  href="/contact"
                   rel="noopener noreferrer"
                   className="connect-button"
                 >

@@ -2,6 +2,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronDown, X } from "lucide-react";
 import { BackgroundGradient } from "@/components/ui/background_gradient";
+import useIsMobile from "@/components/useIsMobile";
+import InteractiveDisplayMobile from "./InteractiveDisplayMobile";
 
 // Custom Skill Node Component
 const SkillNode = ({
@@ -53,14 +55,14 @@ const SkillNode = ({
       {/* Main Node */}
       <BackgroundGradient>
         <div
-          className="lg:w-40 lg:h-44 w-20 h-24 rounded-2xl shadow-lg flex flex-col items-center justify-center relative overflow-visible transition-all duration-300 hover:scale-105 hover:-translate-y-1 bg-gradient-to-br from-blue-300 to-red-200"
+          className="lg:w-24 lg:h-28 w-20 h-24 rounded-2xl shadow-lg flex flex-col items-center justify-center relative overflow-visible transition-all duration-300 hover:scale-105 hover:-translate-y-1 bg-gradient-to-br from-blue-300 to-red-200"
           onMouseEnter={() => onHover(skill.id)}
           onMouseLeave={() => onHover(null)}
         >
           {/* Content Container */}
           <div className="text-center p-3 w-full h-36 lg:flex lg:flex-col lg:items-center lg:justify-center rounded-2xl">
             {/* Skill Icon Container */}
-            <div className="w-full h-full rounded-lg flex items-center justify-center lg:mb-2 lg:mt-5 mt-12">
+            <div className="w-full h-full rounded-lg flex items-center justify-center lg:mt-20 mt-12">
               <span className="h-32 w-32">
                 <img src={skill.image} alt={skill.skill} />
               </span>
@@ -68,7 +70,7 @@ const SkillNode = ({
           </div>
 
           {/* Button Container */}
-          <div className="flex-1 flex items-center justify-center  rounded-b-lg w-full">
+          <div className="flex-1 flex items-center justify-center  rounded-b-lg w-full relative top-[-5vh]">
             <button
               className={`cursor-pointer  rounded-full transition-all duration-200 ${
                 isDetailOpen ? "text-black rotate-180" : ""
@@ -167,6 +169,7 @@ const SkillNode = ({
         </div>
       )}
     </div>
+
   );
 };
 
@@ -420,7 +423,13 @@ const SimplifiedSkillsGrid = () => {
     }
   };
 
-  return (
+  const isMobile = useIsMobile(1024);
+
+  return isMobile?(
+    <div>
+      <InteractiveDisplayMobile/>
+    </div>
+  ): (
     <div className="min-h-screen w-full">
       {/* Header */}
       <div className="text-center py-8">
@@ -461,7 +470,7 @@ const SimplifiedSkillsGrid = () => {
       </div>
 
       {/* Skills Grid - All Skills from All Categories */}
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <div className="flex justify-center lg:gap-6 gap-1.5 flex-wrap">
           {allSkills.map((skill, index) => (
             <div

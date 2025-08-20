@@ -3,6 +3,7 @@ import React from "react";
 import { motion, easeOut } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
+import Header from "@/components/Navbar";
 
 const HerosectionMobile = () => {
   const handleDownload = async () => {
@@ -29,31 +30,11 @@ const HerosectionMobile = () => {
   };
   return (
     <div>
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="relative z-10 max-w-7xl mx-auto w-full top-0">
-          <div className="grid grid-cols-1 place-items-center">
-            {/* <div className="relative w-70 h-70 top-0 left-10">
-              <motion.span
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: false }}
-                transition={{ duration: 1, ease: "easeOut" }}
-                className="relative z-10"
-              >
-                <div className="w-[50vw] h-[30vh]">
-                  <Image
-                    src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025128/profile_lz4yry.jpg"
-                    alt="A professional img"
-                    className="w-full h-full rounded-full object-cover object-center shadow-2xl"
-                    width={320}
-                    height={320}
-                    priority
-                  />
-                </div>
-              </motion.span>
-            </div> */}
-            <div className="text-left bg-white/5 backdrop-blur-md p-6 shadow-lg lg:w-[55vw] w-[75vw] rounded-lg lg:rounded-r-full">
-              <h1 className="lg:text-[3.4rem] text-[23px] mt-4 lg:mt-0 font-bold text-yellow-100 mb-6 w-2xl overflow-hidden whitespace-nowrap border-r-4 border-white pr-5 dark:text-gray-100">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden ">
+        <div className="relative z-10 max-w-7xl mx-auto w-full pb-5">
+          <div className="grid grid-cols-1 items-center">
+            <div className="text-left bg-white/5 backdrop-blur-md p-4 shadow-lg rounded-lg">
+              <h1 className="lg:text-[3.4rem] text-3xl mt-4 lg:mt-0 font-bold text-green-600 mb-6 w-2xl overflow-hidden whitespace-nowrap border-r-4 border-white pr-5 animate-typing">
                 <motion.span
                   initial={{ opacity: 0, x: -50 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -72,7 +53,7 @@ const HerosectionMobile = () => {
                   transition={{ duration: 0.8, ease: "easeOut" }}
                   style={{ display: "inline-block" }}
                 >
-                  Full Stack Developer
+                  Developer & Learner
                 </motion.span>
               </h2>
               <p className=" text-gray-200 mb-8 max-w-xl lg:text-gray-200 lg:text-lg">
@@ -82,17 +63,17 @@ const HerosectionMobile = () => {
                   transition={{ duration: 0.8, ease: "easeOut" }}
                   style={{ display: "inline-block" }}
                 >
-                  I&apos;m a Full Stack Web Developer with a passion for
-                  building dynamic, user-friendly, and scalable web
-                  applications. I specialize in creating end-to-end solutions
-                  using modern technologies across both frontend and backend.
-                  From crafting responsive interfaces to developing robust APIs,
-                  I love turning ideas into real-world digital products.
-                  I&apos;m always exploring new tools and frameworks to improve
-                  my craft and deliver clean, efficient code.
+                  I&apos;m Developer with a passion for building dynamic,
+                  user-friendly, and scalable web applications. I specialize in
+                  creating end-to-end solutions using modern technologies across
+                  both frontend and backend. From crafting responsive interfaces
+                  to developing robust APIs, I love turning ideas into
+                  real-world digital products. I&apos;m always exploring new
+                  tools and frameworks to improve my craft and deliver clean,
+                  efficient code.
                 </motion.span>
               </p>
-              <div className="flex flex-wrap gap-6">
+              <div className="grid grid-cols-2 gap-7 left-9 relative">
                 <motion.div
                   rel="noopener noreferrer"
                   className="connect-button"
@@ -105,7 +86,7 @@ const HerosectionMobile = () => {
                     rel="noopener noreferrer"
                     className="button-connect"
                   >
-                    Download My Resume
+                    <p className="text-sm">Download My Resume</p>
                     <span></span>
                   </button>
                   <span></span>
@@ -118,11 +99,11 @@ const HerosectionMobile = () => {
                   transition={{ duration: 0.8, ease: "easeOut" }}
                 >
                   <Link
-                    href="#contact"
+                    href="/contact"
                     rel="noopener noreferrer"
                     className="connect-button"
                   >
-                    <button>Get In Touch</button>
+                    <button><p className="text-sm">Get In Touch</p></button>
                     <span></span>
                   </Link>
                   <span></span>
@@ -130,7 +111,21 @@ const HerosectionMobile = () => {
               </div>
             </div>
 
-            
+            <div className=" w-52 h-52 relative left-[18vw] mt-5">
+              <div className=" w-full h-full">
+                <Image
+                  src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755695343/profile_kxt3ue.png"
+                  alt="A professional headshot"
+                  className="w-full h-full rounded-full object-cover object-center shadow-2xl"
+                  width={320}
+                  height={320}
+                  priority
+                />
+                <div className=" absolute -bottom-0 -right-0 bg-blue-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center text-2xl">
+                  <i className="ri-code-s-slash-line" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

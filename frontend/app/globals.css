@@ -82,7 +82,7 @@ section > * {
   color: inherit;
   cursor: pointer;
   height: 50px;
-  width: 160px;
+  width: 60px;
   z-index: 9999;
   bottom: 25%;
 
@@ -90,7 +90,7 @@ section > * {
 
 .connect-button > button {
   height: 50px;
-  width: 160px;
+  width: 150px;
   clip-path: path(
     "M 0 25 C 0 -5, -5 0, 80 0 S 160 -5, 160 25, 165 50 80 50, 0 55, 0 25"
   );
@@ -139,7 +139,7 @@ section > * {
   color: inherit;
   cursor: pointer;
   height: 50px;
-  width: 180px;
+  width: 160px;
   z-index: 9999;
   bottom: 25%;
 

@@ -16,7 +16,6 @@ export default function AboutHero() {
       <div className="lg:max-w-7xl w-[90vw] mx-auto px-4 lg:px-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-white/10 rounded-lg backdrop-blur-md">
           <div className="p-8">
-            
             <motion.div
               rel="noopener noreferrer"
               initial={{ opacity: 0, scale: 0 }}
@@ -75,20 +74,9 @@ export default function AboutHero() {
               </p>
               <span></span>
             </motion.div>
-            <motion.div
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: easeOut }}
-            >
-              <p className="text-lg lg:font-semiboldbold text-gray-200 mb-8 ">
-                Let&apos;s create impactful digital experiences—one line of code
-                at a time.
-              </p>
-              <span></span>
-            </motion.div>
+      
 
-            <div className="grid grid-cols-2 gap-8 ">
+            <div className="grid grid-cols-4 gap-52 relative left-40 place-items-center">
               <div>
                 <motion.div
                   rel="noopener noreferrer"
@@ -107,7 +95,7 @@ export default function AboutHero() {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: easeOut }}
                 >
-                  <p className="text-gray-100 ">Projects Completed</p>
+                  <p className="text-gray-100 text-nowrap">Projects Completed</p>
                   <span></span>
                 </motion.div>
               </div>
@@ -127,7 +115,7 @@ export default function AboutHero() {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: easeOut }}
                 >
-                  <p className="text-gray-100 ">Years of Practical Learning</p>
+                  <p className="text-gray-100 text-nowrap">Years of Practical Learning</p>
                   <span></span>
                 </motion.div>
               </div>
@@ -147,7 +135,7 @@ export default function AboutHero() {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: easeOut }}
                 >
-                  <p className="text-gray-100 ">Team Collaborations</p>
+                  <p className="text-gray-100 text-nowrap">Team Collaborations</p>
                   <span></span>
                 </motion.div>
               </div>
@@ -169,25 +157,27 @@ export default function AboutHero() {
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, ease: easeOut }}
                 >
-                  <p className="text-gray-100 ">Technologies Mastered</p>
+                  <p className="text-gray-100 text-nowrap">Technologies Mastered</p>
                   <span></span>
                 </motion.div>
               </div>
             </div>
           </div>
-          <CardContainer className="inter-var">
-            <CardBody className="bg-gradient-to-bl from-blue-700 to-purple-600 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-4 border">
-              <CardItem translateZ="50" className="w-full">
-                <img
-                  src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025128/workspace_lyay7t.jpg"
-                  height="500"
-                  width="500"
-                  className="h-96 w-full object-cover rounded-xl group-hover/card:shadow-xl"
-                  alt="thumbnail"
-                />
-              </CardItem>
-            </CardBody>
-          </CardContainer>
+          <div className="relative top-0">
+            <CardContainer className="inter-var">
+              <CardBody className="bg-gradient-to-bl from-blue-700 to-purple-600 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-4 border">
+                <CardItem translateZ="50" className="w-full">
+                  <img
+                    src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025128/workspace_lyay7t.jpg"
+                    height="500"
+                    width="500"
+                    className="h-96 w-full object-cover rounded-xl group-hover/card:shadow-xl"
+                    alt="thumbnail"
+                  />
+                </CardItem>
+              </CardBody>
+            </CardContainer>
+          </div>
         </div>
       </div>
     </section>
