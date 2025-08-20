@@ -1,5 +1,5 @@
 import React from 'react'
-import Herosection from './HeroSection'
+import Herosection from './Herosection'
 
 const page = () => {
   return (
