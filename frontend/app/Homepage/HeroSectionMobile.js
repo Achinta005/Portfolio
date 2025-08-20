@@ -42,7 +42,7 @@ const HerosectionMobile = () => {
                   transition={{ duration: 0.5, ease: "easeOut" }}
                   style={{ display: "inline-block" }}
                 >
-                  Hi, I&apos;m Achinta Hazra
+                  Hi, I&apos;m Achinta
                 </motion.span>
               </h1>
 
