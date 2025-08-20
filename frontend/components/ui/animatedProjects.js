@@ -1,6 +1,7 @@
 "use client";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "motion/react";
+import { LinkPreview } from "./linkpreview";
 
 import { useEffect, useState } from "react";
 
@@ -131,15 +132,20 @@ export const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
               ))}
             </motion.p>
             <div className="flex mt-5 gap-6">
-              <a
-                href={testimonials[active].liveUrl}
-                className="flex items-center font-semibold text-green-600 hover:text-blue-500 transition-colors cursor-pointer"
+              <LinkPreview
+                url={testimonials[active].liveUrl}
+                className="font-bold"
               >
-                <div className="w-4 h-4 flex items-center justify-center mr-1">
-                  <i className="ri-external-link-line"></i>
+                <div
+                  href={testimonials[active].liveUrl}
+                  className="flex items-center font-semibold text-green-600 hover:text-blue-500 transition-colors cursor-pointer"
+                >
+                  <div className="w-4 h-4 flex items-center justify-center mr-1">
+                    <i className="ri-external-link-line"></i>
+                  </div>
+                  Live Demo
                 </div>
-                Live Demo
-              </a>
+              </LinkPreview>{" "}
               <a
                 href={testimonials[active].githubUrl}
                 className="flex items-center text-green-600 hover:text-blue-500 transition-colors cursor-pointer"

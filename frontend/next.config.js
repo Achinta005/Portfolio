@@ -6,7 +6,8 @@ module.exports = {
       'achintahazra.shop',
       'portfolio-frontend-dtcj.onrender.com',
       'portfolio-backend-3gcq.onrender.com',
-      'res.cloudinary.com'
+      'res.cloudinary.com',
+      "api.microlink.io"
     ],
   },
 };

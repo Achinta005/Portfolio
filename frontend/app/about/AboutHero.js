@@ -16,6 +16,7 @@ export default function AboutHero() {
       <div className="lg:max-w-7xl w-[90vw] mx-auto px-4 lg:px-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-white/10 rounded-lg backdrop-blur-md">
           <div className="p-8">
+            
             <motion.div
               rel="noopener noreferrer"
               initial={{ opacity: 0, scale: 0 }}
@@ -174,33 +175,19 @@ export default function AboutHero() {
               </div>
             </div>
           </div>
-
-          {/* <div className="flex justify-center p-0 bg-white/30 rounded-lg shadow-lg w-fit transform duration-500 hover:translate-x-5 hover:-translate-y-5 pointer-events-none">
-              <Image
-                src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025128/workspace_lyay7t.jpg"
-                width={500}
-                height={500}
-                alt="Workspace"
-                className="shadow-2xl object-cover object-top rounded-lg transform duration-500 hover:-translate-x-10 hover:translate-y-10 pointer-events-auto"
-              />
-            </div> */}
-
           <CardContainer className="inter-var">
-      <CardBody className="bg-gradient-to-bl from-blue-700 to-purple-600 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-4 border">
-        <CardItem
-          translateZ="50"
-          className="w-full"
-        >
-          <img
-            src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025128/workspace_lyay7t.jpg"
-            height="500"
-            width="500"
-            className="h-96 w-full object-cover rounded-xl group-hover/card:shadow-xl"
-            alt="thumbnail"
-          />
-        </CardItem>
-      </CardBody>
-    </CardContainer>
+            <CardBody className="bg-gradient-to-bl from-blue-700 to-purple-600 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto sm:w-[30rem] h-auto rounded-xl p-4 border">
+              <CardItem translateZ="50" className="w-full">
+                <img
+                  src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025128/workspace_lyay7t.jpg"
+                  height="500"
+                  width="500"
+                  className="h-96 w-full object-cover rounded-xl group-hover/card:shadow-xl"
+                  alt="thumbnail"
+                />
+              </CardItem>
+            </CardBody>
+          </CardContainer>
         </div>
       </div>
     </section>
