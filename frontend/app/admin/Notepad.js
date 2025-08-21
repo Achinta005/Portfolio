@@ -129,7 +129,7 @@ const Notepad = ({ onDocumentSaved }) => {
       <h3 className="text-lg font-bold text-black mb-4 text-center dark:text-gray-100 w-full">
         Your Personal NotePad
       </h3>
-      <div className="p-6 bg-none grid grid-cols-2 gap-5">
+      <div className="p-6 bg-none grid lg:grid-cols-2 grid-cols-1 gap-5">
         <div className="bg-white/10 p-4 backdrop-blur-3xl rounded-lg">
           <form onSubmit={handleSubmit}>
             {error && (

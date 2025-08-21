@@ -21,8 +21,8 @@ const ContactResponse = () => {
   }, []);
 
   return (
-    <div className="bg-[url(https://res.cloudinary.com/dc1fkirb4/image/upload/v1755757547/response_arjl1x.webp)] bg-cover border-2 border-white rounded-2xl">
-      <header className="relative left-[40vw] text-2xl font-bold text-green-600 top-5">
+    <div className="bg-[url(https://res.cloudinary.com/dc1fkirb4/image/upload/v1755757547/response_arjl1x.webp)] bg-cover border-2 border-white rounded-2xl w-full">
+      <header className="text-center lg:text-left lg:ml-[40vw] text-2xl font-bold text-green-600 mt-5">
         Contact Responses
       </header>
       <section className="w-full overflow-x-auto">
