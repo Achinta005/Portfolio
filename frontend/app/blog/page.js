@@ -67,8 +67,8 @@ export default function BlogPage() {
         }}
       />
       <div style={{ position: "relative", zIndex: 1 }}>
-        <div className="min-h-screen ">
-          <div className="max-w-6xl mx-auto px-6 py-12">
+        <div className="min-h-screen mb-16">
+          <div className="max-w-6xl mx-auto px-6 pt-5">
             <div className="mb-12 text-center">
               <motion.div
                 rel="noopener noreferrer"
@@ -123,7 +123,7 @@ export default function BlogPage() {
                         {post.title}
                       </h2>
 
-                      <p className="text-gray-400 mb-4 leading-relaxed line-clamp-3 dark:text-gray-400">
+                      <p className="text-gray-400 mb-4 leading-relaxed line-clamp-3 ">
                         {post.excerpt}
                       </p>
 
@@ -131,7 +131,7 @@ export default function BlogPage() {
                         {post.tags.slice(0, 3).map((tag) => (
                           <span
                             key={tag}
-                            className="px-2 py-1 bg-white/10 text-green-500 text-xs rounded-full dark:bg-gray-400 dark:text-black"
+                            className="px-2 py-1 bg-white/10 text-green-500 text-xs rounded-full"
                           >
                             {tag}
                           </span>

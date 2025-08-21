@@ -6,7 +6,7 @@ import { getUserFromToken, removeAuthToken, getAuthToken } from "../lib/auth";
 import Project from "./Project";
 import ContactResponse from "./ContactResponse";
 import Notepad from "./Notepad";
-import Link from "next/link";
+import Image from "next/image";
 
 const AdminPage = () => {
   const [user, setUser] = useState(null);
@@ -100,62 +100,116 @@ const AdminPage = () => {
 
   // Main Dashboard View
   return (
-    <div className="min-h-screen dark:bg-gray-800">
-      <Link href="/" className="mb-4 px-4 py-2 bg-white/20 text-white rounded hover:bg-white/60">HOME</Link>
+    <div className="min-h-screen bg-[url(https://wallpapers.com/images/hd/desktop-background-6v9qjuvtrckgn4mm.jpg)] bg-cover bg-center h-64 w-full">
       <div className="container mx-auto px-4 py-8">
-        <header className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 p-2 text-center left-[39vw] lg:relative dark:text-gray-100">
-              Dashboard
-            </h1>
-            <p className="text-green-700 font-bold text-xl ">
-              Welcome {user.username} (Role: {user.role})
+        <header className="grid grid-cols-3 gap-64 mb-8">
+          <div className="bg-white/10 backdrop-blur-2xl w-60 p-2.5 rounded-lg">
+            <p className="text-green-500 font-bold text-xl text-nowrap text-center">
+              Welcome {user.username}
             </p>
           </div>
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            Logout
-          </button>
+          <div className="bg-white/10 backdrop-blur-2xl p-1 rounded-lg">
+            <h1 className="text-3xl font-bold text-gray-100">Dashboard</h1>
+          </div>
+          <div>
+            <button
+              onClick={handleLogout}
+              className="bg-red-400 text-white rounded-lg hover:bg-red-500 p-2"
+            >
+              Logout
+            </button>
+          </div>
         </header>
 
         {fetchError && <p className="text-red-500 mb-4">{fetchError}</p>}
         {/* Only for Admin--> */}
         {user.role === "admin" && (
-          <div className="grid grid-cols-3 gap-6 bg-white/30 rounded-lg shadow-2xl p-6 h-[50vh] dark:bg-gray-900">
-            <h3 className="col-span-3 w-[15vw]  text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 lg:relative lg:left-[38vw] h-10">
-              Admin Controls
-            </h3>
-            <button
-              onClick={() => setActiveView("projects")}
-              className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-12"
-            >
-              Manage Projects →
-            </button>
-            <button
-              onClick={() => setActiveView("messages")}
-              className="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 h-12"
-            >
-              View Messages →
-            </button>
-            <button
-              onClick={() => setActiveView("Notepad")}
-              className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 text-center me-2 mb-2 h-12"
-            >
-              Go To Notepad →
-            </button>
+          <div className="grid grid-cols-3 gap-6 rounded-lg shadow-2xl p-6 h-[50vh]">
+            <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl grid grid-cols-1">
+              <div>
+                <Image
+                  src="/a1.jpg"
+                  alt="project img"
+                  width={300}
+                  height={30}
+                  className="rounded-lg border-2 border-white"
+                />
+              </div>
+              <button
+                className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-1.5"
+                onClick={() => setActiveView("projects")}
+              >
+                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
+                  Manage Projects →
+                </span>
+              </button>
+            </div>
+            <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl grid grid-cols-1">
+              <div className="w-[275px] h-[100px]">
+                <Image
+                  src="/a2.png"
+                  alt="responses"
+                  width={165}
+                  height={30}
+                  className="w-full h-[185px] object-contain border-2 border-white p-1.5 rounded-lg"
+                />
+              </div>
+              <button
+                className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-12"
+                onClick={() => setActiveView("messages")}
+              >
+                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
+                  View Messages →
+                </span>
+              </button>
+            </div>
+            <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl grid grid-cols-1">
+              <div className="w-[275px] h-[100px]">
+                <Image
+                  src="/a3.jpeg"
+                  alt="Notepad"
+                  width={200}
+                  height={100}
+                  className="w-full h-[185px] object-contain border-2 border-white p-1.5 rounded-lg"
+                />
+              </div>
+              <button
+                className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-12"
+                onClick={() => setActiveView("Notepad")}
+              >
+                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
+                  Go To Notepad →
+                </span>
+              </button>
+            </div>
           </div>
         )}
 
         {/* Only for Editor(user)--> */}
         {user.role === "editor" && (
-          <button
-            onClick={() => setActiveView("Notepad")}
-            className="font-medium w-auto p-2 lg:relative lg:top-[20vh] lg:left-[42.5vw] text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 shadow-lg shadow-lime-500/50 dark:shadow-lg dark:shadow-lime-800/80 rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-          >
-            Go To Notepad →
-          </button>
+          <div className="bg-white/20 rounded-lg backdrop-blur-3xl w-52 p-2 grid grid-cols-1">
+              <div>
+                <Image
+                  src="/a3.jpeg"
+                  alt="Notepad"
+                  width={300}
+                  height={150}
+                  className="object-contain border-2 border-white p-1.5 rounded-lg"
+                />
+              </div>
+              <button
+                className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-1"
+                onClick={() => setActiveView("Notepad")}
+              >
+                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
+                  Go To Notepad →
+                </span>
+              </button>
+            </div>
         )}
       </div>
     </div>

@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { setAuthToken, getAuthToken } from "../lib/auth"; // Assuming this file exists from your code
-import Image from "next/image";
 import React, { Suspense } from "react";
 import OAuth from "./oAuth";
 import Link from "next/link";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { cn } from "../lib/util";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -64,7 +66,7 @@ const LoginPage = () => {
     }
   };
   return (
-    <div className="min-h-screen flex items-center justify-center dark:bg-gray-800">
+    <div className="min-h-screen flex items-center justify-center">
       <Link
         href="/"
         className="mb-4 px-4 py-2 bg-white/20 text-white rounded hover:bg-white/60 absolute top-2 left-2"
@@ -76,50 +78,46 @@ const LoginPage = () => {
           <h2 className="text-3xl font-bold text-gray-100 mb-2">
             Welcome Back
           </h2>
-          <p className="text-gray-200">
-            Sign in to access your admin panel
-          </p>
+          <p className="text-gray-200">Sign in to access your admin panel</p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
-            <div>
-              <label
+            <LabelInputContainer>
+              <Label
                 htmlFor="username"
-                className="block text-sm font-medium text-purple-700 mb-1"
+                className="block text-sm font-medium mb-1"
               >
                 Username
-              </label>
-              <input
+              </Label>
+              <Input
                 id="username"
                 name="username"
                 type="text"
                 required
-                className="w-full px-3 py-2 border border-gray-300 text-purple-700 rounded-md placeholder-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter your username"
                 value={formData.username}
                 onChange={handleChange}
               />
-            </div>
+            </LabelInputContainer>
 
-            <div>
-              <label
+            <LabelInputContainer>
+              <Label
                 htmlFor="password"
-                className="block text-sm font-medium text-green-600 mb-1"
+                className="block text-sm font-medium mb-1"
               >
                 Password
-              </label>
-              <input
+              </Label>
+              <Input
                 id="password"
                 name="password"
                 type="password"
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-green-600 placeholder-black focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                required                
                 placeholder="Enter your password"
                 value={formData.password}
                 onChange={handleChange}
               />
-            </div>
+            </LabelInputContainer>
           </div>
 
           {error && (
@@ -131,9 +129,10 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium dark:text-white bg-gray-300 dark:bg-blue-600 hover:bg-gray-400 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] disabled:cursor-not-allowed"
           >
             {loading ? "Signing in..." : "Sign in"}
+            <BottomGradient />
           </button>
         </form>
         <Suspense fallback={<div>Loading dashboard...</div>}>
@@ -151,6 +150,23 @@ const LoginPage = () => {
         </div>
         {/* ----------------------- */}
       </div>
+    </div>
+  );
+};
+
+const BottomGradient = () => {
+  return (
+    <>
+      <span className="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100" />
+      <span className="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100" />
+    </>
+  );
+};
+
+const LabelInputContainer = ({ children, className }) => {
+  return (
+    <div className={cn("flex w-full flex-col space-y-2", className)}>
+      {children}
     </div>
   );
 };
