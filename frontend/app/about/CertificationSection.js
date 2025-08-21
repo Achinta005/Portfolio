@@ -1,7 +1,7 @@
 "use client";
 import { easeOut, motion } from "framer-motion";
 import { PinContainer } from "@/components/ui/3dpin";
-import { X, Download, ExternalLink, ZoomIn, ZoomOut } from "lucide-react";
+import { X, Download, ExternalLink, ZoomIn, ZoomOut, AlertCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 
 // Certificate Popup Component
@@ -10,14 +10,66 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
+  const [loadError, setLoadError] = useState(false);
+  const [useViewer, setUseViewer] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setLoadError(false);
+      setUseViewer(false);
+      setZoomLevel(1);
+      setImagePosition({ x: 0, y: 0 });
+    }
+  }, [isOpen]);
 
   if (!isOpen || !cert) return null;
 
+  // Function to get proper Google Drive preview URL
+  const getGoogleDrivePreviewUrl = (url) => {
+    const fileIdMatch = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    if (fileIdMatch) {
+      return `https://drive.google.com/file/d/${fileIdMatch[1]}/preview`;
+    }
+    return url;
+  };
+
+  // Function to get Google Drive download URL
+  const getGoogleDriveDownloadUrl = (url) => {
+    const fileIdMatch = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    if (fileIdMatch) {
+      return `https://drive.google.com/uc?export=download&id=${fileIdMatch[1]}`;
+    }
+    return url;
+  };
+
+  // Function to get document URL for display
+  const getDocumentUrl = (path) => {
+    if (path.includes('drive.google.com')) {
+      return getGoogleDrivePreviewUrl(path);
+    }
+    return path;
+  };
+
+  // Fallback to Google Docs Viewer
+  const getViewerUrl = (originalUrl) => {
+    let cleanUrl = originalUrl;
+    
+    // If it's a Google Drive link, get the direct download URL for viewer
+    if (originalUrl.includes('drive.google.com')) {
+      const fileIdMatch = originalUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
+      if (fileIdMatch) {
+        cleanUrl = `https://drive.google.com/uc?id=${fileIdMatch[1]}`;
+      }
+    }
+    
+    return `https://docs.google.com/gview?url=${encodeURIComponent(cleanUrl)}&embedded=true`;
+  };
+
   const handleZoomIn = () => setZoomLevel((prev) => Math.min(prev + 0.25, 3));
-  const handleZoomOut = () =>
-    setZoomLevel((prev) => Math.max(prev - 0.25, 0.5));
+  const handleZoomOut = () => setZoomLevel((prev) => Math.max(prev - 0.25, 0.5));
 
   const handleMouseDown = (e) => {
+    if (!useViewer) return; // Only allow dragging for images
     setIsDragging(true);
     setDragStart({
       x: e.clientX - imagePosition.x,
@@ -26,7 +78,7 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
   };
 
   const handleMouseMove = (e) => {
-    if (isDragging) {
+    if (isDragging && useViewer) {
       setImagePosition({
         x: e.clientX - dragStart.x,
         y: e.clientY - dragStart.y,
@@ -44,15 +96,40 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
   };
 
   const downloadCert = () => {
+    if (cert.path.includes('drive.google.com')) {
+      const downloadUrl = getGoogleDriveDownloadUrl(cert.path);
+      window.open(downloadUrl, '_blank');
+      return;
+    }
+    
+    // For direct URLs
     const link = document.createElement("a");
     link.href = cert.path;
     link.download = `${cert.name}.pdf`;
+    document.body.appendChild(link);
     link.click();
+    document.body.removeChild(link);
   };
 
   const openInNewTab = () => {
+    if (cert.path.includes('drive.google.com')) {
+      const fileIdMatch = cert.path.match(/\/d\/([a-zA-Z0-9-_]+)/);
+      if (fileIdMatch) {
+        window.open(`https://drive.google.com/file/d/${fileIdMatch[1]}/view`, "_blank");
+        return;
+      }
+    }
     window.open(cert.path, "_blank", "noopener,noreferrer");
   };
+
+  const handleIframeError = () => {
+    console.log("Primary iframe failed, switching to viewer");
+    setLoadError(true);
+    setUseViewer(true);
+  };
+
+  const documentUrl = getDocumentUrl(cert.path);
+  const viewerUrl = getViewerUrl(cert.path);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -63,7 +140,7 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
       />
 
       {/* Popup Container */}
-      <div className="relative bg-white rounded-lg shadow-2xl max-w-4xl max-h-[90vh] w-full mx-4 overflow-hidden">
+      <div className="relative bg-white rounded-lg shadow-2xl max-w-5xl max-h-[95vh] w-full mx-4 overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b bg-gray-50">
           <div className="flex items-center space-x-3">
@@ -71,6 +148,9 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
               src={cert.icon}
               alt={cert.name}
               className="w-8 h-8 rounded object-contain"
+              onError={(e) => {
+                e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xMiAxNS41IDQtNEw5LjUgOGwtMi00IiBzdHJva2U9IiM5Y2EzYWYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==';
+              }}
             />
             <div>
               <h3 className="font-bold text-lg text-gray-900">{cert.name}</h3>
@@ -108,7 +188,7 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
             <button
               onClick={downloadCert}
               className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
-              title="Download"
+              title="Download Certificate"
             >
               <Download size={16} />
             </button>
@@ -119,6 +199,18 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
             >
               <ExternalLink size={16} />
             </button>
+            {loadError && (
+              <button
+                onClick={() => {
+                  setLoadError(false);
+                  setUseViewer(!useViewer);
+                }}
+                className="p-2 hover:bg-yellow-200 text-yellow-600 rounded-lg transition-colors"
+                title="Switch Viewer"
+              >
+                <AlertCircle size={16} />
+              </button>
+            )}
             <button
               onClick={onClose}
               className="p-2 hover:bg-red-100 text-red-600 rounded-lg transition-colors"
@@ -132,24 +224,51 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
         {/* Content Area */}
         <div
           className="relative overflow-hidden bg-gray-100"
-          style={{ height: "70vh" }}
+          style={{ height: "75vh" }}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         >
-          {/* Certificate Display */}
+          {/* Status indicator */}
+          {loadError && (
+            <div className="absolute top-4 left-4 z-10 bg-yellow-100 border border-yellow-300 text-yellow-800 px-3 py-2 rounded-lg text-sm flex items-center gap-2">
+              <AlertCircle size={14} />
+              Using fallback viewer
+            </div>
+          )}
+
+          {/* Document Display */}
           <div className="w-full h-full flex items-center justify-center">
-            {cert.path.toLowerCase().endsWith(".pdf") ? (
-              <iframe
-                src={cert.path}
-                className="w-full h-full border-0"
-                title={cert.name}
-                style={{
-                  transform: `scale(${zoomLevel}) translate(${imagePosition.x}px, ${imagePosition.y}px)`,
-                  transformOrigin: "center center",
-                }}
-              />
+            {cert.path.toLowerCase().includes('.pdf') || cert.path.includes('drive.google.com') ? (
+              !useViewer ? (
+                <iframe
+                  key={`primary-${documentUrl}`}
+                  src={documentUrl}
+                  className="w-full h-full border-0"
+                  title={cert.name}
+                  style={{
+                    transform: `scale(${zoomLevel})`,
+                    transformOrigin: "center center",
+                  }}
+                  onLoad={() => setLoadError(false)}
+                  onError={handleIframeError}
+                  sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                />
+              ) : (
+                <iframe
+                  key={`fallback-${viewerUrl}`}
+                  src={viewerUrl}
+                  className="w-full h-full border-0"
+                  title={`${cert.name} (Viewer)`}
+                  style={{
+                    transform: `scale(${zoomLevel})`,
+                    transformOrigin: "center center",
+                  }}
+                  sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                />
+              )
             ) : (
+              // For image certificates
               <img
                 src={cert.path}
                 alt={cert.name}
@@ -161,6 +280,10 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
                   transformOrigin: "center center",
                 }}
                 onMouseDown={handleMouseDown}
+                onError={(e) => {
+                  console.error("Image failed to load:", cert.path);
+                  setLoadError(true);
+                }}
                 draggable={false}
               />
             )}
@@ -170,7 +293,10 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
         {/* Footer */}
         <div className="p-3 bg-gray-50 border-t">
           <p className="text-xs text-gray-500 text-center">
-            Use mouse wheel to zoom • Click and drag to pan • Press ESC to close
+            {cert.path.includes('.pdf') || cert.path.includes('drive.google.com') 
+              ? "PDF Document • Use zoom controls • Click download or open in new tab"
+              : "Use mouse wheel to zoom • Click and drag to pan • Press ESC to close"
+            }
           </p>
         </div>
       </div>
@@ -182,81 +308,91 @@ export default function CertificationSection() {
   const [selectedCert, setSelectedCert] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
+  // Updated certifications with proper cloud URLs
   const certifications = [
     {
-      name: "Full Stack Web Devolopment",
+      name: "Full Stack Web Development",
       issuer: "Teachnook",
       year: "2023",
       icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755346694/1630662755102_c5fstb.jpg",
-      path: "/Teachnook COURSE Completion Certificate _ Achinta Hazra.pdf",
+      path: "https://drive.google.com/file/d/1_J7kK8ZRz6hcsvHXbyihoHYFpKwkXb5c/view?usp=drive_link",
     },
     {
       name: "Internship Training Program on ADVANCE JAVA",
       issuer: "AUTODESK CADEASY",
       year: "2024",
       icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
-      path: "/Advance Java.pdf",
+      path: "https://drive.google.com/file/d/1PyD8l2orxHMfyA4skCp5lMOjSqljyi-M/view?usp=drive_link",
     },
     {
       name: "Internship Training Program on CORE JAVA",
       issuer: "AUTODESK CADEASY",
       year: "2024",
       icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
-      path: "/Full Stack Data Science using Python.pdf",
+      path: "https://drive.google.com/file/d/1Q0k9n4u05-dcvaUFaC2Yx7RQyPyR4BQD/view?usp=drive_link",
     },
     {
       name: "FULL STACK DATA SCIENCE USING PYTHON",
       issuer: "AUTODESK CADEASY",
       year: "2024",
       icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
-      path: "/ML using Python.pdf",
+      path: "https://drive.google.com/file/d/1Q8oM_bPdpNhX9C5gUHrntjk9xV8fonJg/view?usp=drive_link",
     },
     {
       name: "MACHINE LEARNING USING PYTHON",
       issuer: "AUTODESK CADEASY",
       year: "2024",
       icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
-      path: "/Advance Java.pdf",
+      path: "https://drive.google.com/file/d/1Q9M3fCFhzDryyMVUq-ISFTg2tWj-s7Eo/view?usp=drive_link",
     },
     {
       name: "IEEE Student Chapter",
       issuer: "The Institution Of Engineer",
       year: "2023",
       icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755346757/Institution_of_Engineers__India__Logo_lv3eix.svg",
-      path: "/IEEE.pdf",
+      path: "https://drive.google.com/file/d/1Pm-mWpZ-Wr6Nekp7mm1Cpa1i9Y817Dyz/view?usp=drive_link",
     },
     {
       name: "IEEE Seminar",
       issuer: "DIATM",
       year: "2023",
       icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755346757/Institution_of_Engineers__India__Logo_lv3eix.svg",
-      path: "/IEI Seminar.pdf",
+      path: "https://drive.google.com/file/d/1IGBuoQxdc1xItYWnoLzfBsgSD7bz5DJH/view?usp=drive_link",
     },
   ];
 
   const openCertificatePopup = (cert) => {
+    console.log("Opening certificate:", cert.name, cert.path);
     setSelectedCert(cert);
     setIsPopupOpen(true);
   };
 
   const closeCertificatePopup = () => {
     setIsPopupOpen(false);
-    setSelectedCert(null);
+    setTimeout(() => setSelectedCert(null), 300); // Delay to allow animation
   };
 
   // Handle ESC key to close popup
   useEffect(() => {
     const handleEsc = (e) => {
-      if (e.key === "Escape") closeCertificatePopup();
+      if (e.key === "Escape" && isPopupOpen) {
+        closeCertificatePopup();
+      }
     };
+    
     if (isPopupOpen) {
       document.addEventListener("keydown", handleEsc);
-      return () => document.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = "hidden"; // Prevent background scroll
+      
+      return () => {
+        document.removeEventListener("keydown", handleEsc);
+        document.body.style.overflow = "unset";
+      };
     }
   }, [isPopupOpen]);
 
   return (
-    <section className="py-20 ">
+    <section className="py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <motion.div
@@ -286,7 +422,7 @@ export default function CertificationSection() {
               key={index}
               initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: easeOut }}
+              transition={{ duration: 0.8, ease: easeOut, delay: index * 0.1 }}
             >
               <PinContainer
                 title="VIEW CERTIFICATE"
@@ -298,6 +434,9 @@ export default function CertificationSection() {
                       src={cert.icon}
                       alt={cert.name}
                       className="w-fit h-fit rounded-lg object-contain"
+                      onError={(e) => {
+                        e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xMiAxNS41IDQtNEw5LjUgOGwtMi00IiBzdHJva2U9IiM5Y2EzYWYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==';
+                      }}
                     />
                   </div>
                   <div className="flex-1">
