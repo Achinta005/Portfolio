@@ -1,43 +1,54 @@
-'use client'
-import React from 'react'
-import { useState,useEffect } from 'react'
+"use client";
+import React from "react";
+import { useState, useEffect } from "react";
 
 const ContactResponse = () => {
-    const [contact, setcontact] = useState([])
+  const [contact, setcontact] = useState([]);
 
-    useEffect(() => {
-      const getContacts=async()=>{
-        try {
-            const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact_response`);
-            const data=await res.json();
-            setcontact(data);
-        } catch (error) {
-            console.error("Error fetching Contacts:", error);
-        }
-
+  useEffect(() => {
+    const getContacts = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/contact_response`
+        );
+        const data = await res.json();
+        setcontact(data);
+      } catch (error) {
+        console.error("Error fetching Contacts:", error);
       }
-      getContacts();
-    }, [])
-    
-  return (
-    <div>
-       <header className='text-black relative left-[40vw] text-2xl font-bold dark:text-gray-100'>Contact Responses</header>
-        <section className='h-auto bg-white flex flex-wrap justify-center dark:bg-gray-800'>
-           
-            {contact.map((post,index)=>{
-                return(
-                <div key={index} className='border border-gray-400 rounded-2xl shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:scale-105 h-[50vh] m-6 w-2xs text-black dark:text-gray-200 p-2'>
-                <p>Name : {post.name}</p>
-                <p>Email : {post.email}</p>
-                <p className='break-words overflow-auto max-w-full'>Subject : {post.subject}</p>
-                <p className="break-words overflow-y-scroll max-h-40 custom-scrollbar">Message : {post.message}</p>
-            </div>
-                );
-            })}
-            
-        </section>
-    </div>
-  )
-}
+    };
+    getContacts();
+  }, []);
 
-export default ContactResponse
+  return (
+    <div className="bg-[url(https://res.cloudinary.com/dc1fkirb4/image/upload/v1755757547/response_arjl1x.webp)] bg-cover border-2 border-white rounded-2xl">
+      <header className="relative left-[40vw] text-2xl font-bold text-green-600 top-5">
+        Contact Responses
+      </header>
+      <section className="w-full overflow-x-auto">
+        <table className="min-w-full border border-gray-400 rounded-b-4xl shadow-md text-black">
+          <thead className="bg-green-400 text-amber-50">
+            <tr>
+              <th className="border px-4 py-2">Name</th>
+              <th className="border px-4 py-2">Email</th>
+              <th className="border px-4 py-2">Subject</th>
+              <th className="border px-4 py-2">Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            {contact.map((post, index) => (
+              <tr key={index} className="hover:bg-yellow-500 transition">
+                <td className="border px-4 py-2">{post.name}</td>
+                <td className="border px-4 py-2">{post.email}</td>
+                <td className="border px-4 py-2">{post.subject}</td>
+                <td className="border px-4 py-2 break-words">{post.message}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    </div>
+  );
+};
+
+export default ContactResponse;

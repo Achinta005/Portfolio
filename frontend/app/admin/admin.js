@@ -46,10 +46,10 @@ const AdminPage = () => {
   // Conditionally render the full-page components for Admin and user(editor here)
   if (user.role === "admin" && activeView === "projects") {
     return (
-      <div className="p-4 dark:bg-gray-700">
+      <div className="p-4 bg-gradient-to-tr from-blue-700 via-pink-600 to-yellow-300 ">
         <button
           onClick={() => setActiveView("dashboard")}
-          className="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+          className="mb-4 px-4 py-2 cursor-pointer bg-white/40 backdrop-blur-3xl text-white rounded hover:bg-white/20"
         >
           ← Back to Dashboard
         </button>
@@ -60,10 +60,10 @@ const AdminPage = () => {
 
   if (user.role === "admin" && activeView === "messages") {
     return (
-      <div className="p-6 dark:bg-gray-800">
+      <div className="p-6 bg-[url(https://res.cloudinary.com/dc1fkirb4/image/upload/v1755757547/response_arjl1x.webp)] bg-cover">
         <button
           onClick={() => setActiveView("dashboard")}
-          className="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+          className="mb-4 px-4 py-2 bg-white/20 backdrop-blur-3xl text-black cursor-pointer rounded hover:bg-white/20"
         >
           ← Back to Dashboard
         </button>
@@ -73,10 +73,10 @@ const AdminPage = () => {
   }
   if (user.role === "admin" && activeView === "Notepad") {
     return (
-      <div className="p-8 dark:bg-gray-800">
+      <div className="p-8 bg-[url(https://res.cloudinary.com/dc1fkirb4/image/upload/v1755758676/notepad_e5ey08.jpg)] bg-cover">
         <button
           onClick={() => setActiveView("dashboard")}
-          className="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+          className="mb-4 px-4 py-2 bg-white/10 backdrop-blur-3xl text-white cursor-pointer rounded hover:bg-white/20"
         >
           ← Back to Dashboard
         </button>
@@ -103,7 +103,7 @@ const AdminPage = () => {
     <div className="min-h-screen bg-[url(https://wallpapers.com/images/hd/desktop-background-6v9qjuvtrckgn4mm.jpg)] bg-cover bg-center h-64 w-full">
       <div className="container mx-auto px-4 py-8">
         <header className="grid grid-cols-3 gap-64 mb-8">
-          <div className="bg-white/10 backdrop-blur-2xl w-60 p-2.5 rounded-lg">
+          <div className="bg-white/10 backdrop-blur-2xl w-64 p-2.5 rounded-lg">
             <p className="text-green-500 font-bold text-xl text-nowrap text-center">
               Welcome {user.username}
             </p>
@@ -146,17 +146,17 @@ const AdminPage = () => {
               </button>
             </div>
             <div className="bg-white/20 rounded-lg backdrop-blur-3xl grid grid-cols-1 place-items-center">
-              <div className="w-[275px] h-[100px]">
+              <div className="w-[350px] h-[170px]">
                 <Image
                   src="/a2.png"
                   alt="responses"
-                  width={165}
+                  width={170}
                   height={30}
-                  className="w-full h-[185px] object-contain border-2 border-white p-1.5 rounded-lg"
+                  className="w-full h-[200px] object-contain border-2 border-white p-1.5 rounded-lg"
                 />
               </div>
               <button
-                className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-7"
+                className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-1.5"
                 onClick={() => setActiveView("messages")}
               >
                 <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
@@ -166,17 +166,17 @@ const AdminPage = () => {
               </button>
             </div>
             <div className="bg-white/20 rounded-lg backdrop-blur-3xl grid grid-cols-1 place-items-center">
-              <div className="w-[275px] h-[100px]">
+              <div>
                 <Image
                   src="/a3.jpeg"
                   alt="Notepad"
-                  width={200}
+                  width={300}
                   height={100}
-                  className="w-full h-[185px] object-contain border-2 border-white p-1.5 rounded-lg"
+                  className="border-2 border-white rounded-lg mt-4"
                 />
               </div>
               <button
-                className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-7"
+                className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 mb-0.5"
                 onClick={() => setActiveView("Notepad")}
               >
                 <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
