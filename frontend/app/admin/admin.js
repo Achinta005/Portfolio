@@ -125,7 +125,7 @@ const AdminPage = () => {
         {/* Only for Admin--> */}
         {user.role === "admin" && (
           <div className="grid grid-cols-3 gap-6 rounded-lg shadow-2xl p-6 h-[50vh]">
-            <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl grid grid-cols-1">
+            <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl grid grid-cols-1 place-items-center">
               <div>
                 <Image
                   src="/a1.jpg"
@@ -145,7 +145,7 @@ const AdminPage = () => {
                 </span>
               </button>
             </div>
-            <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl grid grid-cols-1">
+            <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl grid grid-cols-1 place-items-center">
               <div className="w-[275px] h-[100px]">
                 <Image
                   src="/a2.png"
@@ -165,7 +165,7 @@ const AdminPage = () => {
                 </span>
               </button>
             </div>
-            <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl grid grid-cols-1">
+            <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl grid grid-cols-1 place-items-center">
               <div className="w-[275px] h-[100px]">
                 <Image
                   src="/a3.jpeg"
@@ -190,7 +190,7 @@ const AdminPage = () => {
 
         {/* Only for Editor(user)--> */}
         {user.role === "editor" && (
-          <div className="bg-white/20 rounded-lg backdrop-blur-3xl w-52 p-2 grid grid-cols-1">
+          <div className="bg-white/20 rounded-lg backdrop-blur-3xl w-52 p-2 grid grid-cols-1 place-items-center">
               <div>
                 <Image
                   src="/a3.jpeg"
