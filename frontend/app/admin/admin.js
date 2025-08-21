@@ -125,7 +125,7 @@ const AdminPage = () => {
         {/* Only for Admin--> */}
         {user.role === "admin" && (
           <div className="grid grid-cols-3 gap-6 rounded-lg shadow-2xl p-6 h-[50vh]">
-            <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl grid grid-cols-1 place-items-center">
+            <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl lg:grid grid-cols-1 place-items-center hidden">
               <div>
                 <Image
                   src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755754879/a1_cqsx8x.jpg"
