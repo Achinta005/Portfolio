@@ -128,7 +128,7 @@ const AdminPage = () => {
             <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl grid grid-cols-1 place-items-center">
               <div>
                 <Image
-                  src="/a1.jpg"
+                  src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755754879/a1_cqsx8x.jpg"
                   alt="project img"
                   width={300}
                   height={30}
@@ -148,7 +148,7 @@ const AdminPage = () => {
             <div className="bg-white/20 rounded-lg backdrop-blur-3xl grid grid-cols-1 place-items-center">
               <div className="w-[350px] h-[170px]">
                 <Image
-                  src="/a2.png"
+                  src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755754879/a2_jjgzr3.png"
                   alt="responses"
                   width={170}
                   height={30}
@@ -168,7 +168,7 @@ const AdminPage = () => {
             <div className="bg-white/20 rounded-lg backdrop-blur-3xl grid grid-cols-1 place-items-center">
               <div>
                 <Image
-                  src="/a3.jpeg"
+                  src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755754879/a3_uutdd3.avif"
                   alt="Notepad"
                   width={300}
                   height={100}
