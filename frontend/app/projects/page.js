@@ -5,6 +5,8 @@ import ProjectsHero from "./ProjectsHero";
 import ProjectsGrid from "./ProjectsGrid";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { ExpandableCardDemo } from "./projectMobile";
+import useIsMobile from "@/components/useIsMobile";
 
 export default function Projects() {
   const vantaRef = useRef(null);
@@ -49,7 +51,26 @@ export default function Projects() {
       if (vantaEffect) vantaEffect.destroy();
     };
   }, [vantaEffect]);
-  return (
+    const isMobile = useIsMobile(1024);
+  return isMobile?(<>
+      <div
+        ref={vantaRef}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: -1,
+          overflow: "hidden",
+        }}
+      />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <ProjectsHero />
+        <ExpandableCardDemo/>
+        <Header />
+      </div>
+    </>): (
     <>
       <div
         ref={vantaRef}

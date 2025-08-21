@@ -1,12 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import useIsMobile from "@/components/useIsMobile";
-import ProjectGridMobile from "./ProjectGridMobile";
 import { AnimatedTestimonials } from "@/components/ui/animatedProjects";
 
 export default function ProjectsGrid() {
-  const isMobile = useIsMobile(1024);
+
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
@@ -43,9 +41,7 @@ export default function ProjectsGrid() {
       : project.technologies || "No technologies listed"
   }));
 
-  return isMobile ? (
-    <ProjectGridMobile />
-  ) : (
+  return (
     <section className="py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Category Filter Buttons */}

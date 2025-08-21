@@ -171,7 +171,10 @@ export const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
               <IconArrowRight className="h-5 w-5 lg:h-7 lg:w-7 text-black transition-transform duration-300 group-hover/button:-rotate-12 dark:text-neutral-200" />
             </button>
           </div>
+
+
         </div>
+        
       </div>
     </div>
   );
