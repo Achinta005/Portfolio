@@ -109,7 +109,7 @@ const AdminPage = () => {
             </p>
           </div>
           <div className="bg-white/10 backdrop-blur-2xl p-1 rounded-lg">
-            <h1 className="text-3xl font-bold text-gray-100">Dashboard</h1>
+            <h1 className="text-3xl font-bold text-gray-100 text-center">Dashboard</h1>
           </div>
           <div>
             <button
