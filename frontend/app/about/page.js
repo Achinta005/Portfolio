@@ -1,12 +1,17 @@
 "use client";
 
+import * as THREE from "three";
+import { useEffect, useRef, useState } from "react";
+import Header from "@/components/Navbar";
+import useIsMobile from "@/components/useIsMobile";
 import AboutHero from "./AboutHero";
 import EducationSection from "./EducationSection";
 import CertificationSection from "./CertificationSection";
 import InteractiveSkillsDisplay from "./InteractiveSkillsDisplay";
-import { useEffect, useRef, useState } from "react";
-import Header from "@/components/Navbar";
-import * as THREE from "three";
+import AboutHeroMobile from "./AboutHeroMobile";
+import InteractiveDisplayMobile from "./InteractiveDisplayMobile";
+import EducationSectionMobile from "./EducationSectionMobile";
+import CertificationSectionMobile from "./CertificationSectionMobile";
 
 export default function About() {
   const vantaRef = useRef(null);
@@ -51,7 +56,30 @@ export default function About() {
       if (vantaEffect) vantaEffect.destroy();
     };
   }, [vantaEffect]);
-  return (
+  const isMobile = useIsMobile(1024); //Defining brek point for mobile
+  return isMobile?(
+    <>
+      <div
+        ref={vantaRef}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          zIndex: -1,
+          overflow: "hidden",
+        }}
+      />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <AboutHeroMobile />
+        <InteractiveDisplayMobile />
+        <EducationSectionMobile />
+        <CertificationSectionMobile />
+        <Header/>
+      </div>
+    </>
+  ): (
     <>
       <div
         ref={vantaRef}

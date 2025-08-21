@@ -1,17 +1,11 @@
 "use client";
 import Image from "next/image";
 import { easeOut, motion } from "framer-motion";
-import useIsMobile from "@/components/useIsMobile";
-import AboutHeroMobile from "./AboutHeroMobile";
 import { CardItem, CardBody, CardContainer } from "@/components/ui/3dCard";
 
 export default function AboutHero() {
-  const isMobile = useIsMobile(1024); //Defining brek point for mobile
-  return isMobile ? (
-    <div>
-      <AboutHeroMobile />
-    </div>
-  ) : (
+  
+  return (
     <section className="py-8 ">
       <div className="lg:max-w-7xl w-[90vw] mx-auto px-4 lg:px-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center bg-white/10 rounded-lg backdrop-blur-md">

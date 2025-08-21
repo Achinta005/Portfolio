@@ -44,7 +44,6 @@ const SkillNode = ({
   const handleButtonClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log("Button clicked for:", skill.skill);
     toggleDetail(skill.id);
   };
 
@@ -56,6 +55,7 @@ const SkillNode = ({
           className="w-20 h-24 rounded-2xl shadow-lg flex flex-col items-center justify-center relative overflow-visible transition-all duration-300 hover:scale-105 hover:-translate-y-1 bg-gradient-to-br from-blue-300 to-red-200"
           onMouseEnter={() => onHover(skill.id)}
           onMouseLeave={() => onHover(null)}
+          onClick={handleButtonClick}
         >
           {/* Content Container */}
           <div className="text-center p-3 w-full h-36 lg:flex lg:flex-col lg:items-center lg:justify-center rounded-2xl">
@@ -68,7 +68,7 @@ const SkillNode = ({
           </div>
 
           {/* Button Container */}
-          <div className="flex-1 flex items-center justify-center  rounded-b-lg w-full relative top-[-5vh]">
+          <div className="flex-1 flex items-center justify-center  rounded-b-lg w-full relative top-[-4vh]">
             <button
               className={`cursor-pointer  rounded-full transition-all duration-200 ${
                 isDetailOpen ? "text-black rotate-180" : ""
@@ -154,15 +154,6 @@ const SkillNode = ({
                 />
               </div>
             </div>
-
-            {/* Stage Badge */}
-            {/* <div
-              className="inline-flex items-center px-4 py-2 rounded-full text-white text-sm font-bold shadow-lg"
-              style={{ backgroundColor: stageColors[skill.stage] }}
-            >
-              <span className="mr-2">🎯</span>
-              {skill.stage} Stage in {skill.category}
-            </div> */}
           </div>
         </div>
       )}

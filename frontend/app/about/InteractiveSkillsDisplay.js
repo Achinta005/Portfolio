@@ -2,8 +2,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronDown, X } from "lucide-react";
 import { BackgroundGradient } from "@/components/ui/background_gradient";
-import useIsMobile from "@/components/useIsMobile";
-import InteractiveDisplayMobile from "./InteractiveDisplayMobile";
 
 // Custom Skill Node Component
 const SkillNode = ({
@@ -423,13 +421,7 @@ const SimplifiedSkillsGrid = () => {
     }
   };
 
-  const isMobile = useIsMobile(1024);
-
-  return isMobile?(
-    <div>
-      <InteractiveDisplayMobile/>
-    </div>
-  ): (
+  return(
     <div className="min-h-screen w-full">
       {/* Header */}
       <div className="text-center py-8">
