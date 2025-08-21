@@ -145,7 +145,7 @@ const AdminPage = () => {
                 </span>
               </button>
             </div>
-            <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl grid grid-cols-1 place-items-center">
+            <div className="bg-white/20 rounded-lg backdrop-blur-3xl grid grid-cols-1 place-items-center">
               <div className="w-[275px] h-[100px]">
                 <Image
                   src="/a2.png"
@@ -156,7 +156,7 @@ const AdminPage = () => {
                 />
               </div>
               <button
-                className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-12"
+                className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-7"
                 onClick={() => setActiveView("messages")}
               >
                 <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
@@ -165,7 +165,7 @@ const AdminPage = () => {
                 </span>
               </button>
             </div>
-            <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl grid grid-cols-1 place-items-center">
+            <div className="bg-white/20 rounded-lg backdrop-blur-3xl grid grid-cols-1 place-items-center">
               <div className="w-[275px] h-[100px]">
                 <Image
                   src="/a3.jpeg"
@@ -176,7 +176,7 @@ const AdminPage = () => {
                 />
               </div>
               <button
-                className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-12"
+                className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-7"
                 onClick={() => setActiveView("Notepad")}
               >
                 <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
@@ -190,7 +190,7 @@ const AdminPage = () => {
 
         {/* Only for Editor(user)--> */}
         {user.role === "editor" && (
-          <div className="bg-white/20 rounded-lg backdrop-blur-3xl w-52 p-2 grid grid-cols-1 place-items-center">
+          <div className="bg-white/20 rounded-lg backdrop-blur-3xl w-52 p-2 grid grid-cols-1">
               <div>
                 <Image
                   src="/a3.jpeg"
