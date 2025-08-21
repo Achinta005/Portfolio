@@ -45,7 +45,7 @@ const FloatingDockMobile = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30"
             onClick={() => setOpen(false)}
           />
         )}
@@ -75,7 +75,7 @@ const FloatingDockMobile = ({
                 duration: 0.2
               }
             }}
-            className="absolute bottom-full right-0 mb-4 flex flex-col-reverse gap-3 z-50">
+            className="absolute bottom-full right-0 mb-4 flex flex-col-reverse gap-3 z-40">
             {items.map((item, idx) => (
               <motion.div
                 key={item.title}
@@ -139,7 +139,7 @@ const FloatingDockMobile = ({
           stiffness: 300, 
           damping: 20 
         }}
-        className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg hover:bg-white/20 transition-all duration-200 z-50">
+        className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-lg hover:bg-white/20 transition-all duration-200 z-40">
         <AnimatePresence mode="wait">
           {open ? (
             <motion.div

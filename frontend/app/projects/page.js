@@ -3,10 +3,10 @@
 import Header from "../../components/Navbar";
 import ProjectsHero from "./ProjectsHero";
 import ProjectsGrid from "./ProjectsGrid";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { ExpandableCardDemo } from "./projectMobile";
 import useIsMobile from "@/components/useIsMobile";
+import { ExpandableCardDemo } from "./projectMobile";
 
 export default function Projects() {
   const vantaRef = useRef(null);
@@ -51,7 +51,7 @@ export default function Projects() {
       if (vantaEffect) vantaEffect.destroy();
     };
   }, [vantaEffect]);
-    const isMobile = useIsMobile(1024);
+const isMobile=useIsMobile(1024);
   return isMobile?(<>
       <div
         ref={vantaRef}
@@ -65,12 +65,12 @@ export default function Projects() {
           overflow: "hidden",
         }}
       />
-      <div style={{ position: "relative", zIndex: 1 }}>
+      <div style={{ position: "relative", zIndex: 1 }}> 
         <ProjectsHero />
-        <ExpandableCardDemo/>
-        <Header />
+        <ExpandableCardDemo />
+        <Header/>
       </div>
-    </>): (
+    </>):(
     <>
       <div
         ref={vantaRef}
@@ -85,9 +85,9 @@ export default function Projects() {
         }}
       />
       <div style={{ position: "relative", zIndex: 1 }}>
+        <Header /> 
         <ProjectsHero />
         <ProjectsGrid />
-        <Header />
       </div>
     </>
   );

@@ -67,102 +67,108 @@ export function ExpandableCardDemo() {
 
   return (
     <>
-      {/* Background Blur when Modal Open */}
-      <AnimatePresence>
-        {active && typeof active === "object" && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/20 h-full w-full z-10"
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Expanded Card Modal */}
-      <AnimatePresence>
-        {active && typeof active === "object" ? (
-          <div className="fixed inset-0 grid place-items-center z-[100]">
-            <motion.button
-              key={`button-${active.title}-${id}`}
-              layout
+      <div className="w-full h-screen overflow-hidden flex items-center justify-center">
+        {/* Background Blur when Modal Open */}
+        <AnimatePresence>
+          {active && typeof active === "object" && (
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{ opacity: 0, transition: { duration: 0.05 } }}
-              className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6"
-              onClick={() => setActive(null)}
-            >
-              <CloseIcon />
-            </motion.button>
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/20 h-full w-full z-10"
+            />
+          )}
+        </AnimatePresence>
 
-            <motion.div
-              layoutId={`card-${active.title}-${id}`}
-              ref={ref}
-              className="w-full max-w-[400px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-gray-600 sm:rounded-3xl overflow-hidden"
-            >
-              <motion.div layoutId={`image-${active.title}-${id}`}>
-                <img
-                  width={200}
-                  height={150}
-                  src={active.src}
-                  alt={active.title}
-                  className="w-full h-52 sm:rounded-tr-lg sm:rounded-tl-lg object-cover object-top"
-                />
-              </motion.div>
+        {/* Expanded Card Modal */}
+        <AnimatePresence>
+          {active && typeof active === "object" ? (
+            <div className="fixed inset-0 grid place-items-center z-[100]">
+              <motion.button
+                key={`button-${active.title}-${id}`}
+                layout
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, transition: { duration: 0.05 } }}
+                className="flex absolute top-32 right-10 lg:hidden items-center justify-center bg-[url(https://res.cloudinary.com/dc1fkirb4/image/upload/v1755795854/projmobile_orbr6c.jpg)] bg-cover rounded-full h-6 w-6"
+                onClick={() => setActive(null)}
+              >
+                <CloseIcon />
+              </motion.button>
 
-              <div className="overflow-y-scroll custom-scrollbar">
-                <div className=" justify-between items-start p-2">
-                  <div>
-                    <motion.p
-                      layoutId={`title-${active.title}-${id}`}
-                      className=" text-white text-2xl font-bold"
-                    >
-                      {active.title}
-                    </motion.p>
+              <motion.div
+                layoutId={`card-${active.title}-${id}`}
+                ref={ref}
+                className="w-full max-w-[300px] h-[70vh] flex flex-col bg-[url(https://res.cloudinary.com/dc1fkirb4/image/upload/v1755796060/projmobile_c5nf4p.jpg)] bg-cover sm:rounded-3xl overflow-hidden rounded-lg"
+              >
+                <motion.div layoutId={`image-${active.title}-${id}`}>
+                  <img
+                    width={200}
+                    height={150}
+                    src={active.src}
+                    alt={active.title}
+                    className="w-full h-56 rounded-lg object-cover object-top p-2"
+                  />
+                </motion.div>
 
-                    <motion.p
-                      layoutId={`title-${active.title}-${id}`}
-                      className="font-bold text-neutral-700 dark:text-neutral-200"
-                    >
-                      {active.content}
-                    </motion.p>
-                    <motion.p
-                      layoutId={`description-${active.description}-${id}`}
-                      className="text-neutral-600 dark:text-neutral-400"
-                    >
-                      {active.description}
-                    </motion.p>
-                  </div>
-                  <div className="flex mt-3">
-                    <motion.div
-                      layoutId={`button-${active.title}-${id}`}
-                      href={active.ctaLink}
-                      className="px-4 text-sm rounded-full font-bold  text-green-600"
-                    >
-                      GitHub URL
-                    </motion.div>
+                <div className="overflow-y-scroll custom-scrollbar">
+                  <div className=" justify-between items-start p-2">
+                    <div>
+                      <motion.p
+                        layoutId={`title-${active.title}-${id}`}
+                        className=" text-white text-xl font-bold"
+                      >
+                        {active.title}
+                      </motion.p>
 
-                    <motion.div
-                      layoutId={`button-${active.title}-${id}`}
-                      href={active.ctaText}
-                      className="px-4 text-sm rounded-full font-bold text-green-600 "
-                    >
-                      Live URL
-                    </motion.div>
+                      <motion.p
+                        layoutId={`title-${active.title}-${id}`}
+                        className="text-pretty text-green-600 "
+                      >
+                        {active.content}
+                      </motion.p>
+                      <motion.p
+                        layoutId={`description-${active.description}-${id}`}
+                        className="text-neutral-400 "
+                      >
+                        {active.description}
+                      </motion.p>
+                    </div>
+                    <div className="flex mt-3">
+                      <motion.div
+                        layoutId={`button-${active.title}-${id}`}
+                        className="px-4 text-sm rounded-full font-semibold  text-green-600 flex items-center  hover:text-blue-500 transition-colors cursor-pointer"
+                      >
+                        <div className="w-4 h-4 flex items-center justify-center mr-1">
+                          <i className="ri-github-line"></i>
+                        </div>
+                        <a href={active.ctaLink}>Code</a>
+                      </motion.div>
+
+                      <motion.div
+                        layoutId={`button-${active.title}-${id}`}
+                        className="px-4 text-sm rounded-full  flex items-center font-semibold text-green-600 hover:text-blue-500 transition-colors cursor-pointer"
+                      >
+                        <div className="w-4 h-4 flex items-center justify-center mr-1">
+                          <i className="ri-external-link-line"></i>
+                        </div>
+                        <a href={active.ctaText}>Live Demo</a>
+                      </motion.div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          </div>
-        ) : null}
-      </AnimatePresence>
+              </motion.div>
+            </div>
+          ) : null}
+        </AnimatePresence>
 
-      {/* Initial Display - Animated Testimonials */}
-      <div className="">
-        <AnimatedTestimonialsMobile
-          testimonials={testimonials}
-          setActive={setActive}
-        />
+        {/* Initial Display - Animated Testimonials */}
+        <div className="">
+          <AnimatedTestimonialsMobile
+            testimonials={testimonials}
+            setActive={setActive}
+          />
+        </div>
       </div>
     </>
   );

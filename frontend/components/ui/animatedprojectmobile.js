@@ -17,8 +17,8 @@ export const AnimatedTestimonialsMobile = ({
   const randomRotateY = () => Math.floor(Math.random() * 21) - 10;
 
   return (
-    <div className="mx-auto max-w-[170vw] py-10 font-sans antialiased">
-      <div className="relative grid grid-cols-1 gap-2 left-[12vw]">
+    <div className="mx-auto max-w-[170vw] font-sans antialiased">
+      <div className="relative grid grid-cols-1 gap-2 -top-40">
         <div className="relative h-80 w-[70vw]">
           <AnimatePresence>
             {testimonials.map((testimonial, index) => (
@@ -50,7 +50,7 @@ export const AnimatedTestimonialsMobile = ({
           </AnimatePresence>
         </div>
 
-        <div className="flex gap-4 pt-12 relative left-12">
+        <div className="flex gap-4 pt-12 relative">
           <button onClick={handlePrev} className="group/button flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800 cursor-pointer">
             <IconArrowLeft className="h-5 w-5 text-black transition-transform duration-300 group-hover/button:rotate-12 dark:text-neutral-200" />
           </button>
