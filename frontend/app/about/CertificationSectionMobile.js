@@ -1,6 +1,5 @@
 "use client";
 import { easeOut, motion } from "framer-motion";
-import { PinContainer } from "@/components/ui/3dpin";
 import {
   X,
   Download,
@@ -10,6 +9,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Eye } from "lucide-react";
 
 // Certificate Popup Component
 const CertificatePopup = ({ cert, isOpen, onClose }) => {
@@ -155,40 +155,22 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
       {/* Popup Container */}
       <div className="relative bg-white rounded-lg shadow-2xl max-w-5xl max-h-[95vh] w-full mx-4 overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b bg-gray-50">
-          <div className="flex items-center space-x-3">
-            <img
-              src={cert.icon}
-              alt={cert.name}
-              className="w-8 h-8 rounded object-contain"
-              onError={(e) => {
-                e.target.src =
-                  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xMiAxNS41IDQtNEw5LjUgOGwtMi00IiBzdHJva2U9IiM5Y2EzYWYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==";
-              }}
-            />
-            <div>
-              <h3 className="font-bold text-lg text-gray-900">{cert.name}</h3>
-              <p className="text-sm text-gray-600">
-                {cert.issuer} • {cert.year}
-              </p>
-            </div>
-          </div>
-
+        <div className="flex items-center justify-between p-2 border-b bg-gray-50">
           {/* Controls */}
           <div className="flex items-center space-x-2">
             <button
               onClick={handleZoomOut}
-              className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+              className="px-2 hover:bg-gray-200 rounded-lg transition-colors"
               title="Zoom Out"
             >
               <ZoomOut size={16} />
             </button>
-            <span className="text-sm text-gray-600 min-w-[4rem] text-center">
+            <span className="text-sm text-gray-600 min-w-[2rem] text-center">
               {Math.round(zoomLevel * 100)}%
             </span>
             <button
               onClick={handleZoomIn}
-              className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+              className="px-2 hover:bg-gray-200 rounded-lg transition-colors"
               title="Zoom In"
             >
               <ZoomIn size={16} />
@@ -201,14 +183,14 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
             </button>
             <button
               onClick={downloadCert}
-              className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+              className="px-1 hover:bg-gray-200 rounded-lg transition-colors"
               title="Download Certificate"
             >
               <Download size={16} />
             </button>
             <button
               onClick={openInNewTab}
-              className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+              className="px-2 hover:bg-gray-200 rounded-lg transition-colors"
               title="Open in New Tab"
             >
               <ExternalLink size={16} />
@@ -219,7 +201,7 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
                   setLoadError(false);
                   setUseViewer(!useViewer);
                 }}
-                className="p-2 hover:bg-yellow-200 text-yellow-600 rounded-lg transition-colors"
+                className="px-4 hover:bg-yellow-200 text-yellow-600 rounded-lg transition-colors"
                 title="Switch Viewer"
               >
                 <AlertCircle size={16} />
@@ -227,7 +209,7 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
             )}
             <button
               onClick={onClose}
-              className="p-2 hover:bg-red-100 text-red-600 rounded-lg transition-colors"
+              className="px-1 hover:bg-red-100 text-red-600 rounded-lg transition-colors relative -right-8"
               title="Close"
             >
               <X size={16} />
@@ -238,7 +220,7 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
         {/* Content Area */}
         <div
           className="relative overflow-hidden bg-gray-100"
-          style={{ height: "75vh" }}
+          style={{ height: "30vh" }}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
@@ -303,16 +285,6 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
               />
             )}
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="p-3 bg-gray-50 border-t">
-          <p className="text-xs text-gray-500 text-center">
-            {cert.path.includes(".pdf") ||
-            cert.path.includes("drive.google.com")
-              ? "PDF Document • Use zoom controls • Click download or open in new tab"
-              : "Use mouse wheel to zoom • Click and drag to pan • Press ESC to close"}
-          </p>
         </div>
       </div>
     </div>
@@ -431,47 +403,66 @@ export default function CertificationSectionMobile() {
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-2 gap-32">
-          {certifications.map((cert, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: easeOut, delay: index * 0.1 }}
-              
-            >
-              <PinContainer
-                title="VIEW CERTIFICATE"
-                onClick={() => openCertificatePopup(cert)}
-                
-              >
-                <div className="items-center mb-4 w-[60vh]">
-                  <div className="w-[12vw] h-[6vh] flex items-center justify-center bg-blue-100 rounded-lg flex-shrink-0 left-6 relative mb-3">
-                    <img
-                      src={cert.icon}
-                      alt={cert.name}
-                      className="w-fit h-fit rounded-lg object-contain"
-                      onError={(e) => {
-                        e.target.src =
-                          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xMiAxNS41IDQtNEw5LjUgOGwtMi00IiBzdHJva2U9IiM5Y2EzYWYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==";
-                      }}
-                    />
-                  </div>
-                    <div className="flex flex-wrap w-16">
-                        <h3 className="font-bold text-left text-blue-600 text-sm hover:text-blue-700 text-wrap">
-                      {cert.name}
-                        </h3>
+        <div className="overflow-x-auto -ml-3">
+          <table className="min-w-full rounded-lg">
+            <thead className="bg-white/10 backdrop-blur-3xl">
+              <tr>
+                <th className="p-1 text-left text-sm font-bold text-green-600">
+                  Icon
+                </th>
+                <th className="p-1 text-left text-sm font-bold text-green-600">
+                  Name
+                </th>
+                <th className="p-1 text-left text-sm font-bold text-green-600">
+                  Issuer
+                </th>
+                <th className="p-1 text-left text-sm font-bold text-green-600">
+                  Year
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {certifications.map((cert, index) => (
+                <motion.tr
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="border-b border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
+                >
+                  <td className="p-2">
+                    <div className="w-12 h-12 flex items-center justify-center bg-blue-100 rounded-lg">
+                      <img
+                        src={cert.icon}
+                        alt={cert.name}
+                        className="w-8 h-8 object-contain"
+                        onError={(e) => {
+                          e.target.src =
+                            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xMiAxNS41IDQtNEw5LjUgOGwtMi00IiBzdHJva2U9IiM5Y2EzYWYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==";
+                        }}
+                      />
                     </div>
-                </div>
-                <p className="text-gray-100 font-medium text-sm mb-1 dark:text-gray-400">
-                  {cert.issuer}
-                </p>
-                <p className="text-gray-300 text-xs dark:text-gray-600">
-                  {cert.year}
-                </p>
-              </PinContainer>
-            </motion.div>
-          ))}
+                  </td>
+                  <td className="p-2 text-sm font-semibold text-white">
+                    <span className="block">{cert.name}</span>
+                    <button
+                      className="mt-1 block text-blue-600 hover:text-blue-800"
+                      onClick={() => openCertificatePopup(cert)}
+                    >
+                      <Eye />
+                    </button>
+                  </td>
+
+                  <td className="p-2 text-sm text-gray-700 dark:text-gray-300">
+                    {cert.issuer}
+                  </td>
+                  <td className="p-2 text-sm text-gray-500 dark:text-gray-400">
+                    {cert.year}
+                  </td>
+                </motion.tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 
