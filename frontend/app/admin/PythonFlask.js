@@ -12,6 +12,9 @@ export default function ConnectionCheck() {
   useEffect(() => {
     let cancelled = false;
 
+
+
+    
     async function check() {
       try {
         const [ mRes, uRes] = await Promise.all([
