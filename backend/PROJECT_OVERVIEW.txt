@@ -1,0 +1,143 @@
+Project: Portfolio Backend API
+Author: Achinta Hazra
+
+Overview
+- This is a Node.js/Express backend with MongoDB (Mongoose) for a portfolio site.
+- Provides APIs for projects listing, contact form submissions, resume download, image upload to Cloudinary, and user authentication (local and Google OAuth).
+- Security and infrastructure via CORS, JWT auth, and environment-based config.
+
+Tech Stack
+- Runtime: Node.js
+- Framework: Express (v5)
+- Database: MongoDB via Mongoose
+- Auth: JWT (jsonwebtoken), bcryptjs for hashing, custom middleware, Google OAuth (manual flow via axios)
+- File Uploads: Multer (memory storage) + Cloudinary
+- Utilities: axios, cors, dotenv
+- Installed but not wired in code: helmet, morgan, compression, express-session, typesense
+- Dev: nodemon
+
+Project Structure (key paths)
+- server.js: App entrypoint, CORS, parsers, static hosting, and route mounting
+- config/db.js: Mongo connection helper using MONGO_URL
+- config/Cloudinary.js: Cloudinary client config from env
+- controllers/authController.js: Local auth register/login
+- middleware/auth.js: JWT verification middleware
+- routes/*: Feature routes (health, contact, contact_response, upload, projects, resume, auth)
+- models/*: Mongoose models (Project, Contact, Username, Document)
+- files/resume.pdf: Static resume served for download
+
+Environment Variables (expected)
+- PORT: Optional server port (default 3001)
+- MONGO_URL: MongoDB connection string
+- JWT_SECRET: Secret for signing JWT tokens
+- JWT_EXPIRES_IN: Optional token TTL for OAuth flow (default 1d)
+- CLOUDINARY_CLOUD_NAME: Cloudinary cloud name
+- CLOUDINARY_API_KEY: Cloudinary API key
+- CLOUDINARY_API_SECRET: Cloudinary API secret
+- GOOGLE_CLIENT_ID: Google OAuth client id
+- GOOGLE_CLIENT_SECRET: Google OAuth client secret
+- REDIRECT_URL: Google OAuth redirect URL (backend route /api/auth/google/callback)
+- FRONTEND_URL: Frontend base URL to redirect with token after OAuth
+
+Server Setup (server.js)
+- CORS configured with allowlist origins, methods [GET, POST, OPTIONS], credentials true
+- Root GET / returns simple text
+- Body parsers: body-parser.json() and express.json()
+- Static: /uploads serves local folder (not used by Cloudinary flow)
+- Route mounts:
+  - /health
+  - /contact
+  - /upload
+  - /projects
+  - /contact_response
+  - /download/resume
+  - /api/auth
+- DB connection: connectDB() from config/db.js
+
+Routes and Endpoints
+- Health
+  - GET /health → 200 "Backend is alive"
+
+- Projects
+  - GET /projects → returns all projects sorted by order desc
+
+- Contact
+  - POST /contact
+    - body: { name, email, subject, message }
+    - action: saves contact entry
+
+- Contact Responses
+  - GET /contact_response → returns all saved contact entries
+
+- Resume Download
+  - GET /download/resume → downloads files/resume.pdf as Achinta_Resume.pdf
+
+- Upload (Project + Image)
+  - POST /upload (multipart/form-data)
+    - form fields: category, title, technologies (comma-separated), liveUrl, githubUrl, description, order
+    - file field: image
+    - flow: multer memoryStorage → Cloudinary upload_stream(folder: Uploaded_Images) → save project with secure_url
+
+- Auth (mounted at /api/auth)
+  - POST /api/auth/register
+    - body: { username, password, role }
+    - creates new user (unique username); password hashed via bcrypt
+  - POST /api/auth/login
+    - body: { username, password }
+    - returns { token } (JWT payload: { id, username, role }, expiresIn 2h)
+  - GET /api/auth/dashboard (protected) → placeholder
+  - GET /api/auth/documents (protected)
+    - returns documents for req.user.id sorted by updatedAt desc
+  - POST /api/auth/documents (protected)
+    - body: { title, content }
+    - creates document with owner_id = req.user.id
+  - GET /api/auth/google → redirects to Google OAuth consent (scopes: email profile)
+  - GET /api/auth/google/callback
+    - exchanges code for access token
+    - fetches user info, signs JWT, auto-creates or validates Username user, redirects to FRONTEND_URL/login?token=...
+
+Models (Mongoose)
+- models/projectModel.js (collection: projectmodel)
+  - { title, description, image, category, order:Number, technologies:[String], liveUrl, githubUrl }
+
+- models/contact.js (collection: contact_info)
+  - { name, email, subject, message }
+
+- models/Username.js
+  - { username: String (unique), password: String (hashed), role: 'admin'|'editor'|'viewer' (default 'viewer') }
+  - timestamps enabled
+
+- models/Document.js
+  - { title: String (required), content: String (default ''), owner_id: ObjectId ref 'Username' (required, indexed) }
+  - timestamps enabled
+
+Middleware
+- middleware/auth.js
+  - Reads Authorization: Bearer <token>
+  - Verifies using JWT_SECRET, attaches decoded payload to req.user
+
+Config
+- config/db.js → connectDB(): connects to process.env.MONGO_URL, logs success or exits on failure
+- config/Cloudinary.js → uses CLOUDINARY_* envs to configure cloudinary.v2
+
+Security and Best Practices Notes
+- JWT secret must be strong; env vars must be set in deployment
+- CORS allowlist includes multiple vercel domains; update when domains change
+- Consider enabling Helmet and compression (dependencies installed but not applied)
+- Consider rate limiting for auth and contact routes
+- Validate inputs on all endpoints (basic checks present on documents POST)
+- Multer memory storage keeps file in memory; ensure size limits via multer options
+
+Scripts
+- npm run start → node server.js
+- npm run dev → nodemon server.js
+
+Known/Observed Gaps
+- Helmet, compression, morgan, express-session, typesense installed but not currently used in code
+- No tests configured
+- No role-based authorization checks yet (role exists in JWT)
+
+Deployment
+- Expose PORT and env vars
+- Ensure Cloudinary and MongoDB credentials
+- Serve behind HTTPS; CORS origins configured for frontend
