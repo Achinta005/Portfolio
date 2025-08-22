@@ -73,3 +73,5 @@ next-env.d.ts
 /frontend/.pnpm-debug.log*
 
 /client_secret_721558066666-2lkfsj4gi9rm7l4abqoasta2c31sfqm5.apps.googleusercontent.com.json
+
+/backend(Python)/

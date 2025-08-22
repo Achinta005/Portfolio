@@ -7,6 +7,7 @@ import Project from "./Project";
 import ContactResponse from "./ContactResponse";
 import Notepad from "./Notepad";
 import Image from "next/image";
+import PythonFlask from "./PythonFlask";
 
 const AdminPage = () => {
   const [user, setUser] = useState(null);
@@ -84,6 +85,19 @@ const AdminPage = () => {
       </div>
     );
   }
+  if (user.role === "admin" && activeView === "Flask") {
+    return (
+      <div className="p-8 bg-gray-600 bg-cover">
+        <button
+          onClick={() => setActiveView("dashboard")}
+          className="mb-4 px-4 py-2 bg-white/10 backdrop-blur-3xl text-white cursor-pointer rounded hover:bg-white/20"
+        >
+          ← Back to Dashboard
+        </button>
+        <PythonFlask />
+      </div>
+    );
+  }
   if (user.role === "editor" && activeView === "Notepad") {
     return (
       <div className="container mx-auto p-4">
@@ -100,7 +114,13 @@ const AdminPage = () => {
 
   // Main Dashboard View
   return (
-    <div className="min-h-screen bg-[url(https://wallpapers.com/images/hd/desktop-background-6v9qjuvtrckgn4mm.jpg)] bg-cover bg-center h-64 w-full">
+    <div
+      className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed overflow-x-hidden"
+      style={{
+        backgroundImage:
+          "url('https://wallpapers.com/images/hd/desktop-background-6v9qjuvtrckgn4mm.jpg')",
+      }}
+    >
       <div className="container mx-auto px-4 py-8">
         <header className="grid grid-cols-3 gap-64 mb-8">
           <div className="bg-white/10 backdrop-blur-2xl w-64 p-2.5 rounded-lg">
@@ -109,7 +129,9 @@ const AdminPage = () => {
             </p>
           </div>
           <div className="bg-white/10 backdrop-blur-2xl p-1 rounded-lg">
-            <h1 className="text-3xl font-bold text-gray-100 text-center">Dashboard</h1>
+            <h1 className="text-3xl font-bold text-gray-100 text-center">
+              Dashboard
+            </h1>
           </div>
           <div>
             <button
@@ -125,8 +147,7 @@ const AdminPage = () => {
         {/* Only for Admin--> */}
         {user.role === "admin" && (
           <div className="grid grid-cols-3 gap-6 rounded-lg shadow-2xl p-6 h-[50vh]">
-<div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl hidden lg:grid lg:grid-cols-1 lg:place-items-center">
-
+            <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl hidden lg:grid lg:grid-cols-1 lg:place-items-center">
               <div>
                 <Image
                   src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755754879/a1_cqsx8x.jpg"
@@ -143,6 +164,26 @@ const AdminPage = () => {
                 <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
                 <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
                   Manage Projects →
+                </span>
+              </button>
+            </div>
+            <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl hidden lg:grid lg:grid-cols-1 lg:place-items-center">
+              <div>
+                <Image
+                  src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755834332/flask_o3qe55.jpg"
+                  alt="project img"
+                  width={300}
+                  height={30}
+                  className="rounded-lg border-2 border-white"
+                />
+              </div>
+              <button
+                className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-1.5"
+                onClick={() => setActiveView("Flask")}
+              >
+                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
+                  Python Flask →
                 </span>
               </button>
             </div>
@@ -192,25 +233,25 @@ const AdminPage = () => {
         {/* Only for Editor(user)--> */}
         {user.role === "editor" && (
           <div className="bg-white/20 rounded-lg backdrop-blur-3xl w-52 p-2 grid grid-cols-1">
-              <div>
-                <Image
-                  src="/a3.jpeg"
-                  alt="Notepad"
-                  width={300}
-                  height={150}
-                  className="object-contain border-2 border-white p-1.5 rounded-lg"
-                />
-              </div>
-              <button
-                className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-1"
-                onClick={() => setActiveView("Notepad")}
-              >
-                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
-                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
-                  Go To Notepad →
-                </span>
-              </button>
+            <div>
+              <Image
+                src="/a3.jpeg"
+                alt="Notepad"
+                width={300}
+                height={150}
+                className="object-contain border-2 border-white p-1.5 rounded-lg"
+              />
             </div>
+            <button
+              className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-1"
+              onClick={() => setActiveView("Notepad")}
+            >
+              <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+              <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
+                Go To Notepad →
+              </span>
+            </button>
+          </div>
         )}
       </div>
     </div>
