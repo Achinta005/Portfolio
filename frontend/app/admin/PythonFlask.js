@@ -1,25 +1,19 @@
 // ConnectionCheck.jsx
 import { useEffect, useState } from "react";
 
-
-
 export default function ConnectionCheck() {
   const [status, setStatus] = useState("checking...");
   const [message, setMessage] = useState(null);
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
-
+  const PYTHON_BACKEND_API_BASE = "http://127.0.0.1:8000"||"https://portfolio-m4xg.onrender.com";
   useEffect(() => {
     let cancelled = false;
-
-
-
-    
     async function check() {
       try {
-        const [ mRes, uRes] = await Promise.all([
-          fetch(`${process.env.API_BASE}/api/message`),
-          fetch(`${process.env.API_BASE}/api/user/123`),
+        const [mRes, uRes] = await Promise.all([
+          fetch(`${PYTHON_BACKEND_API_BASE}/api/message`),
+          fetch(`${PYTHON_BACKEND_API_BASE}/api/user/123`),
         ]);
         if (!mRes.ok) throw new Error(`message HTTP ${mRes.status}`);
         if (!uRes.ok) throw new Error(`user HTTP ${uRes.status}`);
@@ -53,8 +47,8 @@ export default function ConnectionCheck() {
       {message && (
         <>
           <h3>/api/message</h3>
-             Backend :- {message.message}
-             Time:- {message.time}
+          Backend :- {message.message}
+          Time:- {message.time}
         </>
       )}
 

@@ -13,6 +13,10 @@ app.add_middleware(
     allow_credentials=True,  # optional: if you plan to use cookies/auth
 )
 
+@app.get("/healthz")
+def healthz():
+    return {"ok": True, "service": "fastapi", "time": time.time()}
+
 @app.get("/api/message")
 def message():
     return {"message": "Hello from FastAPI", "time": "2025-08-22"}
