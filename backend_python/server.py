@@ -13,9 +13,9 @@ app.add_middleware(
     allow_credentials=True,  # optional: if you plan to use cookies/auth
 )
 
-@app.get("/healthz")
-def healthz():
-    return {"ok": True, "service": "fastapi", "time": time.time()}
+@app.head("/healthz")
+async def health_check_head():
+    return {"status": "ok"}
 
 @app.get("/api/message")
 def message():
