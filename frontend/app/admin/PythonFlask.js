@@ -1,7 +1,7 @@
 // ConnectionCheck.jsx
 import { useEffect, useState } from "react";
 
-const API_BASE = "http://127.0.0.1:8000";
+
 
 export default function ConnectionCheck() {
   const [status, setStatus] = useState("checking...");
@@ -15,8 +15,8 @@ export default function ConnectionCheck() {
     async function check() {
       try {
         const [ mRes, uRes] = await Promise.all([
-          fetch(`${API_BASE}/api/message`),
-          fetch(`${API_BASE}/api/user/123`),
+          fetch(`${process.env.API_BASE}/api/message`),
+          fetch(`${process.env.API_BASE}/api/user/123`),
         ]);
         if (!mRes.ok) throw new Error(`message HTTP ${mRes.status}`);
         if (!uRes.ok) throw new Error(`user HTTP ${uRes.status}`);
