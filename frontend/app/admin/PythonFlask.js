@@ -6,7 +6,7 @@ export default function ConnectionCheck() {
   const [message, setMessage] = useState(null);
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
-  const PYTHON_BACKEND_API_BASE = "http://127.0.0.1:8000"||"https://portfolio-m4xg.onrender.com";
+  const PYTHON_BACKEND_API_BASE ="https://portfolio-m4xg.onrender.com";
   useEffect(() => {
     let cancelled = false;
     async function check() {
