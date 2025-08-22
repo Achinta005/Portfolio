@@ -2,6 +2,11 @@
   "compilerOptions": {
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "types": [],
+    "skipLibCheck": true
+  },
+  "typeAcquisition": {
+    "enable": false
   }
 }

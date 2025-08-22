@@ -1,11 +1,11 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import Homepage from "./Homepage/page";
 import Header from "../components/Navbar";
 
 export default function Page() {
+  
   const vantaRef = useRef(null);
   const [vantaEffect, setVantaEffect] = useState(null);
 
