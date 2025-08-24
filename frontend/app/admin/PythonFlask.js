@@ -6,14 +6,13 @@ export default function ConnectionCheck() {
   const [message, setMessage] = useState(null);
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
-  const PYTHON_BACKEND_API_BASE ="https://portfolio-m4xg.onrender.com";
   useEffect(() => {
     let cancelled = false;
     async function check() {
       try {
         const [mRes, uRes] = await Promise.all([
-          fetch(`${PYTHON_BACKEND_API_BASE}/api/message`),
-          fetch(`${PYTHON_BACKEND_API_BASE}/api/user/123`),
+          fetch(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/api/message`),
+          fetch(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/api/user/123`),
         ]);
         if (!mRes.ok) throw new Error(`message HTTP ${mRes.status}`);
         if (!uRes.ok) throw new Error(`user HTTP ${uRes.status}`);

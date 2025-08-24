@@ -1,28 +1,97 @@
-
-import Link from 'next/link';
-import { notFound } from 'next/navigation';
-import { ArrowLeft, Calendar, Clock } from 'lucide-react';
-import { getPostBySlug, getAllPosts } from '../../lib/blog';
-
-export async function generateStaticParams() {
-  const posts = getAllPosts();
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
-}
+"use client";
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft, Calendar, Clock } from "lucide-react";
+import { getPostBySlug } from "../../lib/blog";
 
 export default function BlogPost({ params }) {
-  const post = getPostBySlug(params.slug);
-  
+   const unwrappedParams = React.use(params);
+  const slug = unwrappedParams.slug;
+
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchPost() {
+      try {
+        setLoading(true);
+        const postData = await getPostBySlug(slug);
+        if (!postData) {
+          notFound();
+        }
+        setPost(postData);
+      } catch (err) {
+        setError("Failed to load blog post");
+        console.error("Error loading post:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (slug) {
+      fetchPost();
+    }
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-800">
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <Link 
+            href="/blog"
+            className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-8 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Blog
+          </Link>
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden dark:bg-gray-900">
+            <div className="p-8">
+              <div className="animate-pulse">
+                <div className="h-8 bg-gray-300 rounded mb-4"></div>
+                <div className="h-4 bg-gray-300 rounded mb-2"></div>
+                <div className="h-4 bg-gray-300 rounded mb-4"></div>
+                <div className="h-32 bg-gray-300 rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-800">
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <Link 
+            href="/blog"
+            className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-8 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Blog
+          </Link>
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden dark:bg-gray-900">
+            <div className="p-8">
+              <h1 className="text-2xl font-bold text-red-600 mb-4">Error</h1>
+              <p className="text-gray-600 dark:text-gray-300">{error}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!post) {
-    notFound();
+    return notFound();
   }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-800">
       <div className="max-w-4xl mx-auto px-6 py-12">
         <Link 
-          href="/#blogs"
+          href="/blog"
           className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-8 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />

@@ -8,9 +8,29 @@ import * as THREE from "three";
 import Header from "@/components/Navbar";
 
 export default function BlogPage() {
-  const posts = getAllPosts();
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const vantaRef = useRef(null);
   const [vantaEffect, setVantaEffect] = useState(null);
+
+  // Fetch posts from API
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        setLoading(true);
+        const postsData = await getAllPosts();
+        setPosts(postsData);
+      } catch (err) {
+        setError('Failed to load blog posts');
+        console.error('Error loading posts:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPosts();
+  }, []);
 
   useEffect(() => {
     async function loadVanta() {
@@ -51,6 +71,70 @@ export default function BlogPage() {
       if (vantaEffect) vantaEffect.destroy();
     };
   }, [vantaEffect]);
+
+  if (loading) {
+    return (
+      <>
+        <div
+          ref={vantaRef}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            zIndex: -1,
+            overflow: "hidden",
+          }}
+        />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div className="min-h-screen mb-16">
+            <div className="max-w-6xl mx-auto px-6 pt-5">
+              <div className="mb-12 text-center">
+                <h1 className="text-4xl font-bold text-yellow-100 mb-4">Blog</h1>
+                <p className="relative text-lg font-semibold lg:left-[12vw] text-gray-200 max-w-2xl">
+                  Loading blog posts...
+                </p>
+              </div>
+            </div>
+          </div>
+          <Header />
+        </div>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <div
+          ref={vantaRef}
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            zIndex: -1,
+            overflow: "hidden",
+          }}
+        />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div className="min-h-screen mb-16">
+            <div className="max-w-6xl mx-auto px-6 pt-5">
+              <div className="mb-12 text-center">
+                <h1 className="text-4xl font-bold text-yellow-100 mb-4">Blog</h1>
+                <p className="relative text-lg font-semibold lg:left-[12vw] text-red-400 max-w-2xl">
+                  {error}
+                </p>
+              </div>
+            </div>
+          </div>
+          <Header />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -152,20 +236,28 @@ export default function BlogPage() {
               ))}
             </div>
 
-            {/* Pagination placeholder */}
-            <div className="mt-12 flex justify-center">
-              <div className="flex space-x-2">
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-md">
-                  1
-                </button>
-                <button className="px-4 py-2 bg-white/20 text-gray-300 rounded-md hover:bg-gray-300">
-                  2
-                </button>
-                <button className="px-4 py-2 bg-white/20 text-gray-300 rounded-md hover:bg-gray-300">
-                  3
-                </button>
+            {posts.length === 0 && !loading && (
+              <div className="text-center text-gray-400 mt-12">
+                <p>No blog posts found.</p>
               </div>
-            </div>
+            )}
+
+            {/* Pagination placeholder */}
+            {posts.length > 0 && (
+              <div className="mt-12 flex justify-center">
+                <div className="flex space-x-2">
+                  <button className="px-4 py-2 bg-blue-600 text-white rounded-md">
+                    1
+                  </button>
+                  <button className="px-4 py-2 bg-white/20 text-gray-300 rounded-md hover:bg-gray-300">
+                    2
+                  </button>
+                  <button className="px-4 py-2 bg-white/20 text-gray-300 rounded-md hover:bg-gray-300">
+                    3
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         <Header />
