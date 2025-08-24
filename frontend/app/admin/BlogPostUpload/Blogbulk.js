@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { FileUpload } from "@/components/ui/dropfile";
+import HtmlEditor from "@/app/code-editor/htmlEditor";
 
 export function BlogUpload() {
   const [formData, setFormData] = useState({
@@ -16,22 +16,13 @@ export function BlogUpload() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleFileUpload = async (uploadedFiles) => {
-    if (!uploadedFiles.length) return;
-    const file = uploadedFiles[0];
-
-    if (!file.name.endsWith(".html")) {
-      setMessage("Please upload an HTML file");
-      return;
-    }
-
+  const handleHtmlEditorSubmit = (htmlContent) => {
     try {
-      const textContent = await file.text();
-      setFormData((prev) => ({ ...prev, content: textContent }));
+      setFormData((prev) => ({ ...prev, content: htmlContent }));
       setMessage("HTML file loaded successfully");
     } catch (err) {
       console.error(err);
-      setMessage("Error reading HTML file");
+      setMessage("Error Submittingg HTML file");
     }
   };
 
@@ -71,9 +62,9 @@ export function BlogUpload() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6 bg-gray-400 rounded-lg space-y-6">
+    <div className="w-full max-w-7xl mx-auto p-6 bg-gray-400 rounded-lg space-y-6">
       {/* Drag-and-drop section */}
-      <FileUpload onChange={handleFileUpload} />
+      <HtmlEditor onSubmit={handleHtmlEditorSubmit} />
       {message && <p className="mt-2 text-sm text-gray-200">{message}</p>}
 
       {/* Form section */}
