@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-
+//Used for Token Validation
 module.exports = function (req, res, next) {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1]; // Format: Bearer <token>

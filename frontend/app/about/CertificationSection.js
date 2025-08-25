@@ -311,6 +311,13 @@ export default function CertificationSection() {
   // Updated certifications with proper cloud URLs
   const certifications = [
     {
+      name:"Summer Internship Program 2025 organized by the IEEE Computational Intelligence Society, Kolkata Chapter",
+      issuer:"IEEE Computational Intelligence Society",
+      year:"2025",
+      icon:"https://res.cloudinary.com/dc1fkirb4/image/upload/v1756121821/IEEE_CIS_logo_o9m6uj.jpg",
+      path:"https://drive.google.com/file/d/1ha0jzG0Ga_C4o0QSEvn9z0TdIMzMHalD/view?usp=drive_link"
+    },
+    {
       name: "Full Stack Web Development",
       issuer: "Teachnook",
       year: "2023",
