@@ -43,10 +43,10 @@ export default function ProjectsGrid() {
   }));
 
   return (
-    <section className="py-20">
+    <section>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Category Filter Buttons */}
-        <div className="flex flex-wrap justify-center gap-4 mb-24">
+        <div className="flex flex-wrap justify-center gap-4 mb-5">
           {categories.map((category) => (
             <button
               key={category}
@@ -61,23 +61,24 @@ export default function ProjectsGrid() {
             </button>
           ))}
         </div>
-
-        {/* Loading state or Animated Testimonials */}
-        {projects.length === 0 ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="text-gray-500 dark:text-neutral-400">
-              Loading projects...
+        <div>
+          {/* Loading state or Animated Testimonials */}
+          {projects.length === 0 ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="text-gray-500 dark:text-neutral-400">
+                Loading projects...
+              </div>
             </div>
-          </div>
-        ) : testimonials.length === 0 ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="text-gray-500 dark:text-neutral-400">
-              No projects found in this category.
+          ) : testimonials.length === 0 ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="text-gray-500 dark:text-neutral-400">
+                No projects found in this category.
+              </div>
             </div>
-          </div>
-        ) : (
-          <AnimatedTestimonials testimonials={testimonials} />
-        )}
+          ) : (
+            <AnimatedTestimonials testimonials={testimonials} />
+          )}
+        </div>
       </div>
     </section>
   );
