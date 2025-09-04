@@ -2,11 +2,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import useIsMobile from "@/components/useIsMobile";
 import HerosectionMobile from "./HeroSectionMobile";
 
 export default function Herosection() {
   const isMobile = useIsMobile(1024);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
+
   const handleDownload = async () => {
     try {
       const response = await fetch(
@@ -30,109 +37,166 @@ export default function Herosection() {
     }
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.2,
+        staggerChildren: 0.15,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 30, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+      },
+    },
+  };
+
   return isMobile ? (
-    <div>
-      <HerosectionMobile />
-    </div>
+    <HerosectionMobile />
   ) : (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden ">
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pb-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="text-left bg-white/5 backdrop-blur-md p-8 shadow-lg lg:w-[55vw] w-[75vw] rounded-lg lg:rounded-r-full">
-            <h1 className="lg:text-[3.4rem] text-3xl mt-4 lg:mt-0 font-bold text-green-600 mb-6 w-2xl overflow-hidden whitespace-nowrap border-r-4 border-white pr-5 animate-typing">
-              <motion.span
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: false }} // triggers animation every time in view
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                style={{ display: "inline-block" }}
-              >
-                Hi, I&apos;m Achinta Hazra
-              </motion.span>
-            </h1>
-
-            <h2 className="text-xl lg:text-3xl text-gray-100 mb-6  font-bold">
-              <motion.span
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                style={{ display: "inline-block" }}
-              >
-                Developer & Learner
-              </motion.span>
-            </h2>
-            <p className=" text-gray-200 mb-8 max-w-xl lg:text-gray-200 lg:text-lg">
-              <motion.span
-                initial={{ opacity: 0, scale: 0.5 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                style={{ display: "inline-block" }}
-              >
-                I&apos;m Developer with a passion for building
-                dynamic, user-friendly, and scalable web applications. I
-                specialize in creating end-to-end solutions using modern
-                technologies across both frontend and backend. From crafting
-                responsive interfaces to developing robust APIs, I love turning
-                ideas into real-world digital products. I&apos;m always
-                exploring new tools and frameworks to improve my craft and
-                deliver clean, efficient code.
-              </motion.span>
-            </p>
-            <div className="flex flex-wrap gap-28 relative left-10">
-              <motion.div
-                rel="noopener noreferrer"
-                className="connect-button"
-                initial={{ opacity: 0, scale: 0 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-              >
-                <button
-                  onClick={handleDownload}
-                  rel="noopener noreferrer"
-                  className="button-connect"
+    <>
+      <section className="relative min-h-screen flex items-center justify-center px-6 -top-8">
+        <motion.div
+          className="relative z-10 max-w-6xl mx-auto w-full"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            {/* Left Content - Takes 7 columns */}
+            <motion.div
+              className="lg:col-span-7 space-y-8"
+              variants={itemVariants}
+            >
+              {/* Glassmorphism Container with Infinite Glow */}
+              <div className="relative bg-gradient-to-br from-slate-800/30 to-slate-900/20 backdrop-blur-md p-8 rounded-3xl border border-slate-700/50 shadow-2xl glow-container">
+                {/* Greeting */}
+                <motion.div
+                  className="text-emerald-400 mb-4 font-medium tracking-wide text-sm uppercase"
+                  variants={itemVariants}
                 >
-                  Download My Resume
-                  <span></span>
-                </button>
-                <span></span>
-              </motion.div>
-              <motion.div
-                rel="noopener noreferrer"
-                className="connect-button"
-                initial={{ opacity: 0, scale: 0 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-              >
-                <Link
-                  href="/contact"
-                  rel="noopener noreferrer"
-                  className="connect-button"
-                >
-                  <button>Get In Touch</button>
-                  <span></span>
-                </Link>
-                <span></span>
-              </motion.div>
-            </div>
-          </div>
+                  <span className="mr-2">👋</span> Welcome to my Page
+                </motion.div>
 
-          <div className=" w-80 h-80 sm:w-72 sm:h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 lg:left-[15vw] relative ">
-            <div className=" w-full h-full">
-              <Image
-                src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755695343/profile_kxt3ue.png"
-                alt="A professional headshot"
-                className="w-full h-full rounded-full object-cover object-center shadow-2xl"
-                width={320}
-                height={320}
-                priority
-              />
-              <div className=" absolute -bottom-0 -right-0 bg-blue-600 text-white p-4 rounded-full shadow-lg flex items-center justify-center text-2xl">
-                <i className="ri-code-s-slash-line" />
+                {/* Main Title */}
+                <motion.h1
+                  className="text-4xl lg:text-6xl font-black mb-6 leading-tight"
+                  variants={itemVariants}
+                >
+                  <span className="block text-white mb-2">Hi, I'm</span>
+                  <span className="block bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+                    Achinta Hazra
+                  </span>
+                </motion.h1>
+
+                {/* Subtitle */}
+                <motion.h2
+                  className="text-xl lg:text-2xl text-slate-300 mb-8 font-semibold"
+                  variants={itemVariants}
+                >
+                  <span className="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
+                    Developer & Learner
+                  </span>
+                </motion.h2>
+
+                {/* Skills Tags */}
+                <motion.div
+                  className="flex flex-wrap gap-3 mb-8"
+                  variants={itemVariants}
+                >
+                  {["React", "Next.js", "Node.js", "Auth", "Tailwind","Numpy"].map(
+                    (skill, i) => (
+                      <motion.span
+                        key={skill}
+                        className="px-4 py-2 bg-slate-800/50 border border-slate-600/50 rounded-full text-sm text-emerald-300 font-medium backdrop-blur-sm"
+                        whileHover={{
+                          scale: 1.05,
+                          backgroundColor: "rgba(16, 185, 129, 0.1)",
+                        }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 + i * 0.1 }}
+                      >
+                        {skill}
+                      </motion.span>
+                    )
+                  )}
+                </motion.div>
+
+                {/* Action Buttons */}
+                <motion.div
+                  className="flex flex-col sm:flex-row gap-4"
+                  variants={itemVariants}
+                >
+                  <motion.button
+                    onClick={handleDownload}
+                    className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-emerald-500/25 transition-all duration-200"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <span className="flex items-center justify-center gap-2">
+                      📄 Download Resume
+                    </span>
+                  </motion.button>
+
+                  <Link
+                    href="/contact"
+                    className="px-8 py-4 border-2 border-emerald-500/50 text-emerald-400 font-semibold rounded-xl hover:bg-emerald-500/10 hover:border-emerald-400 transition-all duration-200 text-center"
+                  >
+                    <span className="flex items-center justify-center gap-2">
+                      ✉️ Get In Touch
+                    </span>
+                  </Link>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
+
+            {/* Right Content - Takes 5 columns */}
+            <motion.div
+              className="lg:col-span-5 flex justify-center lg:justify-end"
+              variants={itemVariants}
+            >
+              <div className="w-80 h-80 relative bg-gradient-to-br from-slate-800/30 to-slate-900/20 backdrop-blur-md rounded-full border border-slate-700/50 shadow-2xl profile-glow-container p-1">
+                {/* Rotating Ring */}
+                <motion.div
+                  className="w-full h-full rounded-full bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-500 p-1"
+                  transition={{
+                    duration: 15,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                >
+                  {/* Profile Image */}
+                  <motion.div
+                    className="w-full h-full rounded-full overflow-hidden bg-black"
+                    whileHover={{ scale: 1.02 }}
+                  >
+                    <Image
+                      src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755695343/profile_kxt3ue.png"
+                      alt="Achinta Hazra"
+                      className="w-full h-full object-cover"
+                      width={320}
+                      height={320}
+                      priority
+                      sizes="320px"
+                    />
+                  </motion.div>
+                </motion.div>
+              </div>
+            </motion.div>
           </div>
-        </div>
-      </div>
-    </section>
+        </motion.div>
+      </section>
+    </>
   );
 }

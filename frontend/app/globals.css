@@ -240,3 +240,71 @@ section > * {
     0px 1px 0px 0px rgba(25, 28, 33, 0.02),
     0px 0px 0px 1px rgba(25, 28, 33, 0.08);
 }
+
+        .glow-container {
+          animation: infiniteGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes infiniteGlow {
+          0%, 100% {
+            box-shadow: 
+              0 0 20px rgba(16, 185, 129, 0.3), 
+              0 0 40px rgba(16, 185, 129, 0.1),
+              inset 0 0 20px rgba(16, 185, 129, 0.05);
+          }
+          50% {
+            box-shadow: 
+              0 0 40px rgba(16, 185, 129, 0.5), 
+              0 0 80px rgba(16, 185, 129, 0.2),
+              inset 0 0 30px rgba(16, 185, 129, 0.1);
+          }
+        }
+
+        /* Profile Glow Effect */
+        .profile-glow-container {
+          animation: profileGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes profileGlow {
+          0%, 100% {
+            box-shadow: 
+              0 0 20px rgba(16, 185, 129, 0.2), 
+              0 0 40px rgba(16, 185, 129, 0.08),
+              inset 0 0 20px rgba(16, 185, 129, 0.03);
+          }
+          50% {
+            box-shadow: 
+              0 0 30px rgba(16, 185, 129, 0.3), 
+              0 0 60px rgba(16, 185, 129, 0.15),
+              inset 0 0 25px rgba(16, 185, 129, 0.05);
+          }
+        }
+
+        /* Optimized scrollbar */
+        ::-webkit-scrollbar {
+          width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+          background: linear-gradient(to bottom, #10b981, #3b82f6);
+          border-radius: 3px;
+        }
+
+        /* Reduced motion for better performance */
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+          
+          .glow-container {
+            animation: none !important;
+          }
+          
+          .profile-glow-container {
+            animation: none !important;
+          }
+        }
