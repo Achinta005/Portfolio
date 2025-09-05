@@ -311,6 +311,13 @@ export default function CertificationSection() {
   // Updated certifications with proper cloud URLs
   const certifications = [
     {
+      name:"Oracle Cloud Infrastructure 2025 Certified Generative AI Professional",
+      issuer:"Oracle University",
+      year:"2025",
+      icon:"https://res.cloudinary.com/dc1fkirb4/image/upload/v1757084574/OCI25GAIOCP_mjjq9w.jpg",
+      path:"https://drive.google.com/file/d/1jU99YsfKkVZ4J-c2oXs0zrekbkQmlyX1/view?usp=drive_link"
+    },
+    {
       name:"Summer Internship Program 2025 organized by the IEEE Computational Intelligence Society, Kolkata Chapter",
       issuer:"IEEE Computational Intelligence Society",
       year:"2025",
