@@ -1,7 +1,14 @@
 "use client";
 import { easeOut, motion } from "framer-motion";
 import { PinContainer } from "@/components/ui/3dpin";
-import { X, Download, ExternalLink, ZoomIn, ZoomOut, AlertCircle } from "lucide-react";
+import {
+  X,
+  Download,
+  ExternalLink,
+  ZoomIn,
+  ZoomOut,
+  AlertCircle,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 
 // Certificate Popup Component
@@ -44,7 +51,7 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
 
   // Function to get document URL for display
   const getDocumentUrl = (path) => {
-    if (path.includes('drive.google.com')) {
+    if (path.includes("drive.google.com")) {
       return getGoogleDrivePreviewUrl(path);
     }
     return path;
@@ -53,20 +60,23 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
   // Fallback to Google Docs Viewer
   const getViewerUrl = (originalUrl) => {
     let cleanUrl = originalUrl;
-    
+
     // If it's a Google Drive link, get the direct download URL for viewer
-    if (originalUrl.includes('drive.google.com')) {
+    if (originalUrl.includes("drive.google.com")) {
       const fileIdMatch = originalUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
       if (fileIdMatch) {
         cleanUrl = `https://drive.google.com/uc?id=${fileIdMatch[1]}`;
       }
     }
-    
-    return `https://docs.google.com/gview?url=${encodeURIComponent(cleanUrl)}&embedded=true`;
+
+    return `https://docs.google.com/gview?url=${encodeURIComponent(
+      cleanUrl
+    )}&embedded=true`;
   };
 
   const handleZoomIn = () => setZoomLevel((prev) => Math.min(prev + 0.25, 3));
-  const handleZoomOut = () => setZoomLevel((prev) => Math.max(prev - 0.25, 0.5));
+  const handleZoomOut = () =>
+    setZoomLevel((prev) => Math.max(prev - 0.25, 0.5));
 
   const handleMouseDown = (e) => {
     if (!useViewer) return; // Only allow dragging for images
@@ -96,12 +106,12 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
   };
 
   const downloadCert = () => {
-    if (cert.path.includes('drive.google.com')) {
+    if (cert.path.includes("drive.google.com")) {
       const downloadUrl = getGoogleDriveDownloadUrl(cert.path);
-      window.open(downloadUrl, '_blank');
+      window.open(downloadUrl, "_blank");
       return;
     }
-    
+
     // For direct URLs
     const link = document.createElement("a");
     link.href = cert.path;
@@ -112,10 +122,13 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
   };
 
   const openInNewTab = () => {
-    if (cert.path.includes('drive.google.com')) {
+    if (cert.path.includes("drive.google.com")) {
       const fileIdMatch = cert.path.match(/\/d\/([a-zA-Z0-9-_]+)/);
       if (fileIdMatch) {
-        window.open(`https://drive.google.com/file/d/${fileIdMatch[1]}/view`, "_blank");
+        window.open(
+          `https://drive.google.com/file/d/${fileIdMatch[1]}/view`,
+          "_blank"
+        );
         return;
       }
     }
@@ -149,7 +162,8 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
               alt={cert.name}
               className="w-8 h-8 rounded object-contain"
               onError={(e) => {
-                e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xMiAxNS41IDQtNEw5LjUgOGwtMi00IiBzdHJva2U9IiM5Y2EzYWYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==';
+                e.target.src =
+                  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xMiAxNS41IDQtNEw5LjUgOGwtMi00IiBzdHJva2U9IiM5Y2EzYWYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==";
               }}
             />
             <div>
@@ -239,7 +253,8 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
 
           {/* Document Display */}
           <div className="w-full h-full flex items-center justify-center">
-            {cert.path.toLowerCase().includes('.pdf') || cert.path.includes('drive.google.com') ? (
+            {cert.path.toLowerCase().includes(".pdf") ||
+            cert.path.includes("drive.google.com") ? (
               !useViewer ? (
                 <iframe
                   key={`primary-${documentUrl}`}
@@ -293,10 +308,10 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
         {/* Footer */}
         <div className="p-3 bg-gray-50 border-t">
           <p className="text-xs text-gray-500 text-center">
-            {cert.path.includes('.pdf') || cert.path.includes('drive.google.com') 
+            {cert.path.includes(".pdf") ||
+            cert.path.includes("drive.google.com")
               ? "PDF Document • Use zoom controls • Click download or open in new tab"
-              : "Use mouse wheel to zoom • Click and drag to pan • Press ESC to close"
-            }
+              : "Use mouse wheel to zoom • Click and drag to pan • Press ESC to close"}
           </p>
         </div>
       </div>
@@ -311,18 +326,18 @@ export default function CertificationSection() {
   // Updated certifications with proper cloud URLs
   const certifications = [
     {
-      name:"Oracle Cloud Infrastructure 2025 Certified Generative AI Professional",
-      issuer:"Oracle University",
-      year:"2025",
-      icon:"https://res.cloudinary.com/dc1fkirb4/image/upload/v1757084574/OCI25GAIOCP_mjjq9w.jpg",
-      path:"https://drive.google.com/file/d/1jU99YsfKkVZ4J-c2oXs0zrekbkQmlyX1/view?usp=drive_link"
+      name: "Oracle Cloud Infrastructure 2025 Certified Generative AI Professional",
+      issuer: "Oracle University",
+      year: "2025",
+      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1757084574/OCI25GAIOCP_mjjq9w.jpg",
+      path: "https://drive.google.com/file/d/1jU99YsfKkVZ4J-c2oXs0zrekbkQmlyX1/view?usp=drive_link",
     },
     {
-      name:"Summer Internship Program 2025 organized by the IEEE Computational Intelligence Society, Kolkata Chapter",
-      issuer:"IEEE Computational Intelligence Society",
-      year:"2025",
-      icon:"https://res.cloudinary.com/dc1fkirb4/image/upload/v1756121821/IEEE_CIS_logo_o9m6uj.jpg",
-      path:"https://drive.google.com/file/d/1ha0jzG0Ga_C4o0QSEvn9z0TdIMzMHalD/view?usp=drive_link"
+      name: "Summer Internship Program 2025 organized by the IEEE Computational Intelligence Society, Kolkata Chapter",
+      issuer: "IEEE Computational Intelligence Society",
+      year: "2025",
+      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1756121821/IEEE_CIS_logo_o9m6uj.jpg",
+      path: "https://drive.google.com/file/d/1ha0jzG0Ga_C4o0QSEvn9z0TdIMzMHalD/view?usp=drive_link",
     },
     {
       name: "Full Stack Web Development",
@@ -393,11 +408,11 @@ export default function CertificationSection() {
         closeCertificatePopup();
       }
     };
-    
+
     if (isPopupOpen) {
       document.addEventListener("keydown", handleEsc);
       document.body.style.overflow = "hidden"; // Prevent background scroll
-      
+
       return () => {
         document.removeEventListener("keydown", handleEsc);
         document.body.style.overflow = "unset";
@@ -447,9 +462,10 @@ export default function CertificationSection() {
                     <img
                       src={cert.icon}
                       alt={cert.name}
-                      className="w-fit h-fit rounded-lg object-contain"
+                      className="w-full h-full rounded-lg object-cover"
                       onError={(e) => {
-                        e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xMiAxNS41IDQtNEw5LjUgOGwtMi00IiBzdHJva2U9IiM5Y2EzYWYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==';
+                        e.target.src =
+                          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xMiAxNS41IDQtNEw5LjUgOGwtMi00IiBzdHJva2U9IiM5Y2EzYWYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==";
                       }}
                     />
                   </div>
