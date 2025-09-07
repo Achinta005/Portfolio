@@ -1,21 +1,24 @@
 "use client";
-
 import * as THREE from "three";
 import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Navbar";
 import useIsMobile from "@/components/useIsMobile";
-import AboutHero from "./AboutHero";
-import EducationSection from "./EducationSection";
-import CertificationSection from "./CertificationSection";
-import InteractiveSkillsDisplay from "./InteractiveSkillsDisplay";
-import AboutHeroMobile from "./AboutHeroMobile";
-import InteractiveDisplayMobile from "./InteractiveDisplayMobile";
-import EducationSectionMobile from "./EducationSectionMobile";
-import CertificationSectionMobile from "./CertificationSectionMobile";
+import AboutHero from "./AboutHeroSection/AboutHero";
+import EducationSection from "./EducationSection/EducationSection";
+import CertificationSection from "./CertificateSection/CertificationSection";
+import InteractiveSkillsDisplay from "./SkillSection/InteractiveSkillsDisplay";
+import AboutHeroMobile from "./AboutHeroSection/AboutHeroMobile";
+import InteractiveDisplayMobile from "./SkillSection/InteractiveDisplayMobile";
+import EducationSectionMobile from "./EducationSection/EducationSectionMobile";
+import CertificationSectionMobile from "./CertificateSection/CertificationSectionMobile";
+import DecorativeNavbar from "@/components/DecorativeNavbar";
+import SectionIndicators from "../../components/SectionIndicator";
 
 export default function About() {
   const vantaRef = useRef(null);
   const [vantaEffect, setVantaEffect] = useState(null);
+  const [activeSection, setActiveSection] = useState("about");
 
   useEffect(() => {
     async function loadVanta() {
@@ -56,8 +59,42 @@ export default function About() {
       if (vantaEffect) vantaEffect.destroy();
     };
   }, [vantaEffect]);
-  const isMobile = useIsMobile(1024); //Defining brek point for mobile
-  return isMobile?(
+
+  // Handle section navigation
+  const handleSectionChange = (sectionId) => {
+    console.log('Navigating to section:', sectionId);
+    setActiveSection(sectionId);
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      const sections = ["about", "skills", "education", "certifications"];
+      const currentIndex = sections.indexOf(activeSection);
+      
+      switch (event.key) {
+        case 'ArrowRight':
+        case 'ArrowDown':
+          event.preventDefault();
+          const nextIndex = (currentIndex + 1) % sections.length;
+          setActiveSection(sections[nextIndex]);
+          break;
+        case 'ArrowLeft':
+        case 'ArrowUp':
+          event.preventDefault();
+          const prevIndex = (currentIndex - 1 + sections.length) % sections.length;
+          setActiveSection(sections[prevIndex]);
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyPress);
+    return () => window.removeEventListener('keydown', handleKeyPress);
+  }, [activeSection]);
+
+  const isMobile = useIsMobile(1024);
+
+  return isMobile ? (
     <>
       <div
         ref={vantaRef}
@@ -76,11 +113,24 @@ export default function About() {
         <InteractiveDisplayMobile />
         <EducationSectionMobile />
         <CertificationSectionMobile />
-        <Header/>
+        <Header />
       </div>
     </>
-  ): (
+  ) : (
     <>
+      {/* Decorative Navbar */}
+      <DecorativeNavbar 
+        onSectionChange={handleSectionChange} 
+        activeSection={activeSection}
+      />
+      
+      {/* Side Section Indicators */}
+      <SectionIndicators 
+        activeSection={activeSection}
+        onSectionChange={handleSectionChange}
+      />
+      
+      {/* Background Effect */}
       <div
         ref={vantaRef}
         style={{
@@ -93,12 +143,64 @@ export default function About() {
           overflow: "hidden",
         }}
       />
-      <div style={{ position: "relative", zIndex: 1 }}>
-        <AboutHero />
-        <InteractiveSkillsDisplay />
-        <EducationSection />
-        <CertificationSection />
-        <Header/>
+      
+      {/* ONLY ONE SECTION SHOWS AT A TIME */}
+      <div style={{ position: "relative", zIndex: 1, minHeight: "100vh" }}>
+        <AnimatePresence mode="wait">
+          {activeSection === "about" && (
+            <motion.div
+              key="about"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              className="min-h-screen"
+            >
+              <AboutHero />
+            </motion.div>
+          )}
+          
+          {activeSection === "skills" && (
+            <motion.div
+              key="skills"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              className="min-h-screen"
+            >
+              <InteractiveSkillsDisplay />
+            </motion.div>
+          )}
+          
+          {activeSection === "education" && (
+            <motion.div
+              key="education"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              className="min-h-screen"
+            >
+              <EducationSection />
+            </motion.div>
+          )}
+          
+          {activeSection === "certifications" && (
+            <motion.div
+              key="certifications"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              className="min-h-screen"
+            >
+              <CertificationSection />
+            </motion.div>
+          )}
+        </AnimatePresence>
+        
+        <Header />
       </div>
     </>
   );

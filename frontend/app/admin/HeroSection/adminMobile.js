@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getUserFromToken, removeAuthToken, getAuthToken } from "../lib/auth";
-import Project from "./Project";
-import ContactResponse from "./ContactResponse";
-import Notepad from "./Notepad";
+import { getUserFromToken, removeAuthToken, getAuthToken } from "../../lib/auth";
+import Project from "../Components/Project";
+import ContactResponse from "../Components/ContactResponse";
+import Notepad from "../Components/Notepad";
 import Image from "next/image";
 
 const AdminPageMobile = () => {

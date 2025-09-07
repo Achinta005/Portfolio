@@ -294,66 +294,23 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
 export default function CertificationSectionMobile() {
   const [selectedCert, setSelectedCert] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [certifications, setCertifications] = useState([]);
 
-  // Updated certifications with proper cloud URLs
-  const certifications = [
-    {
-      name:"Summer Internship Program 2025 organized by the IEEE Computational Intelligence Society, Kolkata Chapter",
-      issuer:"IEEE Computational Intelligence Society",
-      year:"2025",
-      icon:"https://res.cloudinary.com/dc1fkirb4/image/upload/v1756121821/IEEE_CIS_logo_o9m6uj.jpg",
-      path:"https://drive.google.com/file/d/1ha0jzG0Ga_C4o0QSEvn9z0TdIMzMHalD/view?usp=drive_link"
-    },
-    {
-      name: "Full Stack Web Development",
-      issuer: "Teachnook",
-      year: "2023",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755346694/1630662755102_c5fstb.jpg",
-      path: "https://drive.google.com/file/d/1_J7kK8ZRz6hcsvHXbyihoHYFpKwkXb5c/view?usp=drive_link",
-    },
-    {
-      name: "Internship Training Program on ADVANCE JAVA",
-      issuer: "AUTODESK CADEASY",
-      year: "2024",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
-      path: "https://drive.google.com/file/d/1PyD8l2orxHMfyA4skCp5lMOjSqljyi-M/view?usp=drive_link",
-    },
-    {
-      name: "Internship Training Program on CORE JAVA",
-      issuer: "AUTODESK CADEASY",
-      year: "2024",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
-      path: "https://drive.google.com/file/d/1Q0k9n4u05-dcvaUFaC2Yx7RQyPyR4BQD/view?usp=drive_link",
-    },
-    {
-      name: "FULL STACK DATA SCIENCE USING PYTHON",
-      issuer: "AUTODESK CADEASY",
-      year: "2024",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
-      path: "https://drive.google.com/file/d/1Q8oM_bPdpNhX9C5gUHrntjk9xV8fonJg/view?usp=drive_link",
-    },
-    {
-      name: "MACHINE LEARNING USING PYTHON",
-      issuer: "AUTODESK CADEASY",
-      year: "2024",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
-      path: "https://drive.google.com/file/d/1Q9M3fCFhzDryyMVUq-ISFTg2tWj-s7Eo/view?usp=drive_link",
-    },
-    {
-      name: "IEEE Student Chapter",
-      issuer: "The Institution Of Engineer",
-      year: "2023",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755346757/Institution_of_Engineers__India__Logo_lv3eix.svg",
-      path: "https://drive.google.com/file/d/1Pm-mWpZ-Wr6Nekp7mm1Cpa1i9Y817Dyz/view?usp=drive_link",
-    },
-    {
-      name: "IEEE Seminar",
-      issuer: "DIATM",
-      year: "2023",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755346757/Institution_of_Engineers__India__Logo_lv3eix.svg",
-      path: "https://drive.google.com/file/d/1IGBuoQxdc1xItYWnoLzfBsgSD7bz5DJH/view?usp=drive_link",
-    },
-  ];
+  // Fetch certificates at the beginning of page load
+  useEffect(() => {
+    const fetchCertificates = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/certificate/getcertificate`
+        );
+        const data = await res.json();
+        setCertifications(data);
+      } catch (error) {
+        console.error("Error fetching certificates:", error);
+      }
+    };
+    fetchCertificates();
+  }, []);
 
   const openCertificatePopup = (cert) => {
     console.log("Opening certificate:", cert.name, cert.path);

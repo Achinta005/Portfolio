@@ -12,36 +12,24 @@ import {
   Typography,
 } from "@material-tailwind/react";
 
-export default function EducationSection() {
-  const education = [
-    {
-      degree: "Secondary Education",
-      university: "West Bengal Board of Secondary Education",
-      college: "Local Secondary School",
-      year: "2018 - 2020",
-      description:
-        "Foundation education with excellent grades in Mathematics and Science subjects.",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755346172/baradongal-ramanath-institution-baradangal-hooghly-schools-67ow2odqsn_wbbog0.jpg",
-    },
-    {
-      degree: "Higher Secondary Education",
-      university: "West Bengal Council of Higher Secondary Education",
-      college: "Local Higher Secondary School",
-      year: "2020 - 2022",
-      description:
-        "Completed with Science stream focusing on Mathematics, Physics, and Computer Science.",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755346172/baradongal-ramanath-institution-baradangal-hooghly-schools-67ow2odqsn_wbbog0.jpg",
-    },
-    {
-      degree: "Bachelor of Technology in Computer Science",
-      university: "West Bengal University of Technology",
-      college: "Durgapur Institute of Advance Technology & Management",
-      year: "2022 - 2026",
-      description:
-        "Currently pursuing B.Tech(CSE) degree with focus on software engineering and web development.",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1753025127/img_xel2z6.jpg",
-    },
-  ];
+export default function EducationSectionMobile() {
+  const [education, setEducation] = useState([])
+ 
+  useEffect(() => {
+    const fetchEducationData = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/education/geteducationdata`
+        );
+        const data = await res.json();
+        setEducation(data);
+        console.log(data)
+      } catch (error) {
+        console.error("Error fetching education data:", error);
+      }
+    };
+    fetchEducationData();
+  }, []);
 
   return (
     <section className="py-20">
@@ -70,13 +58,13 @@ export default function EducationSection() {
           </motion.div>
         </div>
 
-        <div className="w-full relative lg:left-16 left-[-15vw]">
+        <div className="w-full relative">
           <Timeline className="relative">
             {education.map((edu, index) => (
               <TimelineItem key={index} className="relative z-10">
                 {/* Custom connector line - only show between items */}
                 {index < education.length - 1 && (
-                  <div className="absolute left-6 top-14 w-0.5 h-56 bg-gradient-to-b from-blue-500 to-purple-500 z-0"></div>
+                  <div className="absolute left-6 top-14 w-0.5 h-80 bg-gradient-to-b from-blue-500 to-purple-500 z-0"></div>
                 )}
 
                 <TimelineConnector className="hidden" />
@@ -87,7 +75,7 @@ export default function EducationSection() {
                         src={
                           index === 2
                             ? "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/icons8-circle-48_jip8cm.png"
-                            :  "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345763/icons8-checkmark-48_wgk7ka.png"
+                            : "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345763/icons8-checkmark-48_wgk7ka.png"
                         }
                         width={30}
                         height={30}
@@ -112,7 +100,7 @@ export default function EducationSection() {
                     transition={{ duration: 0.8, ease: easeOut }}
                   >
                     <div className="flex justify-center p-0 rounded-lg shadow-lg w-full pointer-events-none">
-                      <div className="relative shadow-2xl w-full max-w-3xl object-cover object-top rounded-2xl pointer-events-auto bg-white/10 p-2 md:rounded-3xl md:p-3">
+                      <div className="relative shadow-2xl w-full max-w-xl object-cover object-top rounded-2xl pointer-events-auto bg-white/10 p-2">
                         {/* Glowing Effect */}
                         <GlowingEffect
                           spread={80}
@@ -124,9 +112,9 @@ export default function EducationSection() {
                         />
 
                         {/* Content Container with Glowing Border */}
-                        <div className="border-0.75 relative flex h-full lg:w-[60vw] max-sm:w-[75vw] flex-col justify-between lg:gap-6 overflow-hidden rounded-xl lg:p-8">
+                        <div className="border-0.75 relative flex h-full w-fit flex-col justify-between lg:gap-6 overflow-hidden rounded-xl lg:p-8">
                           <div className="lg:flex lg:flex-row lg:items-start sm:flex sm:flex-col gap-6">
-                            <div className="w-24 h-24 flex items-center justify-center bg-blue-100 rounded-lg flex-shrink-0 overflow-hidden border-4 border-amber-50 max-lg:mx-auto mb-4">
+                            <div className="w-20 h-20 flex items-center justify-center bg-blue-100 rounded-lg flex-shrink-0 overflow-hidden border-4 border-amber-50 max-lg:mx-auto mb-4">
                               <Image
                                 src={edu.icon}
                                 width={96}

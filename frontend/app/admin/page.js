@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
-import AdminPage from "./admin";
+import AdminPage from "./HeroSection/admin";
 import Header from "@/components/Navbar";
 import useIsMobile from "@/components/useIsMobile";
-import AdminPageMobile from "./adminMobile";
+import AdminPageMobile from "./HeroSection/adminMobile";
 
 const page = () => {
 const  isMobile=useIsMobile(1024);

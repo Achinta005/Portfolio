@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getUserFromToken, removeAuthToken, getAuthToken } from "../lib/auth";
-import Project from "./Project";
-import ContactResponse from "./ContactResponse";
-import Notepad from "./Notepad";
+import { getUserFromToken, removeAuthToken, getAuthToken } from "../../lib/auth";
+import Project from "../Components/Project";
+import ContactResponse from "../Components/ContactResponse";
+import Notepad from "../Components/Notepad";
 import Image from "next/image";
-import PythonFlask from "./PythonFlask";
-import Blog from "./Blog";
+import PythonFlask from "../Components/PythonFlask";
+import Blog from "../Components/Blog";
 
 const AdminPage = () => {
   const [user, setUser] = useState(null);

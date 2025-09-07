@@ -14,6 +14,9 @@ const contactResponse = require("./routes/contact_response");
 const resume = require("./routes/resume");
 const authRoutes = require("./routes/auth");
 const connectDB = require("./config/db");
+const getCertificates=require('./routes/getCertificate')
+const getEducationData=require('./routes/geteducationData')
+const getSkillData=require('./routes/getSkillsdata')
 
 //CORS POLICY
 app.use(
@@ -51,6 +54,9 @@ app.use("/projects", projects);
 app.use("/contact_response", contactResponse);
 app.use("/download/resume", resume);
 app.use("/api/auth", authRoutes);
+app.use('/certificate',getCertificates)
+app.use('/education',getEducationData)
+app.use('/skills',getSkillData)
 
 //connect to MongoDB
 connectDB();

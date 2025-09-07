@@ -33,11 +33,10 @@ export const PinContainer = ({
 
   return (
     <div
-  className={cn("relative group/pin z-50", containerClassName)}
-  onMouseEnter={onMouseEnter}
-  onMouseLeave={onMouseLeave}
->
-
+      className={cn("relative group/pin z-50", containerClassName)}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       <div
         style={{
           perspective: "1000px",
@@ -49,7 +48,7 @@ export const PinContainer = ({
           style={{
             transform: transform,
           }}
-          className="absolute left-1/2 p-4 top-1/2 flex justify-start items-start w-[40vw] h-[38vh] lg:w-[30vw] lg:h-[25vh] rounded-2xl shadow-[0_8px_16px_rgb(0_0_0/0.4)] bg-black border border-white/[0.1] group-hover/pin:border-white/[0.2] transition duration-700 overflow-hidden "
+          className="absolute left-1/2 p-4 top-1/2 flex justify-start items-start w-[40vw] h-[38vh] lg:w-[25vw] lg:h-[25vh] rounded-2xl shadow-[0_8px_32px_rgb(0_0_0/0.3)] backdrop-blur-xl bg-white/10 border border-white/20 group-hover/pin:border-white/30 group-hover/pin:bg-white/15 transition duration-700 overflow-hidden"
         >
           <div className={cn("relative z-50", className)}>{children}</div>
         </div>
@@ -80,7 +79,7 @@ export const PinPerspective = ({
           <a
             href={href}
             target={"_blank"}
-            className="relative flex space-x-2 items-center z-10 rounded-full bg-zinc-950 py-0.5 px-4 ring-1 ring-white/10 pointer-events-auto cursor-pointer"
+            className="relative flex space-x-2 items-center z-10 rounded-full backdrop-blur-xl bg-white/10 border border-white/20 py-0.5 px-4 ring-1 ring-white/20 pointer-events-auto cursor-pointer hover:bg-white/15 transition-all duration-300"
             onClick={handlePerspectiveClick}
           >
             <span className="relative z-20 text-white text-xs font-bold inline-block py-0.5">
@@ -116,7 +115,7 @@ export const PinPerspective = ({
                 repeat: Infinity,
                 delay: 0,
               }}
-              className="absolute left-1/2 top-1/2 h-[11.25rem] w-[11.25rem] rounded-[50%] bg-sky-500/[0.08] shadow-[0_8px_16px_rgb(0_0_0/0.4)]"
+              className="absolute left-1/2 top-1/2 h-[11.25rem] w-[11.25rem] rounded-[50%] bg-gradient-to-r from-sky-400/10 via-purple-400/10 to-pink-400/10 backdrop-blur-sm shadow-[0_8px_32px_rgb(0_0_0/0.2)]"
             ></motion.div>
             <motion.div
               initial={{
@@ -135,7 +134,7 @@ export const PinPerspective = ({
                 repeat: Infinity,
                 delay: 2,
               }}
-              className="absolute left-1/2 top-1/2 h-[11.25rem] w-[11.25rem] rounded-[50%] bg-sky-500/[0.08] shadow-[0_8px_16px_rgb(0_0_0/0.4)]"
+              className="absolute left-1/2 top-1/2 h-[11.25rem] w-[11.25rem] rounded-[50%] bg-gradient-to-r from-purple-400/10 via-pink-400/10 to-sky-400/10 backdrop-blur-sm shadow-[0_8px_32px_rgb(0_0_0/0.2)]"
             ></motion.div>
             <motion.div
               initial={{
@@ -154,15 +153,15 @@ export const PinPerspective = ({
                 repeat: Infinity,
                 delay: 4,
               }}
-              className="absolute left-1/2 top-1/2 h-[11.25rem] w-[11.25rem] rounded-[50%] bg-sky-500/[0.08] shadow-[0_8px_16px_rgb(0_0_0/0.4)]"
+              className="absolute left-1/2 top-1/2 h-[11.25rem] w-[11.25rem] rounded-[50%] bg-gradient-to-r from-pink-400/10 via-sky-400/10 to-purple-400/10 backdrop-blur-sm shadow-[0_8px_32px_rgb(0_0_0/0.2)]"
             ></motion.div>
           </>
         </div>
 
         <>
-          <motion.div className="absolute right-1/2 bottom-1/2 bg-gradient-to-b from-transparent to-cyan-500 translate-y-[14px] w-px h-20 group-hover/pin:h-40 blur-[2px]" />
-          <motion.div className="absolute right-1/2 bottom-1/2 bg-gradient-to-b from-transparent to-cyan-500 translate-y-[14px] w-px h-20 group-hover/pin:h-40" />
-          <motion.div className="absolute right-1/2 translate-x-[1.5px] bottom-1/2 bg-cyan-600 translate-y-[14px] w-[4px] h-[4px] rounded-full z-40 blur-[3px]" />
+          <motion.div className="absolute right-1/2 bottom-1/2 bg-gradient-to-b from-transparent to-cyan-400 translate-y-[14px] w-px h-20 group-hover/pin:h-40 blur-[2px]" />
+          <motion.div className="absolute right-1/2 bottom-1/2 bg-gradient-to-b from-transparent to-cyan-400 translate-y-[14px] w-px h-20 group-hover/pin:h-40" />
+          <motion.div className="absolute right-1/2 translate-x-[1.5px] bottom-1/2 bg-cyan-400 translate-y-[14px] w-[4px] h-[4px] rounded-full z-40 blur-[3px]" />
           <motion.div className="absolute right-1/2 translate-x-[0.5px] bottom-1/2 bg-cyan-300 translate-y-[14px] w-[2px] h-[2px] rounded-full z-40" />
         </>
       </div>

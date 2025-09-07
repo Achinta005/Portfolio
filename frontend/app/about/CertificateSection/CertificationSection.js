@@ -148,14 +148,14 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/60 backdrop-blur-lg"
         onClick={onClose}
       />
 
-      {/* Popup Container */}
-      <div className="relative bg-white rounded-lg shadow-2xl max-w-5xl max-h-[95vh] w-full mx-4 overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b bg-gray-50">
+      {/* Popup Container - Glass Effect */}
+      <div className="relative bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 max-w-5xl max-h-[95vh] w-full mx-4 overflow-hidden">
+        {/* Header - Glass Effect */}
+        <div className="flex items-center justify-between p-4 border-b border-white/20 bg-white/5 backdrop-blur-sm">
           <div className="flex items-center space-x-3">
             <img
               src={cert.icon}
@@ -167,8 +167,8 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
               }}
             />
             <div>
-              <h3 className="font-bold text-lg text-gray-900">{cert.name}</h3>
-              <p className="text-sm text-gray-600">
+              <h3 className="font-bold text-lg text-white">{cert.name}</h3>
+              <p className="text-sm text-white/70">
                 {cert.issuer} • {cert.year}
               </p>
             </div>
@@ -178,37 +178,37 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
           <div className="flex items-center space-x-2">
             <button
               onClick={handleZoomOut}
-              className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/80 hover:text-white"
               title="Zoom Out"
             >
               <ZoomOut size={16} />
             </button>
-            <span className="text-sm text-gray-600 min-w-[4rem] text-center">
+            <span className="text-sm text-white/70 min-w-[4rem] text-center">
               {Math.round(zoomLevel * 100)}%
             </span>
             <button
               onClick={handleZoomIn}
-              className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/80 hover:text-white"
               title="Zoom In"
             >
               <ZoomIn size={16} />
             </button>
             <button
               onClick={resetView}
-              className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
+              className="px-3 py-1 text-xs bg-blue-500/20 text-blue-200 rounded hover:bg-blue-500/30 transition-colors backdrop-blur-sm border border-blue-400/20"
             >
               Reset
             </button>
             <button
               onClick={downloadCert}
-              className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/80 hover:text-white"
               title="Download Certificate"
             >
               <Download size={16} />
             </button>
             <button
               onClick={openInNewTab}
-              className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/80 hover:text-white"
               title="Open in New Tab"
             >
               <ExternalLink size={16} />
@@ -219,7 +219,7 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
                   setLoadError(false);
                   setUseViewer(!useViewer);
                 }}
-                className="p-2 hover:bg-yellow-200 text-yellow-600 rounded-lg transition-colors"
+                className="p-2 hover:bg-yellow-500/20 text-yellow-200 rounded-lg transition-colors"
                 title="Switch Viewer"
               >
                 <AlertCircle size={16} />
@@ -227,7 +227,7 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
             )}
             <button
               onClick={onClose}
-              className="p-2 hover:bg-red-100 text-red-600 rounded-lg transition-colors"
+              className="p-2 hover:bg-red-500/20 text-red-200 rounded-lg transition-colors"
               title="Close"
             >
               <X size={16} />
@@ -237,7 +237,7 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
 
         {/* Content Area */}
         <div
-          className="relative overflow-hidden bg-gray-100"
+          className="relative overflow-hidden bg-black/20 backdrop-blur-sm"
           style={{ height: "75vh" }}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -245,7 +245,7 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
         >
           {/* Status indicator */}
           {loadError && (
-            <div className="absolute top-4 left-4 z-10 bg-yellow-100 border border-yellow-300 text-yellow-800 px-3 py-2 rounded-lg text-sm flex items-center gap-2">
+            <div className="absolute top-4 left-4 z-10 bg-yellow-500/20 backdrop-blur-sm border border-yellow-400/30 text-yellow-200 px-3 py-2 rounded-lg text-sm flex items-center gap-2">
               <AlertCircle size={14} />
               Using fallback viewer
             </div>
@@ -259,7 +259,7 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
                 <iframe
                   key={`primary-${documentUrl}`}
                   src={documentUrl}
-                  className="w-full h-full border-0"
+                  className="w-full h-full border-0 rounded-lg"
                   title={cert.name}
                   style={{
                     transform: `scale(${zoomLevel})`,
@@ -273,7 +273,7 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
                 <iframe
                   key={`fallback-${viewerUrl}`}
                   src={viewerUrl}
-                  className="w-full h-full border-0"
+                  className="w-full h-full border-0 rounded-lg"
                   title={`${cert.name} (Viewer)`}
                   style={{
                     transform: `scale(${zoomLevel})`,
@@ -287,7 +287,7 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
               <img
                 src={cert.path}
                 alt={cert.name}
-                className={`max-w-none transition-transform ${
+                className={`max-w-none transition-transform rounded-lg ${
                   isDragging ? "cursor-grabbing" : "cursor-grab"
                 }`}
                 style={{
@@ -305,9 +305,9 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="p-3 bg-gray-50 border-t">
-          <p className="text-xs text-gray-500 text-center">
+        {/* Footer - Glass Effect */}
+        <div className="p-3 bg-white/5 backdrop-blur-sm border-t border-white/20">
+          <p className="text-xs text-white/60 text-center">
             {cert.path.includes(".pdf") ||
             cert.path.includes("drive.google.com")
               ? "PDF Document • Use zoom controls • Click download or open in new tab"
@@ -322,73 +322,23 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
 export default function CertificationSection() {
   const [selectedCert, setSelectedCert] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [certifications, setCertifications] = useState([]);
 
-  // Updated certifications with proper cloud URLs
-  const certifications = [
-    {
-      name: "Oracle Cloud Infrastructure 2025 Certified Generative AI Professional",
-      issuer: "Oracle University",
-      year: "2025",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1757084574/OCI25GAIOCP_mjjq9w.jpg",
-      path: "https://drive.google.com/file/d/1jU99YsfKkVZ4J-c2oXs0zrekbkQmlyX1/view?usp=drive_link",
-    },
-    {
-      name: "Summer Internship Program 2025 organized by the IEEE Computational Intelligence Society, Kolkata Chapter",
-      issuer: "IEEE Computational Intelligence Society",
-      year: "2025",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1756121821/IEEE_CIS_logo_o9m6uj.jpg",
-      path: "https://drive.google.com/file/d/1ha0jzG0Ga_C4o0QSEvn9z0TdIMzMHalD/view?usp=drive_link",
-    },
-    {
-      name: "Full Stack Web Development",
-      issuer: "Teachnook",
-      year: "2023",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755346694/1630662755102_c5fstb.jpg",
-      path: "https://drive.google.com/file/d/1_J7kK8ZRz6hcsvHXbyihoHYFpKwkXb5c/view?usp=drive_link",
-    },
-    {
-      name: "Internship Training Program on ADVANCE JAVA",
-      issuer: "AUTODESK CADEASY",
-      year: "2024",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
-      path: "https://drive.google.com/file/d/1PyD8l2orxHMfyA4skCp5lMOjSqljyi-M/view?usp=drive_link",
-    },
-    {
-      name: "Internship Training Program on CORE JAVA",
-      issuer: "AUTODESK CADEASY",
-      year: "2024",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
-      path: "https://drive.google.com/file/d/1Q0k9n4u05-dcvaUFaC2Yx7RQyPyR4BQD/view?usp=drive_link",
-    },
-    {
-      name: "FULL STACK DATA SCIENCE USING PYTHON",
-      issuer: "AUTODESK CADEASY",
-      year: "2024",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
-      path: "https://drive.google.com/file/d/1Q8oM_bPdpNhX9C5gUHrntjk9xV8fonJg/view?usp=drive_link",
-    },
-    {
-      name: "MACHINE LEARNING USING PYTHON",
-      issuer: "AUTODESK CADEASY",
-      year: "2024",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755345764/cadeasy_naooon.png",
-      path: "https://drive.google.com/file/d/1Q9M3fCFhzDryyMVUq-ISFTg2tWj-s7Eo/view?usp=drive_link",
-    },
-    {
-      name: "IEEE Student Chapter",
-      issuer: "The Institution Of Engineer",
-      year: "2023",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755346757/Institution_of_Engineers__India__Logo_lv3eix.svg",
-      path: "https://drive.google.com/file/d/1Pm-mWpZ-Wr6Nekp7mm1Cpa1i9Y817Dyz/view?usp=drive_link",
-    },
-    {
-      name: "IEEE Seminar",
-      issuer: "DIATM",
-      year: "2023",
-      icon: "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755346757/Institution_of_Engineers__India__Logo_lv3eix.svg",
-      path: "https://drive.google.com/file/d/1IGBuoQxdc1xItYWnoLzfBsgSD7bz5DJH/view?usp=drive_link",
-    },
-  ];
+  // Fetch certificates at the beginning of page load
+  useEffect(() => {
+    const fetchCertificates = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/certificate/getcertificate`
+        );
+        const data = await res.json();
+        setCertifications(data);
+      } catch (error) {
+        console.error("Error fetching certificates:", error);
+      }
+    };
+    fetchCertificates();
+  }, []);
 
   const openCertificatePopup = (cert) => {
     console.log("Opening certificate:", cert.name, cert.path);
@@ -421,69 +371,79 @@ export default function CertificationSection() {
   }, [isPopupOpen]);
 
   return (
-    <section className="py-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: easeOut }}
-          >
-            <h2 className="text-4xl font-bold text-yellow-100 mb-4">
-              Certifications
-            </h2>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: -150 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: easeOut }}
-          >
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto dark:text-gray-300">
-              Professional certifications that validate my expertise and
-              commitment to continuous learning.
-            </p>
-          </motion.div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {certifications.map((cert, index) => (
+    <section className="py-20 relative min-h-screen">
+      {/* Gradient Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900"></div>
+      <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 via-purple-600/20 to-pink-600/20"></div>
+      
+      {/* Glassmorphism Container */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="backdrop-blur-xl bg-white/5 rounded-3xl border border-white/20 shadow-2xl p-8 lg:p-12">
+          
+          {/* Header Section */}
+          <div className="text-center mb-16">
             <motion.div
-              key={index}
               initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: easeOut, delay: index * 0.1 }}
+              transition={{ duration: 0.8, ease: easeOut }}
             >
-              <PinContainer
-                title="VIEW CERTIFICATE"
-                onClick={() => openCertificatePopup(cert)}
-              >
-                <div className="flex items-center mb-4">
-                  <div className="w-[5vw] h-[12vh] flex items-center justify-center bg-blue-100 rounded-lg flex-shrink-0">
-                    <img
-                      src={cert.icon}
-                      alt={cert.name}
-                      className="w-full h-full rounded-lg object-cover"
-                      onError={(e) => {
-                        e.target.src =
-                          "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xMiAxNS41IDQtNEw5LjUgOGwtMi00IiBzdHJva2U9IiM5Y2EzYWYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==";
-                      }}
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-left text-blue-600 text-sm leading-tight hover:text-blue-700 ml-10">
-                      {cert.name}
-                    </h3>
-                  </div>
-                </div>
-                <p className="text-gray-100 font-medium text-sm mb-1 dark:text-gray-400">
-                  {cert.issuer}
-                </p>
-                <p className="text-gray-300 text-xs dark:text-gray-600">
-                  {cert.year}
-                </p>
-              </PinContainer>
+              <h2 className="text-5xl lg:text-6xl font-bold bg-gradient-to-r from-yellow-200 via-pink-200 to-purple-200 bg-clip-text text-transparent mb-6">
+                Certifications
+              </h2>
             </motion.div>
-          ))}
+            <motion.div
+              initial={{ opacity: 0, x: -150 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: easeOut }}
+            >
+              <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+                Professional certifications that validate my expertise and
+                commitment to continuous learning in the ever-evolving tech landscape.
+              </p>
+            </motion.div>
+          </div>
+
+          {/* Certificates Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-16">
+            {certifications.map((cert, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, ease: easeOut, delay: index * 0.1 }}
+              >
+                <PinContainer
+                  title="VIEW CERTIFICATE"
+                  onClick={() => openCertificatePopup(cert)}
+                >
+                  <div className="flex items-center mb-4">
+                    <div className="w-[5vw] h-[12vh] flex items-center justify-center bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-lg flex-shrink-0 backdrop-blur-sm border border-white/20">
+                      <img
+                        src={cert.icon}
+                        alt={cert.name}
+                        className="w-full h-full rounded-lg object-cover"
+                        onError={(e) => {
+                          e.target.src =
+                            "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZjNmNGY2Ii8+CjxwYXRoIGQ9Im0xMiAxNS41IDQtNEw5LjUgOGwtMi00IiBzdHJva2U9IiM5Y2EzYWYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==";
+                        }}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-left text-white text-sm leading-tight hover:text-blue-200 ml-10 transition-colors duration-300">
+                        {cert.name}
+                      </h3>
+                    </div>
+                  </div>
+                  <p className="text-white/70 font-medium text-sm mb-1">
+                    {cert.issuer}
+                  </p>
+                  <p className="text-white/50 text-xs">
+                    {cert.year}
+                  </p>
+                </PinContainer>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
 
