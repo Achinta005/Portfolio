@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
+import { useState,useEffect} from "react";
 
 export default function EducationSectionMobile() {
   const [education, setEducation] = useState([])
