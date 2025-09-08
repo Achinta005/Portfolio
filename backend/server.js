@@ -17,6 +17,8 @@ const connectDB = require("./config/db");
 const getCertificates=require('./routes/getCertificate')
 const getEducationData=require('./routes/geteducationData')
 const getSkillData=require('./routes/getSkillsdata')
+const fetchBlogRoutes = require('./routes/fetchBlogData');
+const uploadBlogRoutes = require('./routes/uploadBlogData');
 
 //CORS POLICY
 app.use(
@@ -57,6 +59,8 @@ app.use("/api/auth", authRoutes);
 app.use('/certificate',getCertificates)
 app.use('/education',getEducationData)
 app.use('/skills',getSkillData)
+app.use('/api/blog/posts',fetchBlogRoutes)
+app.use('/api/blog/upload',uploadBlogRoutes)
 
 //connect to MongoDB
 connectDB();

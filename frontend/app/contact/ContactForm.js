@@ -1,6 +1,7 @@
 'use client'
 import React from "react";
 import { useForm } from "react-hook-form";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 const ContactForm2 = () => {
   const {
@@ -14,13 +15,7 @@ const ContactForm2 = () => {
 
   const onSubmit = async (data) => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      const result = await res.json();
+      const result = await PortfolioApiService.PostContactResponse(data);
       console.log(result.message);
       reset();
     } catch (error) {

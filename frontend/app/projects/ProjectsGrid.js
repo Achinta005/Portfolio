@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { AnimatedTestimonials } from "@/components/ui/animatedProjects";
 import useIsMobile from "@/components/useIsMobile";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 export default function ProjectsGrid() {
   const isMobile = useIsMobile(1024);
@@ -11,8 +12,7 @@ export default function ProjectsGrid() {
   useEffect(() => {
     const getProjects = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`);
-        const data = await res.json();
+        const data = await PortfolioApiService.FetchProject();
         setProjects(data);
       } catch (error) {
         console.error("Error fetching projects:", error);

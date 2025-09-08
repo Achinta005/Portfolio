@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronDown, X } from "lucide-react";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 // Custom Skill Node Component
 const SkillNode = ({
@@ -162,10 +163,7 @@ const SimplifiedSkillsGrid = () => {
   useEffect(() => {
     const fetchSkillsData = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/skills/getskillsdata`
-        );
-        const data = await res.json();
+        const data = await PortfolioApiService.FetchSkillsData();
         setskillsData(data);
       } catch (error) {
         console.error("Error fetching Skills data:", error);

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { getAuthToken } from "../../lib/auth";
 import { getUserFromToken } from "../../lib/auth";
 import { useRouter } from "next/navigation";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 const Notepad = ({ onDocumentSaved }) => {
   const [title, setTitle] = useState("");
@@ -15,9 +16,6 @@ const Notepad = ({ onDocumentSaved }) => {
   const [documents, setDocuments] = useState([]);
 
   const router = useRouter();
-
-  // Consistent API URL
-  const getApiUrl = () => process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,18 +30,7 @@ const Notepad = ({ onDocumentSaved }) => {
       if (!token) {
         throw new Error("Authentication token not found. Please login again.");
       }
-
-      const apiUrl = getApiUrl();
-      const response = await fetch(`${apiUrl}/api/auth/documents`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ title, content }),
-      });
-
-      const data = await response.json();
+      const data = await PortfolioApiService.Notepad(title,content);
       
       // Better error handling
       if (!response.ok) {
@@ -81,25 +68,7 @@ const Notepad = ({ onDocumentSaved }) => {
         setError("Authentication token not found. Please login again.");
         return;
       }
-
-      const apiUrl = getApiUrl();
-      const response = await fetch(`${apiUrl}/api/auth/documents`, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json"
-        },
-      });
-
-      if (!response.ok) {
-        if (response.status === 403) {
-          throw new Error("Access forbidden. You don't have permission to view documents.");
-        } else if (response.status === 401) {
-          throw new Error("Unauthorized. Please login again.");
-        }
-        throw new Error(`Failed to fetch documents. Status: ${response.status}`);
-      }
-
-      const documents = await response.json();
+      const documents = await PortfolioApiService.FetchNotepadDocs();
       setDocuments(documents);
     } catch (err) {
       console.error("Fetch documents error:", err);

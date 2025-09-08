@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { useState, useEffect } from "react";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 const ContactResponse = () => {
   const [contact, setcontact] = useState([]);
@@ -8,10 +9,7 @@ const ContactResponse = () => {
   useEffect(() => {
     const getContacts = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/contact_response`
-        );
-        const data = await res.json();
+        const data = await PortfolioApiService.ContactResponses();
         setcontact(data);
       } catch (error) {
         console.error("Error fetching Contacts:", error);

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import HtmlEditor from "@/app/code-editor/htmlEditor";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 export function BlogUpload() {
   const [formData, setFormData] = useState({
@@ -46,12 +47,7 @@ export function BlogUpload() {
 
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/api/blog/posts`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      const result = await res.json();
+      const result = await PortfolioApiService.UploadBlog(formData);
       setMessage(res.ok ? "Blog post created!" : `Error: ${result.detail}`);
     } catch (err) {
       console.error(err);

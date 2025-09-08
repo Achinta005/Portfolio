@@ -8,6 +8,7 @@ import * as THREE from "three"
 import { cn } from "../lib/util";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -34,32 +35,13 @@ const RegisterPage = () => {
     setSuccess("");
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-      const response = await fetch(`${apiUrl}/api/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setSuccess(
-          data.message || "Registration successful! Redirecting to login..."
-        );
-        setTimeout(() => {
-          router.push("/login");
-        }, 2000);
-      } else {
-        setError(data.message || data.error || "Registration failed");
-      }
+      const data = await PortfolioApiService.Register(formData);
     } catch (err) {
       setError("Network error. Please try again.");
       console.error("Registration error:", err);
     } finally {
       setLoading(false);
+      router.push('/login')
     }
   };
 

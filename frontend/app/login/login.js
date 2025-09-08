@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { setAuthToken, getAuthToken } from "../lib/auth"; // Assuming this file exists from your code
+import { setAuthToken, getAuthToken } from "../lib/auth";
 import React, { Suspense } from "react";
 import OAuth from "./oAuth";
 import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "../lib/util";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -34,30 +35,10 @@ const LoginPage = () => {
     setError("");
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-      const response = await fetch(`${apiUrl}/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Assuming setToken saves the token to localStorage
-        // e.g., localStorage.setItem('token', token);
-        if (typeof setToken === "function") {
-          setAuthToken(data.token);
-        } else {
-          localStorage.setItem("token", data.token);
-        }
-        router.push("/admin");
-        router.refresh();
-      } else {
-        setError(data.message || "Login failed");
-      }
+      const data = await PortfolioApiService.Login(formData);
+      setAuthToken(data.token);
+      router.push("/admin");
+      router.refresh();
     } catch (err) {
       setError("Network error. Please try again.");
       console.error("Login error:", err);
@@ -112,7 +93,7 @@ const LoginPage = () => {
                 id="password"
                 name="password"
                 type="password"
-                required                
+                required
                 placeholder="Enter your password"
                 value={formData.password}
                 onChange={handleChange}

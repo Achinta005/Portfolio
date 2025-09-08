@@ -3,27 +3,12 @@ import React from "react";
 import { motion, easeOut } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import Header from "@/components/Navbar";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 const HerosectionMobile = () => {
   const handleDownload = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/download/resume`
-      );
-
-      if (!response.ok) throw new Error("Download failed");
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "Achinta_Resume.pdf";
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      PortfolioApiService.downloadResume();
     } catch (err) {
       console.error("Error downloading:", err);
     }

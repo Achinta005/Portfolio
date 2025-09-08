@@ -11,6 +11,7 @@ import {
   TimelineBody,
   Typography,
 } from "@material-tailwind/react";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 export default function EducationSectionMobile() {
   const [education, setEducation] = useState([])
@@ -18,10 +19,7 @@ export default function EducationSectionMobile() {
   useEffect(() => {
     const fetchEducationData = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/education/geteducationdata`
-        );
-        const data = await res.json();
+        const data = await PortfolioApiService.FetchEducationData();
         setEducation(data);
         console.log(data)
       } catch (error) {

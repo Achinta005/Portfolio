@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
-import { getPostBySlug } from "../../lib/blog";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 export default function BlogPost({ params }) {
   const unwrappedParams = React.use(params);
@@ -17,7 +17,7 @@ export default function BlogPost({ params }) {
     async function fetchPost() {
       try {
         setLoading(true);
-        const postData = await getPostBySlug(slug);
+        const postData = await PortfolioApiService.FetchBlogBySlug(slug);
         if (!postData) {
           notFound();
         }

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 export default function Herosection() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -13,22 +14,7 @@ export default function Herosection() {
 
   const handleDownload = async () => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/download/resume`
-      );
-
-      if (!response.ok) throw new Error("Download failed");
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "Achinta_Resume.pdf";
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      PortfolioApiService.downloadResume();
     } catch (err) {
       console.error("Error downloading:", err);
     }
@@ -129,13 +115,14 @@ export default function Herosection() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                I&apos;m Developer with a passion for building dynamic, user-friendly, 
-                and scalable web applications. I specialize in creating end-to-end 
-                solutions using modern technologies across both frontend and backend. 
-                From crafting responsive interfaces to developing robust APIs, I love 
-                turning ideas into real-world digital products. I&apos;m always exploring 
-                new tools and frameworks to improve my craft and deliver clean, 
-                efficient code.
+                I&apos;m Developer with a passion for building dynamic,
+                user-friendly, and scalable web applications. I specialize in
+                creating end-to-end solutions using modern technologies across
+                both frontend and backend. From crafting responsive interfaces
+                to developing robust APIs, I love turning ideas into real-world
+                digital products. I&apos;m always exploring new tools and
+                frameworks to improve my craft and deliver clean, efficient
+                code.
               </motion.p>
 
               {/* Skills Tags - Desktop only */}
@@ -143,23 +130,28 @@ export default function Herosection() {
                 className="hidden lg:flex flex-wrap gap-3 mb-8"
                 variants={itemVariants}
               >
-                {["React", "Next.js", "Node.js", "Auth", "Tailwind", "Numpy"].map(
-                  (skill, i) => (
-                    <motion.span
-                      key={skill}
-                      className="px-4 py-2 bg-slate-800/50 border border-slate-600/50 rounded-full text-sm text-emerald-300 font-medium backdrop-blur-sm"
-                      whileHover={{
-                        scale: 1.05,
-                        backgroundColor: "rgba(16, 185, 129, 0.1)",
-                      }}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5 + i * 0.1 }}
-                    >
-                      {skill}
-                    </motion.span>
-                  )
-                )}
+                {[
+                  "React",
+                  "Next.js",
+                  "Node.js",
+                  "Auth",
+                  "Tailwind",
+                  "Numpy",
+                ].map((skill, i) => (
+                  <motion.span
+                    key={skill}
+                    className="px-4 py-2 bg-slate-800/50 border border-slate-600/50 rounded-full text-sm text-emerald-300 font-medium backdrop-blur-sm"
+                    whileHover={{
+                      scale: 1.05,
+                      backgroundColor: "rgba(16, 185, 129, 0.1)",
+                    }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 + i * 0.1 }}
+                  >
+                    {skill}
+                  </motion.span>
+                ))}
               </motion.div>
 
               {/* Action Buttons */}
@@ -277,8 +269,6 @@ export default function Herosection() {
           </motion.div>
         </div>
       </motion.div>
-
-
     </section>
   );
 }

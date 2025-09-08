@@ -1,5 +1,5 @@
-// ConnectionCheck.jsx
 import { useEffect, useState } from "react";
+import { apiCall } from "@/services/baseApi";
 
 export default function ConnectionCheck() {
   const [status, setStatus] = useState("checking...");
@@ -11,8 +11,8 @@ export default function ConnectionCheck() {
     async function check() {
       try {
         const [mRes, uRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/api/message`),
-          fetch(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/api/user/123`),
+          apiCall('/api/message'),
+          apiCall('/api/user/123'),
         ]);
         if (!mRes.ok) throw new Error(`message HTTP ${mRes.status}`);
         if (!uRes.ok) throw new Error(`user HTTP ${uRes.status}`);

@@ -2,6 +2,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 const Project = () => {
   const {
@@ -29,13 +30,7 @@ const Project = () => {
     formData.append("description", data.description);
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await res.json();
-      // console.log("Upload success:", result);
+      const result = await PortfolioApiService.UplaodProject(formData);
       reset();
       setButtonText("Submitted Successfully");
       setTimeout(() => {

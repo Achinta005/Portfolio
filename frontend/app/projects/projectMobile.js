@@ -4,6 +4,7 @@ import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { useOutsideClick } from "@/components/useoutsideclick";
 import { AnimatedTestimonialsMobile } from "@/components/ui/animatedprojectmobile";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 export function ExpandableCardDemo() {
   const [active, setActive] = useState(null);
@@ -35,8 +36,7 @@ export function ExpandableCardDemo() {
   useEffect(() => {
     const getProjects = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`);
-        const data = await res.json();
+        const data = await PortfolioApiService.FetchProject();
         setProjects(data);
       } catch (error) {
         console.error("Error fetching projects:", error);

@@ -1,11 +1,11 @@
 "use client";
 import Link from "next/link";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
-import { getAllPosts } from "../lib/blog";
 import { motion, easeOut } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import Header from "@/components/Navbar";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 export default function BlogPage() {
   const [posts, setPosts] = useState([]);
@@ -20,7 +20,7 @@ export default function BlogPage() {
     async function fetchPosts() {
       try {
         setLoading(true);
-        const postsData = await getAllPosts();
+        const postsData = await PortfolioApiService.FetchAllBlogs();
         setPosts(postsData);
       } catch (err) {
         setError("Failed to load blog posts");
@@ -29,7 +29,6 @@ export default function BlogPage() {
         setLoading(false);
       }
     }
-
     fetchPosts();
   }, []);
 

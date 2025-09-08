@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Eye } from "lucide-react";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 // Certificate Popup Component
 const CertificatePopup = ({ cert, isOpen, onClose }) => {
@@ -300,10 +301,7 @@ export default function CertificationSectionMobile() {
   useEffect(() => {
     const fetchCertificates = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/certificate/getcertificate`
-        );
-        const data = await res.json();
+        const data = await PortfolioApiService.FetchCertificates();
         setCertifications(data);
       } catch (error) {
         console.error("Error fetching certificates:", error);
