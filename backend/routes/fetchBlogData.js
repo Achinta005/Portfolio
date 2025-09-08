@@ -16,7 +16,8 @@ router.get('/', async (req, res) => {
       return res.json([]);
     }
     
-    const posts = await BlogPost.getAllPosts();
+    // Fetch all posts sorted by date descending (newest first)
+    const posts = await BlogPost.find({}).sort({ date: -1 });
     
     console.log(`Retrieved ${posts.length} posts from database`);
     console.log(`Returning ${posts.length} transformed posts`);
