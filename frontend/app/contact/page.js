@@ -64,14 +64,28 @@ export default function Contact() {
           overflow: "hidden",
         }}
       />
-      <div style={{ position: "relative", zIndex: 1 }}>
+      <div
+        style={{ position: "relative", zIndex: 1 }}
+        className="relative -top-8"
+      >
         <div className="min-h-screen rounded-lg">
           <ContactHero />
-          <div className="grid grid-cols-1 lg:grid-cols-2">
-            <ContactForm />
-            <ContactInfo />
-            <Header/>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-white/5 rounded-lg lg:rounded-2xl backdrop-blur-xl h-full lg:h-full min-h-0 relative border border-purple-500/20 lg:border-purple-500/20 shadow-2xl shadow-purple-500/10 -top-10">
+            <div className="hidden lg:block absolute top-4 left-4 w-16 h-16 border-l-2 border-t-2 border-purple-400/50 rounded-tl-lg"></div>
+            <div className="hidden lg:block absolute top-4 right-4 w-16 h-16 border-r-2 border-t-2 border-purple-400/50 rounded-tr-lg"></div>
+            <div className="hidden lg:block absolute bottom-4 left-4 w-16 h-16 border-l-2 border-b-2 border-purple-400/50 rounded-bl-lg"></div>
+            <div className="hidden lg:block absolute bottom-4 right-4 w-16 h-16 border-r-2 border-b-2 border-purple-400/50 rounded-br-lg"></div>
+            <div className="flex items-center space-x-2 relative top-7">
+              <div className="w-4 h-4 bg-red-500 rounded-full"></div>
+              <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
+              <div className="w-4 h-4 bg-green-500 rounded-full"></div>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 ">
+              <ContactForm />
+              <ContactInfo />
+            </div>
           </div>
+          <Header />
         </div>
       </div>
     </>

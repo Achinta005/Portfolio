@@ -41,6 +41,7 @@ export default function ProjectsGrid() {
       ? project.technologies.join(", ")
       : project.technologies || "No technologies listed",
   }));
+  
 
   return (
     <section className="relative">

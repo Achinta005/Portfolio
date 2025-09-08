@@ -183,7 +183,7 @@ export default function Herosection() {
                 </div>
 
                 {/* Mobile Buttons */}
-                <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-4 w-full ml-9 mt-6">
+                <div className="lg:hidden grid grid-cols-1 relative sm:grid-cols-2 gap-4 w-full mt-6 sm:left-10 left-[30vw]">
                   <motion.div
                     className="connect-button"
                     initial={{ opacity: 0, scale: 0 }}

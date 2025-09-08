@@ -1,7 +1,8 @@
-'use client'
+"use client";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
+import socialLinks from "./socialLink.json";
 
 const ContactForm2 = () => {
   const {
@@ -22,7 +23,6 @@ const ContactForm2 = () => {
       console.error("Error submitting form:", error);
     }
   };
-
   return (
     <section className="py-20">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -117,6 +117,39 @@ const ContactForm2 = () => {
             {isSubmitting ? "Submiting..." : "SUBMIT"}
           </button>
         </form>
+        <div className="relative -top-10">
+          <div>
+            <h3 className="text-xl font-semibold text-yellow-100 mb-5">
+              Follow Me
+            </h3>
+            <div className="flex space-x-4">
+              {socialLinks.map((social, index) => (
+                <a
+                  key={index}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20  rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+                  title={social.name}
+                >
+                  <i
+                    className={`${social.icon} text-xl text-green-600 hover:text-blue-600`}
+                  ></i>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-3 p-6 bg-white/10 rounded-xl">
+            <h3 className="text-lg font-semibold text-gray-300 mb-2">
+              Response Time
+            </h3>
+            <p className="text-gray-700 dark:text-gray-300">
+              I typically respond to messages within 24 hours. For urgent
+              matters, feel free to call me directly.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );
