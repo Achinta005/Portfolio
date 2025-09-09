@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { easeOut, motion } from "framer-motion";
 import { CardItem, CardBody, CardContainer } from "@/components/ui/3dCard";
 
-// Precompute random styles and transition properties for lines and particles
 const generateLineStyles = () =>
   Array.from({ length: 20 }, () => ({
     style: {

@@ -41,53 +41,69 @@ export default function ProjectsGrid() {
       ? project.technologies.join(", ")
       : project.technologies || "No technologies listed",
   }));
-  
 
   return (
-    <section className="relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-white/5 rounded-lg lg:rounded-2xl backdrop-blur-xl h-full lg:h-full min-h-0 relative border border-purple-500/20 lg:border-purple-500/20 shadow-2xl shadow-purple-500/10 -top-28">
-        <div className="hidden lg:block absolute top-4 left-4 w-16 h-16 border-l-2 border-t-2 border-purple-400/50 rounded-tl-lg"></div>
-        <div className="hidden lg:block absolute top-4 right-4 w-16 h-16 border-r-2 border-t-2 border-purple-400/50 rounded-tr-lg"></div>
-        <div className="hidden lg:block absolute bottom-4 left-4 w-16 h-16 border-l-2 border-b-2 border-purple-400/50 rounded-bl-lg"></div>
-        <div className="hidden lg:block absolute bottom-4 right-4 w-16 h-16 border-r-2 border-b-2 border-purple-400/50 rounded-br-lg"></div>
-        <div className="flex items-center space-x-2 relative top-7">
-          <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-          <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
-          <div className="w-4 h-4 bg-green-500 rounded-full"></div>
-        </div>
-        {/* Category Filter Buttons */}
-        <div className="flex flex-wrap justify-center gap-4 mt-5">
-          {categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-2 border-purple-400/50 border-2 rounded-full transition-colors cursor-pointer whitespace-nowrap ${
-                selectedCategory === category
-                  ? "bg-amber-700/50 text-white "
-                  : "bg-white/10 text-green-300 hover:bg-purple-600/70 hover:text-green-500"
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-        <div className="relative">
-          {/* Loading state or Animated Testimonials */}
-          {projects.length === 0 ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="text-gray-500 dark:text-neutral-400">
-                Loading projects...
-              </div>
+    <section className="relative py-8 sm:py-12 lg:py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white/5 rounded-lg lg:rounded-2xl backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 overflow-hidden">
+          
+          {/* Decorative Corner Elements - Desktop Only */}
+          <div className="hidden lg:block absolute top-4 left-4 w-16 h-16 border-l-2 border-t-2 border-purple-400/50 rounded-tl-lg"></div>
+          <div className="hidden lg:block absolute top-4 right-4 w-16 h-16 border-r-2 border-t-2 border-purple-400/50 rounded-tr-lg"></div>
+          <div className="hidden lg:block absolute bottom-4 left-4 w-16 h-16 border-l-2 border-b-2 border-purple-400/50 rounded-bl-lg"></div>
+          <div className="hidden lg:block absolute bottom-4 right-4 w-16 h-16 border-r-2 border-b-2 border-purple-400/50 rounded-br-lg"></div>
+          
+          {/* Container Content */}
+          <div className="relative p-4 sm:p-6 lg:p-8">
+            
+            {/* Window Controls */}
+            <div className="flex items-center space-x-2 mb-6 lg:mb-8">
+              <div className="w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full"></div>
+              <div className="w-3 h-3 sm:w-4 sm:h-4 bg-yellow-500 rounded-full"></div>
+              <div className="w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full"></div>
             </div>
-          ) : testimonials.length === 0 ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="text-gray-500 dark:text-neutral-400">
-                No projects found in this category.
-              </div>
+
+            {/* Category Filter Buttons */}
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-8 lg:mb-12">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 sm:px-6 sm:py-2 border-purple-400/50 border-2 rounded-full transition-all duration-300 cursor-pointer whitespace-nowrap text-sm sm:text-base ${
+                    selectedCategory === category
+                      ? "bg-amber-700/50 text-white border-amber-500/70 transform scale-105"
+                      : "bg-white/10 text-green-300 hover:bg-purple-600/70 hover:text-green-500 hover:border-purple-400/70"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
             </div>
-          ) : (
-            <AnimatedTestimonials testimonials={testimonials} />
-          )}
+
+            {/* Projects Content */}
+            <div className="relative min-h-[400px] sm:min-h-[500px]">
+              {/* Loading state */}
+              {projects.length === 0 ? (
+                <div className="flex justify-center items-center h-64">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto mb-4"></div>
+                    <div className="text-gray-400 text-lg">Loading projects...</div>
+                  </div>
+                </div>
+              ) : testimonials.length === 0 ? (
+                <div className="flex justify-center items-center h-64">
+                  <div className="text-center">
+                    <div className="text-gray-400 text-lg mb-2">No projects found</div>
+                    <div className="text-gray-500 text-sm">Try selecting a different category</div>
+                  </div>
+                </div>
+              ) : (
+                <div className="w-full overflow-hidden">
+                  <AnimatedTestimonials testimonials={testimonials} />
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </section>

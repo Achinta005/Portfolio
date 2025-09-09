@@ -5,11 +5,19 @@ import Homepage from "./Homepage/page";
 import Header from "../components/Navbar";
 
 export default function Page() {
-  
   const vantaRef = useRef(null);
   const [vantaEffect, setVantaEffect] = useState(null);
 
   useEffect(() => {
+    // Set CSS custom properties for mobile viewport handling
+    const setVH = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    };
+
+    setVH();
+    window.addEventListener('resize', setVH);
+
     async function loadVanta() {
       if (!window.VANTA) {
         await new Promise((resolve) => {
@@ -22,22 +30,22 @@ export default function Page() {
 
       if (!vantaEffect && window.VANTA && vantaRef.current) {
         setVantaEffect(
-                  window.VANTA.NET({
-                    el: vantaRef.current,
-                    THREE: THREE,
-                    mouseControls: true,
-                    touchControls: true,
-                    gyroControls: false,
-                    minHeight: 200.0,
-                    minWidth: 200.0,
-                    scale: 1.0,
-                    scaleMobile: 1.0,
-                    backgroundColor: 0x0,
-                    points: 20.0,
-                    maxDistance: 10.0,
-                    spacing: 20.0,
-                  })
-                );
+          window.VANTA.NET({
+            el: vantaRef.current,
+            THREE: THREE,
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.0,
+            minWidth: 200.0,
+            scale: 1.0,
+            scaleMobile: 0.8, // Reduced scale for mobile
+            backgroundColor: 0x0,
+            points: 15.0, // Reduced points for better mobile performance
+            maxDistance: 8.0, // Reduced for mobile
+            spacing: 18.0,
+          })
+        );
       }
     }
 
@@ -45,26 +53,57 @@ export default function Page() {
 
     return () => {
       if (vantaEffect) vantaEffect.destroy();
+      window.removeEventListener('resize', setVH);
     };
   }, [vantaEffect]);
 
   return (
     <>
+      {/* Add global styles for mobile viewport fix */}
+      <style jsx global>{`
+        * {
+          box-sizing: border-box;
+        }
+        
+        html, body {
+          margin: 0;
+          padding: 0;
+          overflow-x: hidden;
+          width: 100%;
+          height: 100%;
+        }
+
+        #__next {
+          overflow-x: hidden;
+        }
+      `}</style>
+      
       <div
         ref={vantaRef}
         style={{
           position: "fixed",
           top: 0,
           left: 0,
-          width: "100vw",
+          width: "100%",
           height: "100vh",
+          height: "calc(var(--vh, 1vh) * 100)", // Mobile-friendly viewport height
           zIndex: -1,
           overflow: "hidden",
         }}
       />
-      <div style={{ position: "relative", zIndex: 1 }}>
+      
+      <div 
+        style={{ 
+          position: "relative", 
+          zIndex: 1,
+          width: "100%",
+          minHeight: "100vh",
+          minHeight: "calc(var(--vh, 1vh) * 100)",
+          overflow: "hidden",
+        }}
+      >
+        <Header />
         <Homepage />
-      <Header />
       </div>
     </>
   );

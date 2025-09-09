@@ -2,7 +2,6 @@
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "motion/react";
 import { LinkPreview } from "./linkpreview";
-
 import { useEffect, useState } from "react";
 
 export const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
@@ -30,12 +29,14 @@ export const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
   const randomRotateY = () => {
     return Math.floor(Math.random() * 21) - 10;
   };
+
   return (
-    <div className="mx-auto max-w-sm px-4 py-10 font-sans antialiased md:max-w-screen">
-      <div className="relative grid grid-cols-1 md:grid-cols-2 -left-20">
-        {/* Left-side image container */}
-        <div className="flex items-center justify-center">
-          <div className="relative h-80 w-full max-w-[400px]">
+    <div className="w-full max-w-6xl mx-auto px-4 py-6 sm:py-8 lg:py-10 font-sans antialiased">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        
+        {/* Image Container */}
+        <div className="flex items-center justify-center order-1 lg:order-1">
+          <div className="relative h-64 w-full max-w-[300px] sm:h-80 sm:max-w-[350px] lg:h-96 lg:max-w-[400px]">
             <AnimatePresence>
               {testimonials.map((testimonial, index) => (
                 <motion.div
@@ -74,15 +75,16 @@ export const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
                     width={500}
                     height={500}
                     draggable={false}
-                    className="h-full w-full rounded-3xl object-cover object-center"
+                    className="h-full w-full rounded-2xl sm:rounded-3xl object-cover object-center shadow-2xl"
                   />
                 </motion.div>
               ))}
             </AnimatePresence>
           </div>
         </div>
-        {/* Right-side text container */}
-        <div className="flex flex-col justify-between py-4 w-[52vw] p-2">
+
+        {/* Content Container */}
+        <div className="flex flex-col justify-between order-2 lg:order-2 space-y-6">
           <motion.div
             key={active}
             initial={{
@@ -101,14 +103,20 @@ export const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
               duration: 0.2,
               ease: "easeInOut",
             }}
+            className="space-y-4 sm:space-y-6"
           >
-            <h3 className="text-2xl font-bold text-white">
-              {testimonials[active].name}
-            </h3>
-            <p className="text-sm text-green-500">
-              {testimonials[active].designation}
-            </p>
-            <motion.p className="mt-8 text-lg text-gray-500 dark:text-neutral-300">
+            {/* Project Title */}
+            <div>
+              <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white leading-tight">
+                {testimonials[active].name}
+              </h3>
+              <p className="text-xs sm:text-sm lg:text-base text-green-400 mt-2 font-medium">
+                {testimonials[active].designation}
+              </p>
+            </div>
+
+            {/* Project Description */}
+            <motion.div className="text-sm sm:text-base lg:text-lg text-gray-300 leading-relaxed">
               {testimonials[active].quote.split(" ").map((word, index) => (
                 <motion.span
                   key={index}
@@ -132,46 +140,70 @@ export const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
                   {word}&nbsp;
                 </motion.span>
               ))}
-            </motion.p>
-            <div className="flex mt-5 gap-6">
-              <LinkPreview
-                url={testimonials[active].liveUrl}
-                className="font-bold"
-              >
-                <div
-                  href={testimonials[active].liveUrl}
-                  className="flex items-center font-semibold text-green-600 hover:text-blue-500 transition-colors cursor-pointer"
+            </motion.div>
+
+            {/* Project Links */}
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 pt-2">
+              {testimonials[active].liveUrl && (
+                <LinkPreview
+                  url={testimonials[active].liveUrl}
+                  className="font-bold"
                 >
-                  <div className="w-4 h-4 flex items-center justify-center mr-1">
-                    <i className="ri-external-link-line"></i>
+                  <div className="flex items-center font-semibold text-green-500 hover:text-blue-400 transition-colors cursor-pointer group">
+                    <div className="w-4 h-4 flex items-center justify-center mr-2 group-hover:scale-110 transition-transform">
+                      <i className="ri-external-link-line text-sm"></i>
+                    </div>
+                    <span className="text-sm sm:text-base">Live Demo</span>
                   </div>
-                  Live Demo
-                </div>
-              </LinkPreview>
-              <a
-                href={testimonials[active].githubUrl}
-                className="flex items-center text-green-600 hover:text-blue-500 transition-colors cursor-pointer"
-              >
-                <div className="w-4 h-4 flex items-center justify-center mr-1">
-                  <i className="ri-github-line"></i>
-                </div>
-                Code
-              </a>
+                </LinkPreview>
+              )}
+              
+              {testimonials[active].githubUrl && (
+                <a
+                  href={testimonials[active].githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center text-green-500 hover:text-blue-400 transition-colors cursor-pointer group"
+                >
+                  <div className="w-4 h-4 flex items-center justify-center mr-2 group-hover:scale-110 transition-transform">
+                    <i className="ri-github-line text-sm"></i>
+                  </div>
+                  <span className="text-sm sm:text-base font-medium">View Code</span>
+                </a>
+              )}
             </div>
           </motion.div>
-          <div className="flex gap-4 pt-12 md:pt-5">
+
+          {/* Navigation Controls */}
+          <div className="flex gap-3 sm:gap-4 pt-4 sm:pt-6 lg:pt-8 justify-center lg:justify-start">
             <button
               onClick={handlePrev}
-              className="group/button flex h-7 w-7 lg:h-10 lg:w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800 cursor-pointer"
+              className="group/button flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer"
             >
-              <IconArrowLeft className="h-5 w-5 lg:h-7 lg:w-7 text-black transition-transform duration-300 group-hover/button:rotate-12 dark:text-neutral-200" />
+              <IconArrowLeft className="h-5 w-5 sm:h-6 sm:w-6 text-white transition-transform duration-300 group-hover/button:-translate-x-0.5" />
             </button>
+            
             <button
               onClick={handleNext}
-              className="group/button flex h-7 w-7 lg:h-10 lg:w-10 items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800 cursor-pointer"
+              className="group/button flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer"
             >
-              <IconArrowRight className="h-5 w-5 lg:h-7 lg:w-7 text-black transition-transform duration-300 group-hover/button:-rotate-12 dark:text-neutral-200" />
+              <IconArrowRight className="h-5 w-5 sm:h-6 sm:w-6 text-white transition-transform duration-300 group-hover/button:translate-x-0.5" />
             </button>
+          </div>
+
+          {/* Pagination Dots */}
+          <div className="flex justify-center lg:justify-start gap-2 pt-2">
+            {testimonials.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setActive(index)}
+                className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+                  isActive(index)
+                    ? "bg-green-400 scale-125"
+                    : "bg-white/30 hover:bg-white/50"
+                }`}
+              />
+            ))}
           </div>
         </div>
       </div>

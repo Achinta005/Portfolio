@@ -2,10 +2,10 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Navbar";
-import AboutHero from "./AboutHeroSection/AboutHero";
-import EducationSection from "./EducationSection/EducationSection";
-import CertificationSection from "./CertificateSection/CertificationSection";
-import InteractiveSkillsDisplay from "./SkillSection/InteractiveSkillsDisplay";
+import AboutHero from "./AboutHero";
+import EducationSection from "./EducationSection";
+import CertificationSection from "./CertificationSection";
+import InteractiveSkillsDisplay from "./InteractiveSkillsDisplay";
 import DecorativeNavbar from "@/components/DecorativeNavbar";
 import SectionIndicators from "../../components/SectionIndicator";
 

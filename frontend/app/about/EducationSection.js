@@ -34,7 +34,7 @@ const MotionDiv = ({ children, initial, whileInView, transition, className }) =>
       className={`transition-all duration-700 ${
         isInView 
           ? 'opacity-100 translate-x-0 translate-y-0 scale-100' 
-          : 'opacity-0 translate-x-[-150px] translate-y-4 scale-95'
+          : 'opacity-0 translate-x-[-50px] sm:translate-x-[-150px] translate-y-4 scale-95'
       } ${className}`}
     >
       {children}
@@ -59,21 +59,21 @@ export default function EducationSection() {
   }, []);
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-x-hidden">
       {/* Main Container with Glass Effect */}
       <div className="min-h-screen backdrop-blur-md bg-black/20 border-t border-white/10">
-        <section className="py-20">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="py-12 sm:py-16 lg:py-20">
+          <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-8">
             
             {/* Header Section */}
-            <div className="text-center mb-16">
+            <div className="text-center mb-8 sm:mb-12 lg:mb-16">
               <MotionDiv
                 initial={{ opacity: 0, scale: 0 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8 }}
               >
-                <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-3xl p-8 max-w-4xl mx-auto shadow-2xl mb-8">
-                  <h2 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-6">
+                <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto shadow-2xl mb-4 sm:mb-8">
+                  <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4 sm:mb-6">
                     Education
                   </h2>
                 </div>
@@ -84,8 +84,8 @@ export default function EducationSection() {
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
               >
-                <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl p-6 max-w-3xl mx-auto shadow-xl">
-                  <p className="text-xl text-gray-200">
+                <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 max-w-3xl mx-auto shadow-xl">
+                  <p className="text-sm sm:text-lg lg:text-xl text-gray-200">
                     My academic foundation in computer science and continuous learning journey.
                   </p>
                 </div>
@@ -93,21 +93,21 @@ export default function EducationSection() {
             </div>
 
             {/* Timeline Container */}
-            <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-3xl p-8 shadow-2xl">
-              <div className="w-full relative lg:left-16 left-[-15vw]">
+            <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-6 lg:p-8 shadow-2xl overflow-hidden">
+              <div className="w-full relative">
                 <Timeline className="relative">
                   {education.map((edu, index) => (
                     <TimelineItem key={index} className="relative z-10">
                       
                       {/* Custom connector line - only show between items */}
                       {index < education.length - 1 && (
-                        <div className="absolute left-6 top-14 w-0.5 h-56 bg-gradient-to-b from-blue-400 via-purple-400 to-pink-400 z-0"></div>
+                        <div className="absolute left-4 sm:left-6 top-12 sm:top-14 w-0.5 h-40 sm:h-48 lg:h-56 bg-gradient-to-b from-blue-400 via-purple-400 to-pink-400 z-0"></div>
                       )}
 
                       <TimelineConnector className="hidden" />
                       <TimelineHeader>
-                        <TimelineIcon className="p-2">
-                          <div className="w-8 h-8 flex items-center justify-center backdrop-blur-md bg-white/10 border border-white/20 rounded-full overflow-hidden">
+                        <TimelineIcon className="p-1 sm:p-2">
+                          <div className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center backdrop-blur-md bg-white/10 border border-white/20 rounded-full overflow-hidden">
                             <img
                               src={
                                 index === 2
@@ -124,34 +124,34 @@ export default function EducationSection() {
                         <Typography
                           variant="h5"
                           color="blue-gray"
-                          className="text-blue-200 font-semibold"
+                          className="text-blue-200 font-semibold text-sm sm:text-base lg:text-lg"
                         >
                           {edu.year}
                         </Typography>
                       </TimelineHeader>
                       
-                      <TimelineBody className="pb-8">
+                      <TimelineBody className="pb-6 sm:pb-8">
                         <MotionDiv
                           initial={{ opacity: 0, scale: 0 }}
                           whileInView={{ opacity: 1, scale: 1 }}
                           transition={{ duration: 0.8 }}
                         >
                           <div className="flex justify-center p-0 rounded-lg shadow-lg w-full pointer-events-none">
-                            <div className="relative shadow-2xl w-full max-w-3xl object-cover object-top rounded-2xl pointer-events-auto backdrop-blur-lg bg-white/10 border border-white/20 p-2 md:rounded-3xl md:p-3">
+                            <div className="relative shadow-2xl w-full max-w-full sm:max-w-2xl lg:max-w-3xl object-cover object-top rounded-xl sm:rounded-2xl lg:rounded-3xl pointer-events-auto backdrop-blur-lg bg-white/10 border border-white/20 p-2 sm:p-3">
                               {/* Glowing Effect */}
                               <GlowingEffect
-                                spread={80}
+                                spread={60}
                                 glow={true}
                                 disabled={false}
-                                proximity={60}
+                                proximity={40}
                                 inactiveZone={0.01}
-                                borderWidth={3}
+                                borderWidth={2}
                               />
 
                               {/* Content Container with Glowing Border */}
-                              <div className="border-0.75 relative flex h-full lg:w-[60vw] max-sm:w-[75vw] flex-col justify-between lg:gap-6 overflow-hidden rounded-xl lg:p-8">
-                                <div className="lg:flex lg:flex-row lg:items-start sm:flex sm:flex-col gap-6">
-                                  <div className="w-24 h-24 flex items-center justify-center backdrop-blur-md bg-white/20 border border-white/30 rounded-lg flex-shrink-0 overflow-hidden border-4 border-amber-50 max-lg:mx-auto mb-4">
+                              <div className="border-0.75 relative flex h-full w-full flex-col justify-between gap-3 sm:gap-4 lg:gap-6 overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-8">
+                                <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4 lg:gap-6">
+                                  <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 flex items-center justify-center backdrop-blur-md bg-white/20 border border-white/30 rounded-lg flex-shrink-0 overflow-hidden border-2 sm:border-4 border-amber-50 mx-auto sm:mx-0">
                                     <img
                                       src={edu.icon}
                                       width={96}
@@ -160,20 +160,20 @@ export default function EducationSection() {
                                       className="w-full h-full object-cover"
                                     />
                                   </div>
-                                  <div className="flex-1">
-                                    <h3 className="text-xl font-bold text-gray-100 mb-2">
+                                  <div className="flex-1 text-center sm:text-left min-w-0">
+                                    <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-100 mb-1 sm:mb-2 break-words">
                                       {edu.degree}
                                     </h3>
-                                    <p className="text-green-400 font-semibold mb-1">
+                                    <p className="text-green-400 font-semibold mb-1 text-sm sm:text-base break-words">
                                       {edu.university}
                                     </p>
-                                    <p className="text-gray-200 font-semibold mb-1">
+                                    <p className="text-gray-200 font-semibold mb-1 text-sm sm:text-base break-words">
                                       {edu.college}
                                     </p>
-                                    <p className="text-gray-300 text-sm mb-2">
+                                    <p className="text-gray-300 text-xs sm:text-sm mb-1 sm:mb-2">
                                       {edu.year}
                                     </p>
-                                    <p className="text-gray-300 text-sm">
+                                    <p className="text-gray-300 text-xs sm:text-sm leading-relaxed break-words">
                                       {edu.description}
                                     </p>
                                   </div>

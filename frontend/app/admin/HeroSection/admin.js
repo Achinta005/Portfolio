@@ -39,8 +39,11 @@ const AdminPage = () => {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p>Loading...</p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p className="text-white text-lg">Loading...</p>
+        </div>
       </div>
     );
   }
@@ -48,10 +51,10 @@ const AdminPage = () => {
   // Conditionally render the full-page components for Admin and user(editor here)
   if (user.role === "admin" && activeView === "projects") {
     return (
-      <div className="p-4 bg-gradient-to-tr from-blue-700 via-pink-600 to-yellow-300 ">
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-gradient-to-tr from-blue-700 via-pink-600 to-yellow-300">
         <button
           onClick={() => setActiveView("dashboard")}
-          className="mb-4 px-4 py-2 cursor-pointer bg-white/40 backdrop-blur-3xl text-white rounded hover:bg-white/20"
+          className="mb-4 px-4 py-2 cursor-pointer bg-white/40 backdrop-blur-3xl text-white rounded-lg hover:bg-white/20 transition-colors"
         >
           ← Back to Dashboard
         </button>
@@ -62,10 +65,10 @@ const AdminPage = () => {
 
   if (user.role === "admin" && activeView === "messages") {
     return (
-      <div className="p-6 bg-[url(https://res.cloudinary.com/dc1fkirb4/image/upload/v1755757547/response_arjl1x.webp)] bg-cover">
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-[url(https://res.cloudinary.com/dc1fkirb4/image/upload/v1755757547/response_arjl1x.webp)] bg-cover bg-center">
         <button
           onClick={() => setActiveView("dashboard")}
-          className="mb-4 px-4 py-2 bg-white/20 backdrop-blur-3xl text-black cursor-pointer rounded hover:bg-white/20"
+          className="mb-4 px-4 py-2 bg-white/20 backdrop-blur-3xl text-black cursor-pointer rounded-lg hover:bg-white/30 transition-colors"
         >
           ← Back to Dashboard
         </button>
@@ -73,12 +76,13 @@ const AdminPage = () => {
       </div>
     );
   }
+
   if (user.role === "admin" && activeView === "Notepad") {
     return (
-      <div className="p-8 bg-[url(https://res.cloudinary.com/dc1fkirb4/image/upload/v1755758676/notepad_e5ey08.jpg)] bg-cover">
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-[url(https://res.cloudinary.com/dc1fkirb4/image/upload/v1755758676/notepad_e5ey08.jpg)] bg-cover bg-center">
         <button
           onClick={() => setActiveView("dashboard")}
-          className="mb-4 px-4 py-2 bg-white/10 backdrop-blur-3xl text-white cursor-pointer rounded hover:bg-white/20"
+          className="mb-4 px-4 py-2 bg-white/10 backdrop-blur-3xl text-white cursor-pointer rounded-lg hover:bg-white/20 transition-colors"
         >
           ← Back to Dashboard
         </button>
@@ -86,12 +90,13 @@ const AdminPage = () => {
       </div>
     );
   }
+
   if (user.role === "admin" && activeView === "Flask") {
     return (
-      <div className="p-8 bg-gray-600 bg-cover">
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-gray-600">
         <button
           onClick={() => setActiveView("dashboard")}
-          className="mb-4 px-4 py-2 bg-white/10 backdrop-blur-3xl text-white cursor-pointer rounded hover:bg-white/20"
+          className="mb-4 px-4 py-2 bg-white/10 backdrop-blur-3xl text-white cursor-pointer rounded-lg hover:bg-white/20 transition-colors"
         >
           ← Back to Dashboard
         </button>
@@ -99,12 +104,13 @@ const AdminPage = () => {
       </div>
     );
   }
+
   if (user.role === "admin" && activeView === "Blog") {
     return (
-      <div className="p-8 bg-gradient-to-bl from-pink-600 via-yellow-400 to-purple-700 bg-cover">
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-gradient-to-bl from-pink-600 via-yellow-400 to-purple-700">
         <button
           onClick={() => setActiveView("dashboard")}
-          className="mb-4 px-4 py-2 bg-white/30 backdrop-blur-3xl text-white cursor-pointer rounded hover:bg-white/20"
+          className="mb-4 px-4 py-2 bg-white/30 backdrop-blur-3xl text-white cursor-pointer rounded-lg hover:bg-white/20 transition-colors"
         >
           ← Back to Dashboard
         </button>
@@ -112,12 +118,13 @@ const AdminPage = () => {
       </div>
     );
   }
+
   if (user.role === "editor" && activeView === "Notepad") {
     return (
-      <div className="container mx-auto p-4">
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-slate-900 to-slate-800">
         <button
           onClick={() => setActiveView("dashboard")}
-          className="mb-4 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+          className="mb-4 px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
         >
           ← Back to Dashboard
         </button>
@@ -128,52 +135,60 @@ const AdminPage = () => {
 
   // Main Dashboard View
   return (
-    <div>
-      <div
-        className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed overflow-x-hidden"
-        style={{
-          backgroundImage:
-            "url('https://wallpapers.com/images/hd/desktop-background-6v9qjuvtrckgn4mm.jpg')",
-        }}
-      >
-        <div className="container mx-auto px-4 py-8 ">
-          <header className="grid grid-cols-3 gap-64 mb-8">
-            <div className="bg-white/10 backdrop-blur-2xl w-64 p-2.5 rounded-lg">
-              <p className="text-green-500 font-bold text-xl text-nowrap text-center">
-                Welcome {user.username}
-              </p>
-            </div>
-            <div className="bg-white/10 backdrop-blur-2xl p-1 rounded-lg">
-              <h1 className="text-3xl font-bold text-gray-100 text-center">
-                Dashboard
-              </h1>
-            </div>
-            <div>
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed"
+         style={{
+           backgroundImage: "url('https://wallpapers.com/images/hd/desktop-background-6v9qjuvtrckgn4mm.jpg')",
+         }}>
+      <div className="min-h-screen bg-black/20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+          {/* Responsive Header */}
+          <header className="mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              {/* Welcome message */}
+              <div className="bg-white/10 backdrop-blur-2xl px-4 py-2 rounded-lg">
+                <p className="text-green-400 font-bold text-lg sm:text-xl text-center sm:text-left">
+                  Welcome {user.username}
+                </p>
+              </div>
+              
+              {/* Dashboard title */}
+              <div className="bg-white/10 backdrop-blur-2xl px-4 py-2 rounded-lg flex-1 sm:flex-initial">
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-100 text-center">
+                  Dashboard
+                </h1>
+              </div>
+              
+              {/* Logout button */}
               <button
                 onClick={handleLogout}
-                className="bg-red-400 text-white rounded-lg hover:bg-red-500 p-2"
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors self-center sm:self-auto"
               >
                 Logout
               </button>
             </div>
           </header>
 
-          {fetchError && <p className="text-red-500 mb-4">{fetchError}</p>}
-          {/* Only for Admin--> */}
+          {fetchError && (
+            <div className="mb-4 p-4 bg-red-500/20 border border-red-500/30 rounded-lg backdrop-blur-sm">
+              <p className="text-red-200">{fetchError}</p>
+            </div>
+          )}
+
+          {/* Admin Dashboard Grid */}
           {user.role === "admin" && (
-            <div className="grid grid-cols-3 gap-6 rounded-lg shadow-2xl p-6 h-full mb-12">
-              <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl hidden lg:grid lg:grid-cols-1 lg:place-items-center">
-                <div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              {/* Project Management Card */}
+              <div className="bg-white/20 rounded-lg p-4 backdrop-blur-3xl flex flex-col items-center space-y-4 hover:bg-white/25 transition-colors">
+                <div className="w-full max-w-[280px] aspect-[4/3] relative">
                   <Image
                     src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755754879/a1_cqsx8x.jpg"
-                    alt="project img"
-                    width={300}
-                    height={30}
-                    className="rounded-lg border-2 border-white"
+                    alt="Project Management"
+                    fill
+                    className="rounded-lg border-2 border-white object-cover"
                   />
                 </div>
                 <button
-                  className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-1.5"
+                  className="relative inline-flex h-10 w-full max-w-[200px] overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
                   onClick={() => setActiveView("projects")}
                 >
                   <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
@@ -182,18 +197,19 @@ const AdminPage = () => {
                   </span>
                 </button>
               </div>
-              <div className="bg-white/20 rounded-lg p-3 backdrop-blur-3xl hidden lg:grid lg:grid-cols-1 lg:place-items-center">
-                <div>
+
+              {/* Flask Card */}
+              <div className="bg-white/20 rounded-lg p-4 backdrop-blur-3xl flex flex-col items-center space-y-4 hover:bg-white/25 transition-colors">
+                <div className="w-full max-w-[280px] aspect-[4/3] relative">
                   <Image
                     src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755834332/flask_o3qe55.jpg"
-                    alt="project img"
-                    width={300}
-                    height={30}
-                    className="rounded-lg border-2 border-white"
+                    alt="Python Flask"
+                    fill
+                    className="rounded-lg border-2 border-white object-cover"
                   />
                 </div>
                 <button
-                  className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-1.5"
+                  className="relative inline-flex h-10 w-full max-w-[200px] overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
                   onClick={() => setActiveView("Flask")}
                 >
                   <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
@@ -202,18 +218,19 @@ const AdminPage = () => {
                   </span>
                 </button>
               </div>
-              <div className="bg-white/20 rounded-lg backdrop-blur-3xl grid grid-cols-1 place-items-center">
-                <div className="w-[350px] h-[170px]">
+
+              {/* Messages Card */}
+              <div className="bg-white/20 rounded-lg p-4 backdrop-blur-3xl flex flex-col items-center space-y-4 hover:bg-white/25 transition-colors">
+                <div className="w-full max-w-[280px] aspect-[4/3] relative">
                   <Image
                     src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755754879/a2_jjgzr3.png"
-                    alt="responses"
-                    width={170}
-                    height={30}
-                    className="w-full h-[200px] object-contain border-2 border-white p-1.5 rounded-lg"
+                    alt="Messages"
+                    fill
+                    className="rounded-lg border-2 border-white object-contain"
                   />
                 </div>
                 <button
-                  className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-1.5"
+                  className="relative inline-flex h-10 w-full max-w-[200px] overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
                   onClick={() => setActiveView("messages")}
                 >
                   <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
@@ -222,18 +239,19 @@ const AdminPage = () => {
                   </span>
                 </button>
               </div>
-              <div className="bg-white/20 rounded-lg backdrop-blur-3xl grid grid-cols-1 place-items-center">
-                <div>
+
+              {/* Notepad Card */}
+              <div className="bg-white/20 rounded-lg p-4 backdrop-blur-3xl flex flex-col items-center space-y-4 hover:bg-white/25 transition-colors">
+                <div className="w-full max-w-[280px] aspect-[4/3] relative">
                   <Image
                     src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755754879/a3_uutdd3.avif"
                     alt="Notepad"
-                    width={300}
-                    height={100}
-                    className="border-2 border-white rounded-lg mt-4"
+                    fill
+                    className="rounded-lg border-2 border-white object-cover"
                   />
                 </div>
                 <button
-                  className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 mb-0.5"
+                  className="relative inline-flex h-10 w-full max-w-[200px] overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
                   onClick={() => setActiveView("Notepad")}
                 >
                   <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
@@ -242,50 +260,52 @@ const AdminPage = () => {
                   </span>
                 </button>
               </div>
-              <div className="bg-white/20 rounded-lg backdrop-blur-3xl grid grid-cols-1 place-items-center">
-                <div>
+
+              {/* Blog Card */}
+              <div className="bg-white/20 rounded-lg p-4 backdrop-blur-3xl flex flex-col items-center space-y-4 hover:bg-white/25 transition-colors">
+                <div className="w-full max-w-[280px] aspect-[4/3] relative">
                   <Image
                     src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1756037563/write-a-great-blog-post_ivsbz9.jpg"
-                    alt="Notepad"
-                    width={300}
-                    height={100}
-                    className="border-2 border-white rounded-lg mt-4"
+                    alt="Blog Management"
+                    fill
+                    className="rounded-lg border-2 border-white object-cover"
                   />
                 </div>
                 <button
-                  className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 mb-0.5"
+                  className="relative inline-flex h-10 w-full max-w-[200px] overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
                   onClick={() => setActiveView("Blog")}
                 >
                   <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
                   <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
-                    Go To Blog Upload →
+                    Blog Upload →
                   </span>
                 </button>
               </div>
             </div>
           )}
 
-          {/* Only for Editor(user)--> */}
+          {/* Editor Dashboard */}
           {user.role === "editor" && (
-            <div className="bg-white/20 rounded-lg backdrop-blur-3xl w-52 p-2 grid grid-cols-1">
-              <div>
-                <Image
-                  src="/a3.jpeg"
-                  alt="Notepad"
-                  width={300}
-                  height={150}
-                  className="object-contain border-2 border-white p-1.5 rounded-lg"
-                />
+            <div className="flex justify-center">
+              <div className="bg-white/20 rounded-lg backdrop-blur-3xl p-6 w-full max-w-sm flex flex-col items-center space-y-4 hover:bg-white/25 transition-colors">
+                <div className="w-full max-w-[280px] aspect-[4/3] relative">
+                  <Image
+                    src="/a3.jpeg"
+                    alt="Notepad"
+                    fill
+                    className="rounded-lg border-2 border-white object-contain"
+                  />
+                </div>
+                <button
+                  className="relative inline-flex h-10 w-full max-w-[200px] overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+                  onClick={() => setActiveView("Notepad")}
+                >
+                  <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+                  <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
+                    Go To Notepad →
+                  </span>
+                </button>
               </div>
-              <button
-                className="relative inline-flex h-7 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50 top-1"
-                onClick={() => setActiveView("Notepad")}
-              >
-                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
-                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
-                  Go To Notepad →
-                </span>
-              </button>
             </div>
           )}
         </div>

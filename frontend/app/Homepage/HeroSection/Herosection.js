@@ -57,7 +57,7 @@ export default function Herosection() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:-top-8">
+    <section className="relative min-h-screen flex items-center justify-center px-4 max-w-screen sm:px-6 lg:-top-8">
       <motion.div
         className="relative z-10 max-w-6xl mx-auto w-full"
         variants={containerVariants}
@@ -65,6 +65,7 @@ export default function Herosection() {
         animate="visible"
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+         
           {/* Content Section */}
           <motion.div
             className="lg:col-span-7 space-y-6 lg:space-y-8 order-2 lg:order-1"
@@ -72,6 +73,8 @@ export default function Herosection() {
           >
             {/* Desktop Glassmorphism Container / Mobile Simple Container */}
             <div className="relative bg-gradient-to-br from-slate-800/30 to-slate-900/20 lg:backdrop-blur-md p-4 sm:p-6 lg:p-8 rounded-lg lg:rounded-3xl border border-slate-700/50 lg:border-slate-700/50 shadow-lg lg:shadow-2xl lg:glow-container bg-white/5 lg:bg-gradient-to-br">
+
+
               {/* Greeting - Desktop only */}
               <motion.div
                 className="hidden lg:block text-emerald-400 mb-4 font-medium tracking-wide text-sm uppercase"
