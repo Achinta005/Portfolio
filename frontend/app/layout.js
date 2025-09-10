@@ -1,7 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://achintahazra.shop"), // Added to resolve metadataBase warning
   title: "Achinta Hazra | Full Stack Web Developer",
   description:
     "Official portfolio of Achinta Hazra, a full stack developer skilled in React, Next.js, Tailwind CSS, Node.js, Express, and MongoDB. Explore projects and contact for collaboration.",
@@ -34,7 +35,7 @@ export const metadata = {
     siteName: "Achinta Hazra Portfolio",
     images: [
       {
-        url: "/og-image.png", // Add an image in public folder//create og image first
+        url: "/og-image.png", // Relative URL, resolved using metadataBase
         width: 1200,
         height: 630,
         alt: "Achinta Hazra Portfolio",
@@ -67,7 +68,7 @@ export default function RootLayout({ children }) {
               jobTitle: "Full Stack Web Developer",
               description:
                 "Portfolio website of Achinta Hazra, showcasing projects in React, Next.js, Node.js, and MongoDB.",
-              image: "https://achintahazra.shop/your-image.png", // optional: update this path
+              image: "/og-image.png", // Updated to relative URL
               sameAs: [
                 "https://github.com/Achinta005",
                 "https://www.linkedin.com/in/achintahazra",
@@ -100,6 +101,7 @@ export default function RootLayout({ children }) {
       >
         {children}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
