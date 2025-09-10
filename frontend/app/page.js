@@ -15,8 +15,15 @@ export default function Page() {
       document.documentElement.style.setProperty('--vh', `${vh}px`);
     };
 
+    const handleResize = () => {
+      setVH();
+      if (vantaEffect) {
+        vantaEffect.resize();
+      }
+    };
+
     setVH();
-    window.addEventListener('resize', setVH);
+    window.addEventListener('resize', handleResize);
 
     async function loadVanta() {
       if (!window.VANTA) {
@@ -39,10 +46,10 @@ export default function Page() {
             minHeight: 200.0,
             minWidth: 200.0,
             scale: 1.0,
-            scaleMobile: 0.8, // Reduced scale for mobile
+            scaleMobile: 0.8,
             backgroundColor: 0x0,
-            points: 15.0, // Reduced points for better mobile performance
-            maxDistance: 8.0, // Reduced for mobile
+            points: 15.0,
+            maxDistance: 8.0,
             spacing: 18.0,
           })
         );
@@ -53,7 +60,7 @@ export default function Page() {
 
     return () => {
       if (vantaEffect) vantaEffect.destroy();
-      window.removeEventListener('resize', setVH);
+      window.removeEventListener('resize', handleResize);
     };
   }, [vantaEffect]);
 
@@ -64,7 +71,7 @@ export default function Page() {
         * {
           box-sizing: border-box;
         }
-        
+
         html, body {
           margin: 0;
           padding: 0;
@@ -77,7 +84,7 @@ export default function Page() {
           overflow-x: hidden;
         }
       `}</style>
-      
+
       <div
         ref={vantaRef}
         style={{
@@ -85,19 +92,17 @@ export default function Page() {
           top: 0,
           left: 0,
           width: "100%",
-          height: "100vh",
-          height: "calc(var(--vh, 1vh) * 100)", // Mobile-friendly viewport height
+          height: "calc(var(--vh, 1vh) * 100)",
           zIndex: -1,
           overflow: "hidden",
         }}
       />
-      
+
       <div 
         style={{ 
           position: "relative", 
           zIndex: 1,
           width: "100%",
-          minHeight: "100vh",
           minHeight: "calc(var(--vh, 1vh) * 100)",
           overflow: "hidden",
         }}

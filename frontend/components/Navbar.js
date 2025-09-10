@@ -19,28 +19,39 @@ import {
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
+  // Handle hydration
   useEffect(() => {
+    setMounted(true);
     setIsLoggedIn(isAuthenticated());
+  }, []);
 
-    const handleStorageChange = () => setIsLoggedIn(isAuthenticated());
+  useEffect(() => {
+    if (!mounted) return;
+
+    const handleStorageChange = () => {
+      setIsLoggedIn(isAuthenticated());
+    };
+
     window.addEventListener("storage", handleStorageChange);
 
+    // Check auth state periodically (reduced frequency)
     const interval = setInterval(() => {
       const newLoginState = isAuthenticated();
       if (newLoginState !== isLoggedIn) {
         setIsLoggedIn(newLoginState);
       }
-    }, 1000);
+    }, 5000); // Changed from 1000ms to 5000ms for better performance
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       clearInterval(interval);
     };
-  }, [isLoggedIn]);
+  }, [isLoggedIn, mounted]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -53,19 +64,28 @@ export default function Header() {
         setIsMenuOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogin = () => router.push("/login");
-
-  const handleLogout = () => {
-    removeAuthToken();
-    setIsLoggedIn(false);
-    router.push("/");
+  const handleLogin = () => {
+    router.push("/login");
   };
 
-  const handleAdminClick = () => router.push("/admin");
+  const handleLogout = () => {
+    try {
+      removeAuthToken();
+      setIsLoggedIn(false);
+      router.push("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
+  const handleAdminClick = () => {
+    router.push("/admin");
+  };
 
   // Base navigation links
   const baseLinks = [
@@ -122,6 +142,11 @@ export default function Header() {
 
   // Combine base links with auth links
   const links = [...baseLinks, ...authLinks];
+
+  // Don't render until mounted to prevent hydration issues
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <header className="bg-transparent">
