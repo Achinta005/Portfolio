@@ -108,7 +108,6 @@ export default function AboutHero() {
 
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-6 h-full relative z-10">
         <div className="bg-white/10 sm:bg-white/8 md:bg-white/6 lg:bg-white/5 rounded-lg sm:rounded-xl lg:rounded-2xl backdrop-blur-xl h-full min-h-[calc(100vh-2rem)] sm:min-h-[calc(100vh-3rem)] lg:min-h-0 flex items-center justify-center relative border border-purple-500/30 sm:border-purple-500/25 md:border-purple-500/20 shadow-xl sm:shadow-2xl shadow-purple-500/20 sm:shadow-purple-500/15 md:shadow-purple-500/10">
-          
           {/* Decorative Corner Elements - Only on larger screens */}
           <div className="hidden lg:block absolute top-4 left-4 w-16 h-16 border-l-2 border-t-2 border-purple-400/50 rounded-tl-lg"></div>
           <div className="hidden lg:block absolute top-4 right-4 w-16 h-16 border-r-2 border-t-2 border-purple-400/50 rounded-tr-lg"></div>
@@ -143,7 +142,6 @@ export default function AboutHero() {
 
           {/* Main Content Container */}
           <div className="w-full h-full flex flex-col lg:block relative">
-            
             {/* Title - Responsive positioning */}
             <motion.div
               initial={{ opacity: 0, scale: 0 }}
@@ -161,7 +159,6 @@ export default function AboutHero() {
 
             {/* Content Layout */}
             <div className="flex-1 flex flex-col lg:block lg:h-full">
-              
               {/* Desktop Layout - Large screens only */}
               <div className="hidden lg:block">
                 {/* Left Side - Text Content */}
@@ -182,12 +179,13 @@ export default function AboutHero() {
                   >
                     <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-purple-400/50 to-transparent rounded-full"></div>
                     <p className="text-xs xl:text-sm text-gray-200 leading-relaxed pl-2 relative z-10">
-                      Hi, I&apos;m a passionate Full Stack Web Developer with a
-                      strong foundation in building responsive, scalable, and
-                      user-centric web applications. I specialize in crafting
-                      seamless experiences using modern JavaScript frameworks,
-                      REST APIs, and backend technologies like Node.js and
-                      Express.
+                      Hi, I&apos;m a passionate Developer with a strong
+                      foundation in Web Development, Data Structures &
+                      Algorithms, and multiple programming languages including
+                      C, C++, and Python. I specialize in building responsive,
+                      scalable, and user-centric applications, combining
+                      frontend expertise with backend architecture, security,
+                      and optimization.
                     </p>
                   </motion.div>
 
@@ -199,11 +197,12 @@ export default function AboutHero() {
                   >
                     <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-blue-400/50 to-transparent rounded-full"></div>
                     <p className="text-xs xl:text-sm text-gray-200 leading-relaxed pl-2">
-                      I thrive on transforming complex problems into elegant,
-                      efficient solutions. With hands-on experience in frontend
-                      tools like React and Tailwind CSS, and robust backend
-                      integrations with databases like MongoDB and PostgreSQL, I
-                      ensure a full-cycle development approach.
+                      I thrive on turning complex problems into efficient
+                      solutions. With experience in React, Tailwind CSS,
+                      Node.js, Express, and databases like MongoDB and
+                      PostgreSQL, I deliver end-to-end development. My grounding
+                      in OS, DBMS, and Networking ensures reliability and
+                      performance in every project.
                     </p>
                   </motion.div>
 
@@ -215,16 +214,18 @@ export default function AboutHero() {
                   >
                     <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-green-400/50 to-transparent rounded-full"></div>
                     <p className="text-xs xl:text-sm text-gray-200 leading-relaxed pl-2">
-                      From building intuitive UI components to deploying secure
-                      servers, I enjoy taking ideas from concept to production.
-                      Clean code, performance optimization, and continuous
-                      learning are at the heart of my workflow.
+                      Currently, I am expanding my skills in Data Science and
+                      AI/ML, having already worked with Python, NumPy, and
+                      Pandas for data analysis. My next focus is to dive deeper
+                      into Machine Learning,advanced optimization techniques. I
+                      am started to exploring new technologies and sharpening my
+                      abilities to solve real-world challenges.
                     </p>
                   </motion.div>
                 </div>
 
                 {/* Right Side - Desktop Image */}
-                <div className="absolute right-4 xl:right-8 top-12 xl:top-16">
+                <div className="absolute right-4 xl:right-14 top-12 xl:top-16">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8, rotateY: 20 }}
                     whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
@@ -242,7 +243,11 @@ export default function AboutHero() {
                         <motion.div
                           className="absolute -bottom-2 -left-2 w-2 xl:w-3 h-2 xl:h-3 bg-green-400 rounded-full"
                           animate={{ y: [5, -5, 5] }}
-                          transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                          transition={{
+                            duration: 2,
+                            repeat: Infinity,
+                            delay: 1,
+                          }}
                         />
 
                         <CardItem translateZ="50" className="w-full relative">
@@ -255,7 +260,7 @@ export default function AboutHero() {
                             alt="workspace thumbnail"
                           />
                         </CardItem>
-                        
+
                         {/* Desktop Statistics */}
                         <div className="absolute -bottom-4 right-6 xl:right-10 w-full flex gap-2 xl:gap-4 p-2 transform translate-y-full">
                           {stats.map((stat, index) => (
@@ -273,8 +278,12 @@ export default function AboutHero() {
                             >
                               <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-blue-600/10 rounded-lg blur-lg"></div>
                               <div className="relative bg-black/20 p-1.5 xl:p-2 rounded-lg border border-purple-500/20 backdrop-blur-sm">
-                                <div className="text-xs xl:text-sm mb-1">{stat.icon}</div>
-                                <h3 className={`text-sm xl:text-lg font-bold ${stat.color} mb-1`}>
+                                <div className="text-xs xl:text-sm mb-1">
+                                  {stat.icon}
+                                </div>
+                                <h3
+                                  className={`text-sm xl:text-lg font-bold ${stat.color} mb-1`}
+                                >
                                   {stat.number}
                                 </h3>
                                 <p className="text-gray-100 text-[10px] xl:text-xs whitespace-nowrap">
@@ -293,7 +302,6 @@ export default function AboutHero() {
               {/* Tablet and Mobile Layout */}
               <div className="lg:hidden p-3 sm:p-4 md:p-6 xl:p-8">
                 <div className="max-w-4xl mx-auto">
-                  
                   {/* Tablet Layout - Side by side content */}
                   <div className="hidden md:flex lg:hidden gap-8 items-start">
                     {/* Tablet Text Content */}
@@ -304,12 +312,13 @@ export default function AboutHero() {
                         transition={{ duration: 0.5, ease: easeOut }}
                       >
                         <p className="text-sm text-gray-200 mb-4">
-                          Hi, I&apos;m a passionate Full Stack Web Developer with a
-                          strong foundation in building responsive, scalable, and
-                          user-centric web applications. I specialize in crafting
-                          seamless experiences using modern JavaScript frameworks,
-                          REST APIs, and backend technologies like Node.js and
-                          Express.
+                          Hi, I&apos;m a passionate Developer with a strong
+                          foundation in Web Development, Data Structures &
+                          Algorithms, and multiple programming languages
+                          including C, C++, and Python. I specialize in building
+                          responsive, scalable, and user-centric applications,
+                          combining frontend expertise with backend
+                          architecture, security, and optimization.
                         </p>
                       </motion.div>
 
@@ -319,11 +328,12 @@ export default function AboutHero() {
                         transition={{ duration: 0.6, ease: easeOut }}
                       >
                         <p className="text-sm text-gray-200 mb-4">
-                          I thrive on transforming complex problems into elegant,
-                          efficient solutions. With hands-on experience in frontend
-                          tools like React and Tailwind CSS, and robust backend
-                          integrations with databases like MongoDB and PostgreSQL, I
-                          ensure a full-cycle development approach.
+                          I thrive on turning complex problems into efficient
+                          solutions. With experience in React, Tailwind CSS,
+                          Node.js, Express, and databases like MongoDB and
+                          PostgreSQL, I deliver end-to-end development. My
+                          grounding in OS, DBMS, and Networking ensures
+                          reliability and performance in every project.
                         </p>
                       </motion.div>
 
@@ -333,10 +343,13 @@ export default function AboutHero() {
                         transition={{ duration: 0.7, ease: easeOut }}
                       >
                         <p className="text-sm text-gray-200 mb-6">
-                          From building intuitive UI components to deploying secure
-                          servers, I enjoy taking ideas from concept to production.
-                          Clean code, performance optimization, and continuous
-                          learning are at the heart of my workflow.
+                          Currently, I am expanding my skills in Data Science
+                          and AI/ML, having already worked with Python, NumPy,
+                          and Pandas for data analysis. My next focus is to dive
+                          deeper into Machine Learning,advanced optimization
+                          techniques. I am started to exploring new technologies
+                          and sharpening my abilities to solve real-world
+                          challenges.
                         </p>
                       </motion.div>
 
@@ -347,14 +360,22 @@ export default function AboutHero() {
                             key={`tablet-stat-${index}`}
                             initial={{ opacity: 0, scale: 0, x: -50 }}
                             whileInView={{ opacity: 1, scale: 1, x: 0 }}
-                            transition={{ duration: 0.8, ease: easeOut, delay: index * 0.1 }}
+                            transition={{
+                              duration: 0.8,
+                              ease: easeOut,
+                              delay: index * 0.1,
+                            }}
                             className="text-center p-3 bg-black/20 rounded-lg border border-purple-500/20 backdrop-blur-sm"
                           >
                             <div className="text-lg mb-1">{stat.icon}</div>
-                            <h3 className={`text-xl font-bold ${stat.color} mb-1`}>
+                            <h3
+                              className={`text-xl font-bold ${stat.color} mb-1`}
+                            >
                               {stat.number}
                             </h3>
-                            <p className="text-gray-100 text-xs">{stat.mobileLabel}</p>
+                            <p className="text-gray-100 text-xs">
+                              {stat.mobileLabel}
+                            </p>
                           </motion.div>
                         ))}
                       </div>
@@ -394,12 +415,13 @@ export default function AboutHero() {
                         transition={{ duration: 0.5, ease: easeOut }}
                       >
                         <p className="text-sm text-gray-200 mb-4">
-                          Hi, I&apos;m a passionate Full Stack Web Developer with a
-                          strong foundation in building responsive, scalable, and
-                          user-centric web applications. I specialize in crafting
-                          seamless experiences using modern JavaScript frameworks,
-                          REST APIs, and backend technologies like Node.js and
-                          Express.
+                          Hi, I&apos;m a passionate Developer with a strong
+                          foundation in Web Development, Data Structures &
+                          Algorithms, and multiple programming languages
+                          including C, C++, and Python. I specialize in building
+                          responsive, scalable, and user-centric applications,
+                          combining frontend expertise with backend
+                          architecture, security, and optimization.
                         </p>
                       </motion.div>
 
@@ -409,11 +431,12 @@ export default function AboutHero() {
                         transition={{ duration: 0.6, ease: easeOut }}
                       >
                         <p className="text-sm text-gray-200 mb-4">
-                          I thrive on transforming complex problems into elegant,
-                          efficient solutions. With hands-on experience in frontend
-                          tools like React and Tailwind CSS, and robust backend
-                          integrations with databases like MongoDB and PostgreSQL, I
-                          ensure a full-cycle development approach.
+                          I thrive on turning complex problems into efficient
+                          solutions. With experience in React, Tailwind CSS,
+                          Node.js, Express, and databases like MongoDB and
+                          PostgreSQL, I deliver end-to-end development. My
+                          grounding in OS, DBMS, and Networking ensures
+                          reliability and performance in every project.
                         </p>
                       </motion.div>
 
@@ -423,10 +446,13 @@ export default function AboutHero() {
                         transition={{ duration: 0.7, ease: easeOut }}
                       >
                         <p className="text-sm text-gray-200 mb-6">
-                          From building intuitive UI components to deploying secure
-                          servers, I enjoy taking ideas from concept to production.
-                          Clean code, performance optimization, and continuous
-                          learning are at the heart of my workflow.
+                          Currently, I am expanding my skills in Data Science
+                          and AI/ML, having already worked with Python, NumPy,
+                          and Pandas for data analysis. My next focus is to dive
+                          deeper into Machine Learning,advanced optimization
+                          techniques. I am started to exploring new technologies
+                          and sharpening my abilities to solve real-world
+                          challenges.
                         </p>
                       </motion.div>
                     </div>
@@ -462,14 +488,22 @@ export default function AboutHero() {
                           key={`mobile-stat-${index}`}
                           initial={{ opacity: 0, scale: 0, y: 20 }}
                           whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                          transition={{ duration: 0.8, ease: easeOut, delay: index * 0.1 }}
+                          transition={{
+                            duration: 0.8,
+                            ease: easeOut,
+                            delay: index * 0.1,
+                          }}
                           className="text-center p-3 bg-black/20 rounded-lg border border-purple-500/20 backdrop-blur-sm"
                         >
                           <div className="text-lg mb-1">{stat.icon}</div>
-                          <h3 className={`text-lg sm:text-xl font-bold ${stat.color} mb-1`}>
+                          <h3
+                            className={`text-lg sm:text-xl font-bold ${stat.color} mb-1`}
+                          >
                             {stat.number}
                           </h3>
-                          <p className="text-gray-100 text-xs sm:text-sm">{stat.mobileLabel}</p>
+                          <p className="text-gray-100 text-xs sm:text-sm">
+                            {stat.mobileLabel}
+                          </p>
                         </motion.div>
                       ))}
                     </div>
@@ -484,7 +518,7 @@ export default function AboutHero() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 1, delay: 1 }}
-            className="hidden lg:block absolute bottom-4 xl:bottom-6 left-1/2 md:left-2/6 transform -translate-x-1/2 p-2 bg-black/20 rounded-lg border border-purple-500/20 font-mono text-[10px] xl:text-xs text-green-400"
+            className="hidden lg:block absolute bottom-4 xl:bottom-2 left-1/2 md:left-2/6 transform -translate-x-1/2 p-2 bg-black/20 rounded-lg border border-purple-500/20 font-mono text-[10px] xl:text-xs text-green-400"
           >
             <div className="flex items-center space-x-1 xl:space-x-2">
               <div className="w-1.5 xl:w-2 h-1.5 xl:h-2 bg-red-500 rounded-full"></div>

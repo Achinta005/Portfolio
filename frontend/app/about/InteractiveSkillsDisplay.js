@@ -134,7 +134,8 @@ const SkillNode = ({
       {isDetailOpen && (
         <div
           ref={detailRef}
-          className={`backdrop-blur-md bg-white/10 border border-white/20 rounded-xl shadow-2xl p-4 sm:p-6 w-80 max-w-[calc(100vw-2rem)] transition-all duration-300 transform ${
+          className={`bg-gradient-to-br from-purple-800/40 via-gray-900/60 to-black/70 
+backdrop-blur-xl border border-purple-500/30 rounded-xl shadow-2xl p-4 sm:p-6 w-80 max-w-[calc(100vw-2rem)] transition-all duration-300 transform ${
             isDetailOpen
               ? "opacity-100 scale-100 translate-y-0"
               : "opacity-0 scale-95 -translate-y-2"

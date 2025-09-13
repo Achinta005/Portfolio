@@ -65,12 +65,6 @@ const SectionIndicators = ({ activeSection, onSectionChange }) => {
           </button>
         </div>
       ))}
-      
-      {/* Keyboard hint - only show on desktop */}
-      <div className="mt-6 sm:mt-8 text-white/40 text-xs text-center hidden md:block">
-        <div>← → keys</div>
-        <div>to navigate</div>
-      </div>
     </div>
   );
 };
