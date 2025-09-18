@@ -4,7 +4,7 @@ const certificateModelSchema = new mongoose.Schema({
   issuer: String,
   name: String,
   path: String,
-  year: String
+  year: Number
 },{
     collection: "certifications",
   });

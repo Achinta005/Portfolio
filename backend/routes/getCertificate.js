@@ -4,7 +4,7 @@ const certificateModelSchema = require("../models/certificates");
 
 router.get("/getcertificate", async (req, res) => {
   try {
-    const certificates = await certificateModelSchema.find();
+    const certificates = await certificateModelSchema.find().sort({ year: -1 });
     res.status(200).json(certificates);
   } catch (error) {
     console.error("Error fetching certificates:", error);
