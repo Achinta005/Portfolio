@@ -31,31 +31,42 @@ export default function ProjectsGrid() {
       : projects.filter((project) => project.category === selectedCategory);
 
   // Map projects to testimonials format
-  const testimonials = filteredProjects.map((project) => ({
-    quote: project.description || "No description available",
-    name: project.title || "Untitled Project",
-    src: project.image || "/placeholder-image.jpg",
-    githubUrl: project.githubUrl,
-    liveUrl: project.liveUrl,
-    designation: Array.isArray(project.technologies)
-      ? project.technologies.join(", ")
-      : project.technologies || "No technologies listed",
-  }));
+  const testimonials = filteredProjects.map((project) => {
+    let techList = "No technologies listed";
+
+    // Parse technologies string to array
+    try {
+      const parsedTech = JSON.parse(project.technologies);
+      if (Array.isArray(parsedTech)) {
+        techList = parsedTech.join(", ");
+      }
+    } catch (err) {
+      // fallback in case JSON.parse fails
+      techList = project.technologies || "No technologies listed";
+    }
+
+    return {
+      quote: project.description || "No description available",
+      name: project.title || "Untitled Project",
+      src: project.image || "/placeholder-image.jpg",
+      githubUrl: project.github_url,
+      liveUrl: project.live_url,
+      designation: techList,
+    };
+  });
 
   return (
     <section className="relative py-8 sm:py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white/5 rounded-lg lg:rounded-2xl backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 overflow-hidden -top-28 relative">
-          
           {/* Decorative Corner Elements - Desktop Only */}
           <div className="hidden lg:block absolute top-4 left-4 w-16 h-16 border-l-2 border-t-2 border-purple-400/50 rounded-tl-lg"></div>
           <div className="hidden lg:block absolute top-4 right-4 w-16 h-16 border-r-2 border-t-2 border-purple-400/50 rounded-tr-lg"></div>
           <div className="hidden lg:block absolute bottom-4 left-4 w-16 h-16 border-l-2 border-b-2 border-purple-400/50 rounded-bl-lg"></div>
           <div className="hidden lg:block absolute bottom-4 right-4 w-16 h-16 border-r-2 border-b-2 border-purple-400/50 rounded-br-lg"></div>
-          
+
           {/* Container Content */}
-          <div className="relative p-4 sm:p-6 lg:p-8">
-            
+          <div className="relative p-4 sm:p-6">
             {/* Window Controls */}
             <div className="flex items-center space-x-2 mb-6 lg:mb-8">
               <div className="w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full"></div>
@@ -64,7 +75,7 @@ export default function ProjectsGrid() {
             </div>
 
             {/* Category Filter Buttons */}
-            <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-8 lg:mb-12">
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-8 lg:mb-8">
               {categories.map((category) => (
                 <button
                   key={category}
@@ -87,14 +98,20 @@ export default function ProjectsGrid() {
                 <div className="flex justify-center items-center h-64">
                   <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto mb-4"></div>
-                    <div className="text-gray-400 text-lg">Loading projects...</div>
+                    <div className="text-gray-400 text-lg">
+                      Loading projects...
+                    </div>
                   </div>
                 </div>
               ) : testimonials.length === 0 ? (
                 <div className="flex justify-center items-center h-64">
                   <div className="text-center">
-                    <div className="text-gray-400 text-lg mb-2">No projects found</div>
-                    <div className="text-gray-500 text-sm">Try selecting a different category</div>
+                    <div className="text-gray-400 text-lg mb-2">
+                      No projects found
+                    </div>
+                    <div className="text-gray-500 text-sm">
+                      Try selecting a different category
+                    </div>
                   </div>
                 </div>
               ) : (
