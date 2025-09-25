@@ -1,34 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const BlogPost = require('../models/blog');
+const pool = require('../config/connectSql');
 
-// Get all blog posts (sorted by date, newest first)
+// Get all blog posts
 router.get('/', async (req, res) => {
   try {
-    console.log('Fetching all blog posts...');
-    
-    // Get document count for debugging
-    const count = await BlogPost.countDocuments({});
-    console.log(`Total documents in collection: ${count}`);
-    
-    if (count === 0) {
-      console.log('No documents found in blog collection');
-      return res.json([]);
-    }
-    
-    // Fetch all posts sorted by date descending (newest first)
-    const posts = await BlogPost.find({}).sort({ date: -1 });
-    
-    console.log(`Retrieved ${posts.length} posts from database`);
-    console.log(`Returning ${posts.length} transformed posts`);
-    
+    const [rows] = await pool.execute('SELECT * FROM blog_data ORDER BY date DESC');
+
+    const posts = rows.map(row => ({
+      id: row.post_id,
+      title: row.title,
+      slug: row.slug,
+      excerpt: row.excerpt,
+      content: row.content,
+      date: row.date,
+      readTime: row.readTime,
+      tags: JSON.parse(row.tags)
+    }));
+
     res.json(posts);
   } catch (error) {
-    console.error('Error in get all posts:', error);
-    res.status(500).json({ 
-      error: 'Error fetching posts',
-      message: error.message 
-    });
+    console.error('Error fetching all posts:', error);
+    res.status(500).json({ error: 'Error fetching posts', message: error.message });
   }
 });
 
@@ -36,23 +29,24 @@ router.get('/', async (req, res) => {
 router.get('/:slug', async (req, res) => {
   try {
     const { slug } = req.params;
-    console.log(`Looking for post with slug: ${slug}`);
-    
-    const post = await BlogPost.getPostBySlug(slug);
-    
-    if (!post) {
-      console.log(`No post found with slug: ${slug}`);
-      return res.status(404).json({ error: 'Post not found' });
-    }
-    
-    console.log(`Found post: ${post.title}`);
-    res.json(post);
-  } catch (error) {
-    console.error('Error in get post by slug:', error);
-    res.status(500).json({ 
-      error: 'Error fetching post',
-      message: error.message 
+    const [rows] = await pool.execute('SELECT * FROM blog_data WHERE slug = ? LIMIT 1', [slug]);
+
+    if (!rows.length) return res.status(404).json({ error: 'Post not found' });
+
+    const row = rows[0];
+    res.json({
+      id: row.post_id,
+      title: row.title,
+      slug: row.slug,
+      excerpt: row.excerpt,
+      content: row.content,
+      date: row.date,
+      readTime: row.readTime,
+      tags: JSON.parse(row.tags)
     });
+  } catch (error) {
+    console.error('Error fetching post by slug:', error);
+    res.status(500).json({ error: 'Error fetching post', message: error.message });
   }
 });
 
@@ -60,18 +54,27 @@ router.get('/:slug', async (req, res) => {
 router.get('/tag/:tag', async (req, res) => {
   try {
     const { tag } = req.params;
-    console.log(`Looking for posts with tag: ${tag}`);
-    
-    const posts = await BlogPost.getPostsByTag(tag);
-    
-    console.log(`Found ${posts.length} posts with tag: ${tag}`);
+
+    const [rows] = await pool.execute(
+      'SELECT * FROM blog_data WHERE JSON_CONTAINS(tags, ?) ORDER BY date DESC',
+      [JSON.stringify(tag)]
+    );
+
+    const posts = rows.map(row => ({
+      id: row.post_id,
+      title: row.title,
+      slug: row.slug,
+      excerpt: row.excerpt,
+      content: row.content,
+      date: row.date,
+      readTime: row.readTime,
+      tags: JSON.parse(row.tags)
+    }));
+
     res.json(posts);
   } catch (error) {
-    console.error('Error in get posts by tag:', error);
-    res.status(500).json({ 
-      error: 'Error fetching posts by tag',
-      message: error.message 
-    });
+    console.error('Error fetching posts by tag:', error);
+    res.status(500).json({ error: 'Error fetching posts by tag', message: error.message });
   }
 });
 

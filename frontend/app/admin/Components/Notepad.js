@@ -185,7 +185,7 @@ const Notepad = ({ onDocumentSaved }) => {
                 <div className="space-y-3 sm:space-y-4 max-h-96 sm:max-h-[500px] overflow-y-auto pr-2">
                   {documents.map((doc) => (
                     <div
-                      key={doc._id}
+                      key={doc.id}
                       className="p-3 sm:p-4 bg-white/20 dark:bg-gray-800/40 rounded-lg border border-gray-200/20 dark:border-gray-600/20 hover:bg-white/30 dark:hover:bg-gray-800/60 transition-all duration-200 hover:shadow-md"
                     >
                       <h5 className="font-semibold text-purple-700 dark:text-purple-400 text-sm sm:text-base mb-1 sm:mb-2">

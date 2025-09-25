@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const certificateModelSchema = require("../models/certificates");
+const pool =require('../config/connectSql');
 
 router.get("/getcertificate", async (req, res) => {
   try {
-    const certificates = await certificateModelSchema.find().sort({ year: -1 });
-    res.status(200).json(certificates);
+    const [result]=await pool.execute(`select * from certifications`)
+    res.status(200).json(result);
   } catch (error) {
     console.error("Error fetching certificates:", error);
     res.status(500).json({ error: "Failed to fetch certificates" });

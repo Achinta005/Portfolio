@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const projectModel = require("../models/projectModel");
+const pool = require("../config/connectSql");
 const multer = require("multer");
-const path = require("path");
 const cloudinary = require("../config/Cloudinary");
 const { Readable } = require("stream");
 
@@ -23,27 +22,27 @@ router.post("/", upload.single("image"), async (req, res) => {
 
     // Convert buffer to readable stream
     const stream = cloudinary.uploader.upload_stream(
-      { resource_type: "image",
-         folder: 'Uploaded_Images',
-       },
+      { resource_type: "image", folder: "Uploaded_Images" },
       async (error, result) => {
         if (error) return res.status(500).json({ error: error.message });
 
         const imageUrl = result.secure_url;
 
-        const newProject = new projectModel({
-          category,
-          title,
-          technologies: technologies?.split(",") || [],
-          liveUrl,
-          githubUrl,
-          image: imageUrl,
-          description,
-          order,
-        });
+        const [input] = await pool.execute(
+          `INSERT INTO project_model(title,description,category,technologies,github_url,live_url,image,order_position,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,NOW(),NOW())`,
+          [
+            title,
+            description,
+            category,
+            technologies,
+            githubUrl,
+            liveUrl,
+            imageUrl,
+            order,
+          ]
+        );
 
-        await newProject.save();
-        res.status(200).json({ message: "Uploaded", project: newProject });
+        res.status(200).json({ message: "Uploaded", project: input });
       }
     );
 

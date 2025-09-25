@@ -1,11 +1,11 @@
 const express=require('express')
 const router=express.Router()
-const contactModel=require('../models/contact')
+const pool=require('../config/connectSql');
 
 router.get("/", async (req, res) => {
   try {
-    const contacts = await contactModel.find();
-    res.status(200).json(contacts);
+    const [rows]=await pool.execute(`SELECT * FROM contact_info`)
+    res.status(200).json(rows);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch projects" });
   }

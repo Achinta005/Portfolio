@@ -1,13 +1,12 @@
 const express=require('express')
 const router=express.Router()
-const Contact = require('../models/contact')
+const pool=require('../config/connectSql');
 
 router.post('/',async(req,res)=>{
     try {
         const { name, email,subject,message } = req.body;
-    
-        const newEntry = new Contact({ name, email,subject,message });
-        await newEntry.save();
+
+        const [result]=await pool.execute(`INSERT INTO contact_info(name,email,subject,message,created_at) VALUES(?,?,?,?,NOW())`,[name,email,subject,message])
     
         res.status(200).json({ message: "Form submitted successfully!" });
       } catch (err) {

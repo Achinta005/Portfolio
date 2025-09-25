@@ -1,11 +1,11 @@
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 3001; //Server Local Port Number
-const mongoose = require("mongoose");
+const port = process.env.PORT || 3001; 
 const bodyparser = require("body-parser");
 require("dotenv").config();
 const cors = require("cors");
 
+//Routes Import
 const health = require("./routes/health");
 const contact = require("./routes/contact");
 const upload = require("./routes/upload");
@@ -13,7 +13,6 @@ const projects = require("./routes/projects");
 const contactResponse = require("./routes/contact_response");
 const resume = require("./routes/resume");
 const authRoutes = require("./routes/auth");
-const connectDB = require("./config/db");
 const getCertificates=require('./routes/getCertificate')
 const getEducationData=require('./routes/geteducationData')
 const getSkillData=require('./routes/getSkillsdata')
@@ -61,9 +60,6 @@ app.use('/education',getEducationData)
 app.use('/skills',getSkillData)
 app.use('/api/blog/posts',fetchBlogRoutes)
 app.use('/api/blog/upload',uploadBlogRoutes)
-
-//connect to MongoDB
-connectDB();
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

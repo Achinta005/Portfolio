@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const projectModel = require('../models/projectModel');
+const pool=require('../config/connectSql');
 
 // GET /api/projects
 router.get('/', async (req, res) => {
   try {
-    const projects = await projectModel.find({}).sort({ order: -1 });
-    res.status(200).json(projects);
+    const [result]=await pool.execute(`SELECT * FROM project_model ORDER BY order_position DESC`)
+    res.status(200).json(result);
   } catch (err) {
     console.error('Error fetching projects:', err);
     res.status(500).json({ error: 'Failed to fetch projects' });
