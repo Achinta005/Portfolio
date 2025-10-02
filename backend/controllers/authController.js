@@ -1,4 +1,4 @@
-const pool = require('../config/connectSql');
+const pool = require('../config/connectSql');  //USERNAME TABLE 
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken');
 

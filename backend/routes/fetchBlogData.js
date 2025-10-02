@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
       content: row.content,
       date: row.date,
       readTime: row.readTime,
-      tags: JSON.parse(row.tags)
+      tags: row.tags
     }));
 
     res.json(posts);

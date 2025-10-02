@@ -61,6 +61,8 @@ app.use('/skills',getSkillData)
 app.use('/api/blog/posts',fetchBlogRoutes)
 app.use('/api/blog/upload',uploadBlogRoutes)
 
+
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
