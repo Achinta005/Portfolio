@@ -37,7 +37,8 @@ app.use(
 );
 
 app.get('/',(req,res)=>{
-  res.send("hi this is backend !")
+  res.json("✅Coonection Successfull With Server...");
+  console.log("Client Connected...")
 })
 
 //JSON Body Parser

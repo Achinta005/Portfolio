@@ -9,7 +9,6 @@ export default function Page() {
   const [vantaEffect, setVantaEffect] = useState(null);
 
   useEffect(() => {
-    // Set CSS custom properties for mobile viewport handling
     const setVH = () => {
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty('--vh', `${vh}px`);
@@ -64,6 +63,15 @@ export default function Page() {
     };
   }, [vantaEffect]);
 
+  useEffect(() => {
+    const aliveBackend=async()=>{
+      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}`);
+      const data=await res.json();
+      console.log(data);
+    }
+    aliveBackend();
+  }, [])
+  
   return (
     <>
       {/* Add global styles for mobile viewport fix */}
