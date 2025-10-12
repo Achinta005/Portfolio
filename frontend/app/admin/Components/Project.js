@@ -135,6 +135,7 @@ const Project = () => {
               >
                 <option value="">-- Select Catagory --</option>
                 <option value="Web Development">Web Development</option>
+                <option value="Machine Learning">Machine Learning</option>
                 <option value="Data Science">Data Science</option>
               </select>
               {errors.liveUrl && (

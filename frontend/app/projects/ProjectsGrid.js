@@ -110,7 +110,7 @@ export default function ProjectsGrid() {
                       No projects found
                     </div>
                     <div className="text-gray-500 text-sm">
-                      Try selecting a different category
+                      Currently Working In it ...
                     </div>
                   </div>
                 </div>
