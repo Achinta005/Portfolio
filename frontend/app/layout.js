@@ -1,7 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,7 +13,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   metadataBase: new URL("https://achintahazra.shop"), // Added to resolve metadataBase warning
-  title: "Achinta Hazra | Full Stack Web Developer",
+  title: "Achinta Hazra | Full Stack Developer",
   description:
     "Official portfolio of Achinta Hazra, a full stack developer skilled in React, Next.js, Tailwind CSS, Node.js, Express, and MongoDB. Explore projects and contact for collaboration.",
   keywords: [
@@ -100,8 +98,6 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );

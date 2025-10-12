@@ -34,14 +34,16 @@ export default function ProjectsGrid() {
   const testimonials = filteredProjects.map((project) => {
     let techList = "No technologies listed";
 
-    // Parse technologies string to array
     try {
-      const parsedTech = JSON.parse(project.technologies);
-      if (Array.isArray(parsedTech)) {
-        techList = parsedTech.join(", ");
+      if (Array.isArray(project.technologies)) {
+        techList = project.technologies.join(", ");
+      } else {
+        const parsedTech = JSON.parse(project.technologies);
+        if (Array.isArray(parsedTech)) {
+          techList = parsedTech.join(", ");
+        }
       }
     } catch (err) {
-      // fallback in case JSON.parse fails
       techList = project.technologies || "No technologies listed";
     }
 
