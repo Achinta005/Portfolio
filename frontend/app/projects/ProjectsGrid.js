@@ -22,7 +22,7 @@ export default function ProjectsGrid() {
     getProjects();
   }, []);
 
-  const categories = ["All", "Web Development", "Data Science"];
+  const categories = ["All", "Web Development", "Machine Learning"];
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const filteredProjects =
