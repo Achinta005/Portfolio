@@ -14,6 +14,7 @@ export default function ProjectsGrid() {
       try {
         const data = await PortfolioApiService.FetchProject();
         setProjects(data);
+        console.log(data)
       } catch (error) {
         console.error("Error fetching projects:", error);
       }
@@ -47,6 +48,9 @@ export default function ProjectsGrid() {
       techList = project.technologies || "No technologies listed";
     }
 
+    // Check if it's a Machine Learning project
+    const isMachineLearning = project.category === "Machine Learning";
+
     return {
       quote: project.description || "No description available",
       name: project.title || "Untitled Project",
@@ -54,6 +58,10 @@ export default function ProjectsGrid() {
       githubUrl: project.github_url,
       liveUrl: project.live_url,
       designation: techList,
+      category: project.category,
+      accuracy: isMachineLearning ? project.model_accuracy : undefined,
+      features: isMachineLearning ? project.model_features : undefined,
+      showAllButtons: isMachineLearning,
     };
   });
 
