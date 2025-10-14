@@ -29,7 +29,8 @@ app.use(
       "https://portfolio-achinta-hazras-projects.vercel.app",
       "https://portfolio-git-main-achinta-hazras-projects.vercel.app",
       "https://portfolio-sooty-xi-67.vercel.app",
-      'https://portfolio-91hnq85ho-achinta-hazras-projects.vercel.app'
+      'https://portfolio-91hnq85ho-achinta-hazras-projects.vercel.app',
+      "https://deploy-ten-orcin.vercel.app"
     ],
     methods: ["GET", "POST", "OPTIONS"],
     credentials: true,
