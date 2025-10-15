@@ -4,23 +4,35 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
+import { Contact, View } from "lucide-react";
+
+// Import the new Modal component
+import PdfModal from "./PdfModal";
 
 export default function Herosection() {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setIsLoaded(true);
   }, []);
 
-  const handleDownload = async () => {
+  const handleView = async () => {
     try {
-      PortfolioApiService.downloadResume();
+      const url = await PortfolioApiService.viewResume();
+      setPdfUrl(url);
+      setIsModalOpen(true);
     } catch (err) {
-      console.error("Error downloading:", err);
+      console.error("Error viewing resume:", err);
     }
   };
 
-  // Animation variants
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setPdfUrl(null);
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -57,25 +69,21 @@ export default function Herosection() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-4 max-w-screen sm:px-6 lg:-top-8">
+    <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:-top-8">
       <motion.div
         className="relative z-10 max-w-6xl mx-auto w-full"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-         
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
           {/* Content Section */}
           <motion.div
             className="lg:col-span-7 space-y-6 lg:space-y-8 order-2 lg:order-1"
             variants={itemVariants}
           >
-            {/* Desktop Glassmorphism Container / Mobile Simple Container */}
-            <div className="relative bg-gradient-to-br from-slate-800/30 to-slate-900/20 lg:backdrop-blur-md p-4 sm:p-6 lg:p-8 rounded-lg lg:rounded-3xl border border-slate-700/50 lg:border-slate-700/50 shadow-lg lg:shadow-2xl lg:glow-container bg-white/5 lg:bg-gradient-to-br">
-
-
-              {/* Greeting - Desktop only */}
+            <div className="relative p-4 sm:p-6 lg:p-8 rounded-lg lg:rounded-3xl border shadow-lg lg:shadow-2xl lg:ml-16">
+              {/* Greeting */}
               <motion.div
                 className="hidden lg:block text-emerald-400 mb-4 font-medium tracking-wide text-sm uppercase"
                 variants={itemVariants}
@@ -92,15 +100,15 @@ export default function Herosection() {
                 viewport={{ once: false }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
-                <span className="block lg:mb-2">Hi, I&apos;m</span>
-                <span className="block bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-500 bg-clip-text text-transparent lg:bg-gradient-to-r lg:from-emerald-400 lg:via-blue-500 lg:to-purple-500 lg:bg-clip-text lg:text-transparent text-green-600 lg:text-transparent">
+                <span className="block text-base sm:text-lg lg:text-3xl lg:mb-2">Hi, I&apos;m</span>
+                <span className="block bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
                   Achinta Hazra
                 </span>
               </motion.h1>
 
               {/* Subtitle */}
               <motion.h2
-                className="text-xl sm:text-xl lg:text-2xl text-gray-100 lg:text-slate-300 mb-6 lg:mb-8 font-bold lg:font-semibold"
+                className="text-lg sm:text-xl lg:text-2xl text-gray-100 lg:text-slate-300 mb-6 lg:mb-8 font-bold lg:font-semibold"
                 variants={mobileItemVariants}
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -111,111 +119,32 @@ export default function Herosection() {
                 </span>
               </motion.h2>
 
-              {/* Mobile Description */}
-              <motion.p
-                className="text-gray-200 mb-6 lg:mb-0 max-w-xl lg:hidden text-sm sm:text-base"
-                initial={{ opacity: 0, scale: 0.5 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-              >
-                I&apos;m Developer with a passion for building dynamic,
-                user-friendly, and scalable web applications. I specialize in
-                creating end-to-end solutions using modern technologies across
-                both frontend and backend. From crafting responsive interfaces
-                to developing robust APIs, I love turning ideas into real-world
-                digital products. I&apos;m always exploring new tools and
-                frameworks to improve my craft and deliver clean, efficient
-                code.
-              </motion.p>
-
-              {/* Skills Tags - Desktop only */}
+              {/* Desktop Action Buttons */}
               <motion.div
-                className="hidden lg:flex flex-wrap gap-3 mb-8"
+                className="hidden lg:flex flex-col xl:flex-row gap-4"
                 variants={itemVariants}
               >
-                {[
-                  "React",
-                  "Next.js",
-                  "Node.js",
-                  "Auth",
-                  "Tailwind",
-                  "Numpy",
-                ].map((skill, i) => (
-                  <motion.span
-                    key={skill}
-                    className="px-4 py-2 bg-slate-800/50 border border-slate-600/50 rounded-full text-sm text-emerald-300 font-medium backdrop-blur-sm"
-                    whileHover={{
-                      scale: 1.05,
-                      backgroundColor: "rgba(16, 185, 129, 0.1)",
-                    }}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 + i * 0.1 }}
-                  >
-                    {skill}
-                  </motion.span>
-                ))}
-              </motion.div>
+                <motion.button
+                  onClick={handleView}
+                  className="px-6 xl:px-8 py-3 xl:py-4 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-emerald-500/25 transition-all duration-200 text-sm xl:text-base"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <span className="flex items-center justify-center gap-2">
+                    <View />
+                    View My Resume
+                  </span>
+                </motion.button>
 
-              {/* Action Buttons */}
-              <motion.div
-                className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-4 lg:gap-4"
-                variants={itemVariants}
-              >
-                {/* Desktop Buttons */}
-                <div className="hidden lg:contents">
-                  <motion.button
-                    onClick={handleDownload}
-                    className="px-6 xl:px-8 py-3 xl:py-4 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-emerald-500/25 transition-all duration-200 text-sm xl:text-base"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <span className="flex items-center justify-center gap-2">
-                      📄 Download Resume
-                    </span>
-                  </motion.button>
-
-                  <Link
-                    href="/contact"
-                    className="px-6 xl:px-8 py-3 xl:py-4 border-2 border-emerald-500/50 text-emerald-400 font-semibold rounded-xl hover:bg-emerald-500/10 hover:border-emerald-400 transition-all duration-200 text-center text-sm xl:text-base"
-                  >
-                    <span className="flex items-center justify-center gap-2">
-                      ✉️ Get In Touch
-                    </span>
-                  </Link>
-                </div>
-
-                {/* Mobile Buttons */}
-                <div className="lg:hidden grid grid-cols-1 relative sm:grid-cols-2 gap-4 w-full mt-6 sm:left-10 left-[30vw]">
-                  <motion.div
-                    className="connect-button"
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                  >
-                    <button
-                      onClick={handleDownload}
-                      className="button-connect w-full"
-                    >
-                      <p className="text-xs sm:text-sm">Download Resume</p>
-                      <span></span>
-                    </button>
-                  </motion.div>
-
-                  <motion.div
-                    className="connect-button"
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                  >
-                    <Link href="/contact" className="connect-button w-full">
-                      <button className="w-full">
-                        <p className="text-xs sm:text-sm">Get In Touch</p>
-                      </button>
-                      <span></span>
-                    </Link>
-                  </motion.div>
-                </div>
+                <Link
+                  href="/contact"
+                  className="px-6 xl:px-8 py-3 xl:py-4 border-2 border-emerald-500/50 text-emerald-400 font-semibold rounded-xl hover:bg-emerald-500/10 hover:border-emerald-400 transition-all duration-200 text-center text-sm xl:text-base"
+                >
+                  <span className="flex items-center justify-center gap-2">
+                    <Contact />
+                    Get In Touch
+                  </span>
+                </Link>
               </motion.div>
             </div>
           </motion.div>
@@ -270,8 +199,41 @@ export default function Herosection() {
               </div>
             </div>
           </motion.div>
+
+          {/* Mobile Action Buttons - Moved outside content section */}
+          <motion.div 
+            className="lg:hidden flex flex-col sm:flex-row gap-3 w-full order-3 px-2"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            <motion.button
+              onClick={handleView}
+              className="flex-1 px-4 py-3 bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-emerald-500/25 transition-all duration-200 text-sm"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <span className="flex items-center justify-center gap-2">
+                <View className="w-4 h-4" />
+                View Resume
+              </span>
+            </motion.button>
+
+            <Link
+              href="/contact"
+              className="flex-1 px-4 py-3 border-2 border-emerald-500/50 text-emerald-400 font-semibold rounded-lg hover:bg-emerald-500/10 hover:border-emerald-400 transition-all duration-200 text-center text-sm flex items-center justify-center"
+            >
+              <span className="flex items-center justify-center gap-2">
+                <Contact className="w-4 h-4" />
+                Get In Touch
+              </span>
+            </Link>
+          </motion.div>
         </div>
       </motion.div>
+
+      {/* The new modal component is rendered here */}
+      {isModalOpen && <PdfModal pdfUrl={pdfUrl} onClose={closeModal} />}
     </section>
   );
 }
