@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { setAuthToken, getAuthToken } from "../lib/auth";
-import Image from "next/image";
 import { IconBrandGoogle, IconBrandGithub } from "@tabler/icons-react";
 import { cn } from "../lib/util";
 

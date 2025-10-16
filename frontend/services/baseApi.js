@@ -1,4 +1,3 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const apiCall = async (endpoint, options = {}) => {
   const token = localStorage.getItem("token");
@@ -19,7 +18,7 @@ export const apiCall = async (endpoint, options = {}) => {
   };
 
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+    const response = await fetch(`${endpoint}`, config);
     const data = await response.json();
 
     if (!response.ok) {

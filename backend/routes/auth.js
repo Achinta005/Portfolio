@@ -1,14 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { register, login } = require("../controllers/authController");
 const auth = require("../middleware/auth");
 const pool=require('../config/connectSql')
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-router.post("/register", register);
-router.post("/login", login);
 
 // This endpoint fetches documents and remains unchanged.
 router.get("/documents", auth, async (req, res) => {

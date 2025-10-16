@@ -1,12 +1,10 @@
-const express = require("express");
-const router = express.Router();
-const pool = require("../config/connectSql");
+import pool from "@/app/lib/db";
 
-router.get("/getskillsdata", async (req, res) => {
+// GET method for fetching skills data
+export async function GET(req) {
   try {
     const [categories] = await pool.execute("SELECT * FROM skills_categories");
     const [skills] = await pool.execute("SELECT * FROM individual_skills");
-
 
     const skillsData = categories.map((cat) => ({
       _id: cat.id.toString(),
@@ -26,11 +24,25 @@ router.get("/getskillsdata", async (req, res) => {
           image: skill.image,
         })),
     }));
-    res.status(200).json(skillsData);
+
+    return new Response(JSON.stringify(skillsData), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to fetch skills" });
+    return new Response(JSON.stringify({ error: "Failed to fetch skills" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
-});
+}
 
-module.exports = router;
+// Optional: POST handler if you want to allow POST requests
+export async function POST(req) {
+  // handle POST requests here if needed
+  return new Response(JSON.stringify({ message: "POST method not implemented" }), {
+    status: 501,
+    headers: { "Content-Type": "application/json" },
+  });
+}

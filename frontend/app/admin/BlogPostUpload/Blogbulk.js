@@ -40,22 +40,30 @@ export function BlogUpload() {
   };
 
   const handleSubmit = async () => {
-    if (!formData.content) {
-      setMessage("Please upload an HTML file first");
-      return;
-    }
+  if (!formData.content) {
+    setMessage("Please upload an HTML file first");
+    return;
+  }
 
-    setLoading(true);
-    try {
-      const result = await PortfolioApiService.UploadBlog(formData);
-      setMessage(res.ok ? "Blog post created!" : `Error: ${result.detail}`);
-    } catch (err) {
-      console.error(err);
-      setMessage("Request failed");
-    } finally {
-      setLoading(false);
+  setLoading(true);
+  try {
+    const result = await PortfolioApiService.UploadBlog(formData);
+    // Assuming result contains the created post or an error
+    if (result && result.id) {
+      setMessage("Blog post created successfully!");
+    } else if (result && result.error) {
+      setMessage(`Error: ${result.error}`);
+    } else {
+      setMessage("Something went wrong");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    setMessage("Request failed");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6 bg-gray-400 rounded-lg space-y-6">

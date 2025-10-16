@@ -7,17 +7,7 @@ const cors = require("cors");
 
 //Routes Import
 const health = require("./routes/health");
-const contact = require("./routes/contact");
-const upload = require("./routes/upload");
-const projects = require("./routes/projects");
-const contactResponse = require("./routes/contact_response");
-const resume = require("./routes/resume");
 const authRoutes = require("./routes/auth");
-const getCertificates=require('./routes/getCertificate')
-const getEducationData=require('./routes/geteducationData')
-const getSkillData=require('./routes/getSkillsdata')
-const fetchBlogRoutes = require('./routes/fetchBlogData');
-const uploadBlogRoutes = require('./routes/uploadBlogData');
 
 //CORS POLICY
 app.use(
@@ -51,17 +41,7 @@ app.use("/uploads", express.static("uploads"));
 
 //Routes
 app.use("/health", health);
-app.use("/contact", contact);
-app.use("/upload", upload);
-app.use("/projects", projects);
-app.use("/contact_response", contactResponse);
-app.use("/download/resume", resume);
 app.use("/api/auth", authRoutes);
-app.use('/certificate',getCertificates)
-app.use('/education',getEducationData)
-app.use('/skills',getSkillData)
-app.use('/api/blog/posts',fetchBlogRoutes)
-app.use('/api/blog/upload',uploadBlogRoutes)
 
 
 
