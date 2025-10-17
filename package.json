@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "postbuild": "next-sitemap",
-    "vercel-build": "npm install --legacy-peer-deps && next build"
+    "vercel-build": "npm install --legacy-peer-deps && next build",
+    "all": "next dev -H 0.0.0.0"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

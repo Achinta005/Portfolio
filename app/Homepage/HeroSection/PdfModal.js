@@ -4,6 +4,44 @@ import { PortfolioApiService } from "@/services/PortfolioApiService";
 const PdfModal = ({ pdfUrl, onClose }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
+  const [useFallback, setUseFallback] = useState(false);
+
+  // Extract Google Drive file ID
+  const extractGoogleDriveFileId = (url) => {
+    if (!url) return null;
+    const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    return match ? match[1] : null;
+  };
+
+  // Get preview URL for Google Drive
+  const getGoogleDrivePreviewUrl = (url) => {
+    const fileId = extractGoogleDriveFileId(url);
+    return fileId ? `https://drive.google.com/file/d/${fileId}/preview` : null;
+  };
+
+  // Get fallback viewer URL
+  const getGoogleDocsViewerUrl = (url) => {
+    const fileId = extractGoogleDriveFileId(url);
+    const cleanUrl = fileId ? `https://drive.google.com/uc?id=${fileId}` : url;
+    return `https://docs.google.com/gview?url=${encodeURIComponent(
+      cleanUrl
+    )}&embedded=true`;
+  };
+
+  // Determine which URL to use
+  const getViewerUrl = () => {
+    const isGoogleDrive = pdfUrl?.includes("drive.google.com");
+
+    if (useFallback) {
+      return isGoogleDrive ? getGoogleDocsViewerUrl(pdfUrl) : pdfUrl;
+    }
+
+    if (isGoogleDrive) {
+      return getGoogleDrivePreviewUrl(pdfUrl) || pdfUrl;
+    }
+
+    return pdfUrl;
+  };
 
   useEffect(() => {
     if (pdfUrl) {
@@ -17,15 +55,34 @@ const PdfModal = ({ pdfUrl, onClose }) => {
     setIsVisible(false);
     setTimeout(onClose, 300);
   };
+
   const handleDownload = () => {
     try {
-      PortfolioApiService.downloadResume();
+      const isGoogleDrive = pdfUrl?.includes("drive.google.com");
+
+      if (isGoogleDrive) {
+        const fileId = extractGoogleDriveFileId(pdfUrl);
+        if (fileId) {
+          const downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+          window.open(downloadUrl, "_blank");
+        }
+      } else {
+        PortfolioApiService.downloadResume();
+      }
     } catch (err) {
       console.error("Error downloading:", err);
     }
   };
 
+  const handleIframeError = () => {
+    console.log("Primary viewer failed, switching to fallback");
+    setUseFallback(true);
+    setIsLoading(false);
+  };
+
   if (!pdfUrl) return null;
+
+  const viewerUrl = getViewerUrl();
 
   return (
     <div
@@ -48,6 +105,7 @@ const PdfModal = ({ pdfUrl, onClose }) => {
         style={{
           width: "min(700px, 92vw)",
           height: "min(92vh, 1200px)",
+          maxHeight: window.innerWidth < 768 ? "70vh" : "92vh",
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -152,7 +210,8 @@ const PdfModal = ({ pdfUrl, onClose }) => {
               {/* PDF Viewer */}
               <div className="absolute inset-0 rounded-lg overflow-hidden">
                 <iframe
-                  src={pdfUrl + "#toolbar=0&navpanes=0&scrollbar=0&view=FitH"}
+                  key={`viewer-${useFallback}`}
+                  src={viewerUrl}
                   title="Resume Viewer"
                   className="border-0 rounded-lg"
                   style={{
@@ -163,6 +222,8 @@ const PdfModal = ({ pdfUrl, onClose }) => {
                   }}
                   frameBorder="0"
                   onLoad={() => setIsLoading(false)}
+                  onError={handleIframeError}
+                  sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
                 >
                   <p className="text-white p-4">
                     Your browser does not support PDF viewing.
@@ -172,6 +233,13 @@ const PdfModal = ({ pdfUrl, onClose }) => {
 
               {/* Decorative Gradient Overlay (subtle) */}
               <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-slate-900/10 via-transparent to-slate-900/10"></div>
+
+              {/* Fallback Indicator */}
+              {useFallback && (
+                <div className="absolute top-4 left-4 z-20 bg-yellow-500/20 backdrop-blur-sm border border-yellow-400/30 text-yellow-200 px-3 py-1 rounded text-xs flex items-center gap-2">
+                  <span>Using fallback viewer</span>
+                </div>
+              )}
             </div>
           </div>
 

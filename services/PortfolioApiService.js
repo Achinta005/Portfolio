@@ -24,22 +24,6 @@ export const PortfolioApiService = {
     window.URL.revokeObjectURL(url);
   },
 
-  viewResume: async () => {
-    const response = await fetch(
-      `/api/resume`
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to load resume");
-    }
-
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    
-    // Return the URL instead of opening a new window
-    return url;
-  },
-
   //Fetch Education Data
   FetchEducationData: async () => {
     return apiCall("/api/education_data");

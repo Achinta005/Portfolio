@@ -2,30 +2,69 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import * as THREE from "three";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
 import { Contact, View } from "lucide-react";
-
-// Import the new Modal component
 import PdfModal from "./PdfModal";
 
-export default function Herosection() {
+export default function HeroSection() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const vantaRef = useRef(null);
+  const vantaEffect = useRef(null);
 
   useEffect(() => {
     setIsLoaded(true);
   }, []);
 
+  // === ✅ VANTA Background Setup ===
+  useEffect(() => {
+    const loadVanta = async () => {
+      if (!window.VANTA) {
+        await new Promise((resolve) => {
+          const script = document.createElement("script");
+          script.src =
+            "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js";
+          script.onload = resolve;
+          document.body.appendChild(script);
+        });
+      }
+
+      if (!vantaEffect.current && window.VANTA && vantaRef.current) {
+        vantaEffect.current = window.VANTA.NET({
+          el: vantaRef.current,
+          THREE: THREE,
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.0,
+          minWidth: 200.0,
+          scale: 1.0,
+          scaleMobile: 0.8,
+          backgroundColor: 0x000000,
+          color: 0x0077ff,
+          points: 15.0,
+          maxDistance: 8.0,
+          spacing: 18.0,
+        });
+      }
+    };
+
+    loadVanta();
+
+    return () => {
+      if (vantaEffect.current) {
+        vantaEffect.current.destroy();
+        vantaEffect.current = null;
+      }
+    };
+  }, []);
+
   const handleView = async () => {
-    try {
-      const url = await PortfolioApiService.viewResume();
-      setPdfUrl(url);
+      setPdfUrl('https://drive.google.com/file/d/14TZQ6x2LtRpjHNQ1-gjpJgXFBJ7k2xdR/view');
       setIsModalOpen(true);
-    } catch (err) {
-      console.error("Error viewing resume:", err);
-    }
   };
 
   const closeModal = () => {
@@ -69,7 +108,14 @@ export default function Herosection() {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:-top-8">
+    <section
+      ref={vantaRef}
+      className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:-top-8 overflow-hidden"
+    >
+      {/* Dark overlay for better text contrast */}
+      <div className="absolute inset-0 bg-black/40 z-0" />
+
+      {/* Hero Content */}
       <motion.div
         className="relative z-10 max-w-6xl mx-auto w-full"
         variants={containerVariants}
@@ -77,49 +123,44 @@ export default function Herosection() {
         animate="visible"
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
-          {/* Content Section */}
+          {/* === TEXT CONTENT === */}
           <motion.div
             className="lg:col-span-7 space-y-6 lg:space-y-8 order-2 lg:order-1"
             variants={itemVariants}
           >
-            <div className="relative p-4 sm:p-6 lg:p-8 rounded-lg lg:rounded-3xl border shadow-lg lg:shadow-2xl lg:ml-16">
-              {/* Greeting */}
+            <div className="relative p-4 sm:p-6 lg:p-8 rounded-lg lg:rounded-3xl border border-white/10 lg:border-none shadow-lg backdrop-blur-md lg:backdrop-blur-none lg:bg-transparent">
+
               <motion.div
                 className="hidden lg:block text-emerald-400 mb-4 font-medium tracking-wide text-sm uppercase"
                 variants={itemVariants}
               >
-                <span className="mr-2">👋</span> Welcome to my Page
+                👋 Welcome to my Page
               </motion.div>
 
-              {/* Main Title */}
               <motion.h1
-                className="text-3xl sm:text-4xl lg:text-6xl font-bold lg:font-black mb-4 lg:mb-6 leading-tight text-green-600 lg:text-white"
+                className="text-3xl sm:text-4xl lg:text-6xl font-bold lg:font-black mb-4 lg:mb-6 leading-tight text-white"
                 variants={mobileItemVariants}
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: false }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
+                initial="hidden"
+                animate="visible"
               >
-                <span className="block text-base sm:text-lg lg:text-3xl lg:mb-2">Hi, I&apos;m</span>
+                <span className="block text-base sm:text-lg lg:text-3xl lg:mb-2">
+                  Hi, I&apos;m
+                </span>
                 <span className="block bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
                   Achinta Hazra
                 </span>
               </motion.h1>
 
-              {/* Subtitle */}
               <motion.h2
-                className="text-lg sm:text-xl lg:text-2xl text-gray-100 lg:text-slate-300 mb-6 lg:mb-8 font-bold lg:font-semibold"
+                className="text-lg sm:text-xl lg:text-2xl text-gray-300 mb-6 lg:mb-8 font-semibold"
                 variants={mobileItemVariants}
-                initial={{ opacity: 0, x: -50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                <span className="lg:bg-gradient-to-r lg:from-blue-400 lg:to-emerald-400 lg:bg-clip-text lg:text-transparent">
+                <span className="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
                   Developer & Learner
                 </span>
               </motion.h2>
 
-              {/* Desktop Action Buttons */}
+              {/* === DESKTOP BUTTONS === */}
               <motion.div
                 className="hidden lg:flex flex-col xl:flex-row gap-4"
                 variants={itemVariants}
@@ -149,20 +190,15 @@ export default function Herosection() {
             </div>
           </motion.div>
 
-          {/* Image Section */}
+          {/* === IMAGE === */}
           <motion.div
             className="lg:col-span-5 flex justify-center lg:justify-end order-1 lg:order-2"
             variants={itemVariants}
           >
-            {/* Desktop Image */}
             <div className="hidden lg:block w-80 h-80 relative bg-gradient-to-br from-slate-800/30 to-slate-900/20 backdrop-blur-md rounded-full border border-slate-700/50 shadow-2xl profile-glow-container p-1">
               <motion.div
                 className="w-full h-full rounded-full bg-gradient-to-r from-emerald-400 via-blue-500 to-purple-500 p-1"
-                transition={{
-                  duration: 15,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
+                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
               >
                 <motion.div
                   className="w-full h-full rounded-full overflow-hidden bg-black"
@@ -181,27 +217,24 @@ export default function Herosection() {
               </motion.div>
             </div>
 
-            {/* Mobile Image */}
+            {/* === MOBILE IMAGE === */}
             <div className="lg:hidden w-48 sm:w-52 h-48 sm:h-52 relative">
-              <div className="w-full h-full">
-                <Image
-                  src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755695343/profile_kxt3ue.png"
-                  alt="Achinta Hazra"
-                  className="w-full h-full rounded-full object-cover object-center shadow-2xl"
-                  width={320}
-                  height={320}
-                  priority
-                  sizes="(max-width: 640px) 192px, 208px"
-                />
-                <div className="absolute -bottom-0 -right-0 bg-blue-600 text-white p-3 sm:p-4 rounded-full shadow-lg flex items-center justify-center text-xl sm:text-2xl">
-                  <i className="ri-code-s-slash-line" />
-                </div>
+              <Image
+                src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755695343/profile_kxt3ue.png"
+                alt="Achinta Hazra"
+                className="w-full h-full rounded-full object-cover shadow-2xl"
+                width={320}
+                height={320}
+                priority
+              />
+              <div className="absolute -bottom-0 -right-0 bg-blue-600 text-white p-3 sm:p-4 rounded-full shadow-lg flex items-center justify-center text-xl sm:text-2xl">
+                <i className="ri-code-s-slash-line" />
               </div>
             </div>
           </motion.div>
 
-          {/* Mobile Action Buttons - Moved outside content section */}
-          <motion.div 
+          {/* === MOBILE BUTTONS === */}
+          <motion.div
             className="lg:hidden flex flex-col sm:flex-row gap-3 w-full order-3 px-2"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -232,7 +265,7 @@ export default function Herosection() {
         </div>
       </motion.div>
 
-      {/* The new modal component is rendered here */}
+      {/* PDF Modal */}
       {isModalOpen && <PdfModal pdfUrl={pdfUrl} onClose={closeModal} />}
     </section>
   );
