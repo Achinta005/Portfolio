@@ -1,7 +1,8 @@
 export const GET = async () => {
   try {
+    console.log("Client Is Connected ....")
     return new Response(
-      JSON.stringify({ status: 'ok', message: 'Next.js backend is running!' }),
+      JSON.stringify({ status: 'ok', message: '✅Coonection Successfull With Server...' }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (err) {

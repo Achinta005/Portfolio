@@ -33,7 +33,7 @@ export default function OAuth() {
   }, [searchParams, router]);
 
   const handleLogin = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/auth/google`;
+    window.location.href = `/api/google_auth`;
   };
 
   return (

@@ -65,9 +65,9 @@ export default function Page() {
 
   useEffect(() => {
     const aliveBackend=async()=>{
-      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL}`);
+      const res=await fetch(`/api/health_check`);
       const data=await res.json();
-      console.log(data);
+      console.log(data.message);
     }
     aliveBackend();
   }, [])
