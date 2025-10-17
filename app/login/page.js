@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import LoginPage from "./login";
+import LoginPageWrapper from "./login";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -62,7 +62,7 @@ const page = () => {
         }}
       />
       <div style={{ position: "relative", zIndex: 1 }}>
-        <LoginPage />
+        <LoginPageWrapper />
       </div>
     </>
   );

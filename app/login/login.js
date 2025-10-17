@@ -12,7 +12,7 @@ import { cn } from "../lib/util";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
 import { IconBrandGoogle, IconBrandGithub } from "@tabler/icons-react";
 
-const LoginPage = () => {
+const LoginContent = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -206,7 +206,7 @@ const LoginPage = () => {
             {/* GitHub Button */}
             <button
               onClick={handleGithubLogin}
-              className="hidden group/btn relative w-full h-12 md:h-13 rounded-lg font-semibold text-white bg-gradient-to-br from-neutral-800 to-neutral-900 hover:from-neutral-700 hover:to-neutral-800 border border-neutral-700 hover:border-neutral-600 transition-all duration-300 overflow-hidden shadow-lg"
+              className="group/btn relative w-full h-12 md:h-13 rounded-lg font-semibold text-white bg-gradient-to-br from-neutral-800 to-neutral-900 hover:from-neutral-700 hover:to-neutral-800 border border-neutral-700 hover:border-neutral-600 transition-all duration-300 overflow-hidden shadow-lg"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover/btn:opacity-10 translate-x-full group-hover/btn:translate-x-0 transition-all duration-500"></div>
               <div className="relative flex items-center justify-center gap-3 h-full">
@@ -277,4 +277,19 @@ const LabelInputContainer = ({ children, className }) => {
   );
 };
 
-export default LoginPage;
+function LoginPageWrapper() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen w-full bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
+          <p className="text-neutral-400">Loading...</p>
+        </div>
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
+  );
+}
+
+export default LoginPageWrapper;
