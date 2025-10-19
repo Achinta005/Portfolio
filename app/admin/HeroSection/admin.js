@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getUserFromToken, removeAuthToken, getAuthToken } from "../../lib/auth";
+import {
+  getUserFromToken,
+  removeAuthToken,
+  getAuthToken,
+} from "../../lib/auth";
 import Project from "../Components/Project";
 import ContactResponse from "../Components/ContactResponse";
 import Notepad from "../Components/Notepad";
@@ -14,9 +18,13 @@ const AdminPage = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState("dashboard");
-  const router = useRouter();
   const [documents, setDocuments] = useState([]);
   const [fetchError, setFetchError] = useState(null);
+   const router = useRouter();
+
+  const handleClick = () => {
+    router.push('/anime-list');
+  };
 
   useEffect(() => {
     const userData = getUserFromToken();
@@ -135,10 +143,13 @@ const AdminPage = () => {
 
   // Main Dashboard View
   return (
-    <div className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed"
-         style={{
-           backgroundImage: "url('https://wallpapers.com/images/hd/desktop-background-6v9qjuvtrckgn4mm.jpg')",
-         }}>
+    <div
+      className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed"
+      style={{
+        backgroundImage:
+          "url('https://wallpapers.com/images/hd/desktop-background-6v9qjuvtrckgn4mm.jpg')",
+      }}
+    >
       <div className="min-h-screen bg-black/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           {/* Responsive Header */}
@@ -150,14 +161,14 @@ const AdminPage = () => {
                   Welcome {user.username}
                 </p>
               </div>
-              
+
               {/* Dashboard title */}
               <div className="bg-white/10 backdrop-blur-2xl px-4 py-2 rounded-lg flex-1 sm:flex-initial">
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-100 text-center">
                   Dashboard
                 </h1>
               </div>
-              
+
               {/* Logout button */}
               <button
                 onClick={handleLogout}
@@ -194,6 +205,25 @@ const AdminPage = () => {
                   <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
                   <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
                     Manage Projects →
+                  </span>
+                </button>
+              </div>
+              <div className="bg-white/20 rounded-lg p-4 backdrop-blur-3xl flex flex-col items-center space-y-4 hover:bg-white/25 transition-colors">
+                <div className="w-full max-w-[280px] aspect-[4/3] relative">
+                  <Image
+                    src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1760892290/background-desktop_r4pccr.jpg"
+                    alt="Project Management"
+                    fill
+                    className="rounded-lg border-2 border-white object-cover"
+                  />
+                </div>
+                <button
+                  className="relative inline-flex h-10 w-full max-w-[200px] overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+                  onClick={handleClick}
+                >
+                  <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+                  <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
+                    AnimeList →
                   </span>
                 </button>
               </div>
