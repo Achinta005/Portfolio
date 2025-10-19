@@ -8,10 +8,8 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  enableKeepAlive: true,
-  keepAliveInitialDelayMs: 0,
   ssl: {
-    rejectUnauthorized: process.env.NODE_ENV === 'production',
+    rejectUnauthorized: false,
   },
 });
 
