@@ -251,7 +251,7 @@ export default function AniListViewer() {
                         </span>
                       ) : (
                         <span className="text-gray-300">
-                          {anime.progress}/{anime.episodes || "?"} eps
+                          {anime.progress}/{anime.episodes || "Airing--"} eps
                         </span>
                       )}
 
