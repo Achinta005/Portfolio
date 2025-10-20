@@ -1,7 +1,3 @@
-// ========================================
-// File: app/api/anilist/fetch/route.js
-// ========================================
-
 import Animepool from '@/app/lib/animeDB';
 import { NextResponse } from 'next/server';
 
@@ -126,6 +122,61 @@ async function createTables() {
   }
 }
 
+async function hasDataChanged(username, newLists) {
+  const connection = await Animepool.getConnection();
+
+  try {
+    const newEntries = newLists.flatMap(list =>
+      list.entries.map(entry => ({
+        id: entry.id,
+        status: entry.status,
+        score: entry.score,
+        progress: entry.progress,
+        updatedAt: entry.updatedAt
+      }))
+    );
+
+    // Get existing entries from database
+    const [existingRows] = await connection.execute(`
+      SELECT id, status, score, progress, updated_at
+      FROM anime_list
+      WHERE username = ?
+    `, [username]);
+
+    // If counts don't match, data has changed
+    if (newEntries.length !== existingRows.length) {
+      return true;
+    }
+
+    // Create a map of existing entries for quick lookup
+    const existingMap = new Map(
+      existingRows.map(row => [row.id, row])
+    );
+
+    // Check if any entry has changed
+    for (const newEntry of newEntries) {
+      const existing = existingMap.get(newEntry.id);
+      
+      if (!existing) {
+        return true; // New entry found
+      }
+
+      if (
+        existing.status !== newEntry.status ||
+        existing.score !== newEntry.score ||
+        existing.progress !== newEntry.progress ||
+        existing.updated_at !== newEntry.updatedAt
+      ) {
+        return true; // Entry has been modified
+      }
+    }
+
+    return false; // No changes detected
+  } finally {
+    connection.release();
+  }
+}
+
 async function storeInDatabase(username, lists) {
   const connection = await Animepool.getConnection();
 
@@ -242,6 +293,7 @@ async function fetchFromDatabase(username) {
   }
 }
 
+// Main Request Handling Function
 export async function POST(request) {
   try {
     const { username } = await request.json();
@@ -253,9 +305,63 @@ export async function POST(request) {
       );
     }
 
-    console.log(`Fetching anime list for: ${username}`);
+    console.log(`Processing request for: ${username}`);
 
-    const lists = await fetchFromAniList(username);
+    // Try to fetch from AniList
+    let lists;
+    let fetchedFromAniList = false;
+    let aniListError = null;
+
+    try {
+      lists = await fetchFromAniList(username);
+      fetchedFromAniList = true;
+      console.log(`Successfully fetched from AniList for: ${username}`);
+    } catch (error) {
+      console.log(`Failed to fetch from AniList: ${error.message}`);
+      aniListError = error.message;
+    }
+
+    // If AniList fetch failed, return cached data
+    if (!fetchedFromAniList) {
+      console.log(`Returning cached data for: ${username}`);
+      const cachedAnimeList = await fetchFromDatabase(username);
+      
+      if (cachedAnimeList.length === 0) {
+        return NextResponse.json(
+          { error: `Unable to fetch from AniList and no cached data found: ${aniListError}` },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        username,
+        count: cachedAnimeList.length,
+        animeList: cachedAnimeList,
+        cached: true,
+        message: 'Returned cached data due to AniList fetch failure'
+      });
+    }
+
+    // Check if data has changed
+    const dataChanged = await hasDataChanged(username, lists);
+
+    if (!dataChanged) {
+      console.log(`No changes detected for: ${username}, returning cached data`);
+      const cachedAnimeList = await fetchFromDatabase(username);
+
+      return NextResponse.json({
+        success: true,
+        username,
+        count: cachedAnimeList.length,
+        animeList: cachedAnimeList,
+        cached: true,
+        message: 'No changes detected, returned cached data'
+      });
+    }
+
+    // Data has changed, update database
+    console.log(`Data changed for: ${username}, updating database`);
     const count = await storeInDatabase(username, lists);
     console.log(`Stored ${count} entries in database`);
 
@@ -265,11 +371,34 @@ export async function POST(request) {
       success: true,
       username,
       count: animeList.length,
-      animeList
+      animeList,
+      cached: false,
+      message: 'Data synced successfully from AniList'
     });
 
   } catch (error) {
     console.error('API Error:', error);
+    
+    // Try to return cached data as last resort
+    try {
+      const { username } = await request.json();
+      if (username) {
+        const cachedAnimeList = await fetchFromDatabase(username);
+        if (cachedAnimeList.length > 0) {
+          return NextResponse.json({
+            success: true,
+            username,
+            count: cachedAnimeList.length,
+            animeList: cachedAnimeList,
+            cached: true,
+            message: 'Returned cached data due to unexpected error'
+          });
+        }
+      }
+    } catch (fallbackError) {
+      console.error('Fallback error:', fallbackError);
+    }
+
     return NextResponse.json(
       { error: error.message || 'Internal server error' },
       { status: 500 }
