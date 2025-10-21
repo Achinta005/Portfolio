@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { LayoutGrid, Grid3x3 } from "lucide-react";
 
 export default function AniListViewer() {
   const [username, setUsername] = useState("achinta");
@@ -10,6 +11,7 @@ export default function AniListViewer() {
   const [error, setError] = useState("");
   const [activeFilter, setActiveFilter] = useState("ALL");
   const [exporting, setExporting] = useState(false);
+  const [compact, setCompact] = useState(false);
   const router = useRouter();
 
   const handleClick = () => router.push("/admin");
@@ -156,12 +158,28 @@ export default function AniListViewer() {
               >
                 {loading ? "Loading..." : "Fetch List"}
               </button>
+              {compact ? (
+                <button
+                  className="w-full sm:w-auto flex justify-center items-center p-2 mt-1.5 h-11 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 transition-all transform hover:scale-105 active:scale-95 mb-2 sm:mb-0"
+                  onClick={() => setCompact(!compact)}
+                >
+                  <LayoutGrid size={28} color="white" />
+                </button>
+              ) : (
+                <button
+                  className="w-full sm:w-auto flex justify-center items-center p-2 mt-1.5 h-11 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 transition-all transform hover:scale-105 active:scale-95 mb-2 sm:mb-0"
+                  onClick={() => setCompact(!compact)}
+                >
+                  <Grid3x3 size={28} color="white" />
+                </button>
+              )}
+
+              {error && (
+                <div className="mt-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm sm:text-base">
+                  {error}
+                </div>
+              )}
             </div>
-            {error && (
-              <div className="mt-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm sm:text-base">
-                {error}
-              </div>
-            )}
           </div>
         </div>
 
@@ -223,60 +241,74 @@ export default function AniListViewer() {
         {/* Anime Grid */}
         {filteredAnime.length > 0 && (
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6">
+            <div
+              className={
+                compact
+                  ? "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-1 sm:gap-1.5"
+                  : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6"
+              }
+            >
               {filteredAnime.map((anime) => (
                 <div
                   key={anime.id}
                   className="bg-white/10 backdrop-blur-lg rounded-xl overflow-hidden shadow-xl border border-white/20 hover:border-blue-400/50 transition-all transform hover:scale-[1.02] hover:-translate-y-2"
                 >
-                  <div className="relative h-56 sm:h-64 overflow-hidden">
+                  <div className={compact?"relative h-40 sm:h-44 overflow-hidden":"relative h-56 sm:h-64 overflow-hidden"}>
                     <img
                       src={anime.cover_image_large || anime.cover_image_medium}
                       alt={anime.title_english || anime.title_romaji}
                       className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
                     />
-                    <div className="absolute top-3 right-3 bg-black/70 px-3 py-1 rounded-full text-xs font-semibold text-white">
+                    <div
+                      className={
+                        compact
+                          ? "hidden"
+                          : "absolute top-3 right-3 bg-black/70 px-3 py-1 rounded-full text-xs font-semibold text-white"
+                      }
+                    >
                       ⭐ {anime.average_score + "/100" || "N/A"}
                     </div>
                   </div>
-                  <div className="p-4 sm:p-5">
-                    <h3 className="text-white font-bold text-base sm:text-lg mb-2 line-clamp-2">
+                  <div className={compact?"p-0 sm:p-0.5":"p-4 sm:p-5"}>
+                    <h3 className={compact?"text-white font-semibold lg:font-bold text-xs sm:text-xs text-center mb-0.5":"text-white font-bold text-base sm:text-lg mb-2 line-clamp-2 text-center"}>
                       {anime.title_english || anime.title_romaji}
                     </h3>
+                    {compact ? (
+                      <></>
+                    ) : (
+                      <div className="flex flex-wrap items-center justify-between text-xs sm:text-sm mb-3">
+                        {anime.format == "MOVIE" ? (
+                          <span className="text-gray-300 text-bold">Movie</span>
+                        ) : (
+                          <span className="text-gray-300">
+                            {anime.progress}/{anime.episodes || "Airing--"}
+                          </span>
+                        )}
 
-                    <div className="flex flex-wrap items-center justify-between text-xs sm:text-sm mb-3">
-                      {anime.format == "MOVIE" ? (
-                        <span className="text-gray-300 text-bold">
-                          Movie
+                        <span
+                          className={`px-2 py-1 sm:px-3 rounded-full font-medium ${
+                            anime.status === "COMPLETED"
+                              ? "bg-green-500/20 text-green-300"
+                              : anime.status === "CURRENT"
+                              ? "bg-blue-500/20 text-blue-300"
+                              : anime.status === "PLANNING"
+                              ? "bg-purple-500/20 text-purple-300"
+                              : anime.status === "PAUSED"
+                              ? "bg-yellow-500/20 text-yellow-300"
+                              : "bg-red-500/20 text-red-300"
+                          }`}
+                        >
+                          {statusLabels[anime.status] || anime.status}
                         </span>
-                      ) : (
-                        <span className="text-gray-300">
-                          {anime.progress}/{anime.episodes || "Airing--"} 
-                        </span>
-                      )}
+                      </div>
+                    )}
 
-                      <span
-                        className={`px-2 py-1 sm:px-3 rounded-full font-medium ${
-                          anime.status === "COMPLETED"
-                            ? "bg-green-500/20 text-green-300"
-                            : anime.status === "CURRENT"
-                            ? "bg-blue-500/20 text-blue-300"
-                            : anime.status === "PLANNING"
-                            ? "bg-purple-500/20 text-purple-300"
-                            : anime.status === "PAUSED"
-                            ? "bg-yellow-500/20 text-yellow-300"
-                            : "bg-red-500/20 text-red-300"
-                        }`}
-                      >
-                        {statusLabels[anime.status] || anime.status}
-                      </span>
-                    </div>
                     {anime.genres?.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {anime.genres.slice(0, 3).map((genre, idx) => (
                           <span
                             key={idx}
-                            className="text-xs bg-white/10 text-gray-300 px-2 py-1 rounded"
+                            className={compact?"hidden":"text-xs bg-white/10 text-gray-300 px-2 py-1 rounded"}
                           >
                             {genre}
                           </span>
