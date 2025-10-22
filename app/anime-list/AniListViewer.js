@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { LayoutGrid, Grid3x3 } from "lucide-react";
+import { LayoutGrid, Grid3x3, WifiSync, WifiOff, Eye, Trash2, Plus, X, Search, Save, Download, Filter, Star, Calendar, Tv, Film, Clock, TrendingUp, ArrowLeft, Edit3, ChevronDown, ChevronUp, Minus, List } from "lucide-react";
 
 export default function AniListViewer() {
   const [username, setUsername] = useState("achinta");
@@ -11,10 +11,32 @@ export default function AniListViewer() {
   const [error, setError] = useState("");
   const [activeFilter, setActiveFilter] = useState("ALL");
   const [exporting, setExporting] = useState(false);
-  const [compact, setCompact] = useState(true);
+  const [gridSize, setGridSize] = useState(2);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [selectedAnime, setSelectedAnime] = useState(null);
+  const [showAnimeModal, setShowAnimeModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [searching, setSearching] = useState(false);
+  const [modifyForm, setModifyForm] = useState({ status: "", progress: "", score: "" });
+  const [showFullDescription, setShowFullDescription] = useState(false);
   const router = useRouter();
 
   const handleClick = () => router.push("/admin");
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch("/api/anilist/auth/check");
+        const data = await res.json();
+        setIsAuthenticated(data.authenticated);
+      } catch (err) {
+        console.error("Auth check failed:", err);
+      }
+    };
+    checkAuth();
+  }, []);
 
   const statusLabels = {
     CURRENT: "Watching",
@@ -22,8 +44,24 @@ export default function AniListViewer() {
     PLANNING: "Plan to Watch",
     PAUSED: "On Hold",
     DROPPED: "Dropped",
-    ALL: "All",
+    ALL: "All Anime",
   };
+
+  const statusColors = {
+    CURRENT: "from-blue-500 to-cyan-500",
+    COMPLETED: "from-green-500 to-emerald-500",
+    PLANNING: "from-purple-500 to-pink-500",
+    PAUSED: "from-yellow-500 to-orange-500",
+    DROPPED: "from-red-500 to-rose-500",
+    ALL: "from-indigo-500 to-blue-500",
+  };
+
+  const gridConfigs = [
+    { name: "Horizontal", cols: "flex flex-col gap-3" },
+    { name: "Compact", cols: "grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 gap-3" },
+    { name: "Normal", cols: "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4" },
+    { name: "Detailed", cols: "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6" },
+  ];
 
   const fetchAnimeList = async () => {
     if (!username.trim()) {
@@ -36,20 +74,151 @@ export default function AniListViewer() {
     setAnimeList([]);
 
     try {
-      const response = await fetch("/api/anilist/fetch", {
+      const response = await fetch("/api/anilist/BaseFunction/fetch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: username.trim() }),
       });
       const data = await response.json();
 
-      if (!response.ok)
-        throw new Error(data.error || "Failed to fetch anime list");
+      if (!response.ok) throw new Error(data.error || "Failed to fetch anime list");
       setAnimeList(data.animeList || []);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const deleteAnime = async (mediaId) => {
+    if (!isAuthenticated) {
+      setError("You must be authenticated to delete anime");
+      return;
+    }
+
+    if (!confirm("Are you sure you want to delete this anime from your list?")) return;
+
+    try {
+      const response = await fetch("/api/anilist/modify", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ animeId: mediaId }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Failed to delete anime");
+
+      await fetchAnimeList();
+      setShowAnimeModal(false);
+      setError("");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const modifyAnime = async (mediaId) => {
+    if (!isAuthenticated) {
+      setError("You must be authenticated to modify anime");
+      return;
+    }
+
+    try {
+      const { status, progress, score } = modifyForm;
+      const variables = {
+        animeId: mediaId,
+        ...(status && { status }),
+        ...(progress && { progress: parseInt(progress, 10) }),
+        ...(score && { score: parseFloat(score) }),
+      };
+
+      const response = await fetch("/api/anilist/modify", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(variables),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Failed to modify anime");
+
+      await fetchAnimeList();
+      setShowAnimeModal(false);
+      setModifyForm({ status: "", progress: "", score: "" });
+      setError("");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const searchAnime = async () => {
+    if (!searchQuery.trim()) return;
+
+    setSearching(true);
+    try {
+      const response = await fetch("/api/anilist/modify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "search", query: searchQuery.trim() }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Search failed");
+      setSearchResults(data.results || []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSearching(false);
+    }
+  };
+
+  const addAnimeToList = async (mediaId, status = "PLANNING") => {
+    if (!isAuthenticated) {
+      setError("You must be authenticated to add anime");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/anilist/modify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "add", animeId: mediaId, status }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Failed to add anime");
+
+      await fetchAnimeList();
+      setShowAddModal(false);
+      setSearchQuery("");
+      setSearchResults([]);
+      setError("");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const viewAnimeDetails = (anime) => {
+    setSelectedAnime(anime);
+    setShowFullDescription(false);
+    setModifyForm({
+      status: anime.status || "",
+      progress: anime.progress ? anime.progress.toString() : "",
+      score: anime.score ? anime.score.toString() : "",
+    });
+    setShowAnimeModal(true);
+  };
+
+  const incrementProgress = () => {
+    const current = parseInt(modifyForm.progress || 0);
+    const max = selectedAnime?.episodes || 999;
+    if (current < max) {
+      setModifyForm({ ...modifyForm, progress: (current + 1).toString() });
+    }
+  };
+
+  const decrementProgress = () => {
+    const current = parseInt(modifyForm.progress || 0);
+    if (current > 0) {
+      setModifyForm({ ...modifyForm, progress: (current - 1).toString() });
     }
   };
 
@@ -77,7 +246,7 @@ export default function AniListViewer() {
 
     setExporting(true);
     try {
-      const response = await fetch("/api/anilist/export", {
+      const response = await fetch("/api/anilist/BaseFunction/export", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -108,242 +277,870 @@ export default function AniListViewer() {
     }
   };
 
+  const truncateText = (text, maxLength = 300) => {
+    if (!text) return "";
+    const stripped = text.replace(/<[^>]*>/g, "");
+    return stripped.length > maxLength ? stripped.substring(0, maxLength) + "..." : stripped;
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 relative overflow-x-hidden">
-      {/* Background Particles */}
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 relative">
+      {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute w-80 sm:w-96 h-80 sm:h-96 bg-purple-500/10 rounded-full blur-3xl -top-40 -left-40 animate-pulse"></div>
-        <div className="absolute w-80 sm:w-96 h-80 sm:h-96 bg-blue-500/10 rounded-full blur-3xl top-1/2 right-0 animate-pulse delay-1000"></div>
-        <div className="absolute w-80 sm:w-96 h-80 sm:h-96 bg-indigo-500/10 rounded-full blur-3xl bottom-0 left-1/2 animate-pulse delay-2000"></div>
+        <div className="absolute w-96 h-96 bg-purple-500/10 rounded-full blur-3xl -top-20 -left-20 animate-pulse"></div>
+        <div className="absolute w-96 h-96 bg-blue-500/10 rounded-full blur-3xl top-1/2 -right-20 animate-pulse" style={{animationDelay: '1s'}}></div>
+        <div className="absolute w-96 h-96 bg-pink-500/10 rounded-full blur-3xl bottom-0 left-1/3 animate-pulse" style={{animationDelay: '2s'}}></div>
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        {/* Dashboard Button */}
-        <button
-          className="mb-8 bg-white/20 backdrop-blur-3xl px-4 py-2 rounded-xl text-amber-50 text-sm sm:text-base cursor-pointer hover:text-green-400 transition-all"
-          onClick={handleClick}
-        >
-          ← Dashboard
-        </button>
-
+      <div className="relative z-10 min-h-screen">
         {/* Header */}
-        <div className="text-center mb-10 sm:mb-16">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 tracking-tight">
-            Ani<span className="text-blue-400">List</span> Viewer
-          </h1>
-          <p className="text-gray-300 text-base sm:text-lg">
-            Track and explore your anime collection
-          </p>
-        </div>
-
-        {/* Search Box */}
-        <div className="max-w-xl sm:max-w-2xl mx-auto mb-10 sm:mb-14">
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 sm:p-8 shadow-2xl border border-white/20">
-            <label className="block text-white text-sm font-medium mb-3">
-              AniList Username
-            </label>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Enter username..."
-                className="flex-1 px-5 py-3 sm:px-6 sm:py-4 bg-white/20 border border-white/30 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
-              />
+        <div className="bg-black/20 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
               <button
-                onClick={fetchAnimeList}
-                disabled={loading}
-                className="px-6 py-3 sm:px-8 sm:py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50 transition-all transform hover:scale-105 active:scale-95"
+                onClick={handleClick}
+                className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white transition-all duration-300 group"
               >
-                {loading ? "Loading..." : "Fetch List"}
+                <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+                <span className="hidden sm:inline">Dashboard</span>
               </button>
-              {compact ? (
-                <button
-                  className="w-full sm:w-auto flex justify-center items-center p-2 mt-1.5 h-11 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 transition-all transform hover:scale-105 active:scale-95 mb-2 sm:mb-0"
-                  onClick={() => setCompact(!compact)}
-                >
-                  <LayoutGrid size={28} color="white" />
-                </button>
-              ) : (
-                <button
-                  className="w-full sm:w-auto flex justify-center items-center p-2 mt-1.5 h-11 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 transition-all transform hover:scale-105 active:scale-95 mb-2 sm:mb-0"
-                  onClick={() => setCompact(!compact)}
-                >
-                  <Grid3x3 size={28} color="white" />
-                </button>
-              )}
+              
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white">
+                  Ani<span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">List</span>
+                </h1>
+              </div>
 
-              {error && (
-                <div className="mt-4 p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm sm:text-base">
-                  {error}
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                {isAuthenticated ? (
+                  <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-xl border border-green-500/30">
+                    <WifiSync size={18} className="text-green-400" />
+                    <span className="text-green-400 text-sm font-medium hidden sm:inline">Connected</span>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => (window.location.href = "/api/anilist/auth/base")}
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl text-white text-sm font-medium transition-all duration-300"
+                  >
+                    <WifiOff size={18} />
+                    <span className="hidden sm:inline">Connect</span>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Filters & Export */}
-        {animeList.length > 0 && (
-          <div className="max-w-6xl mx-auto mb-8 sm:mb-12">
-            {/* Filter Tabs */}
-            <div className="flex flex-wrap gap-2 sm:gap-3 justify-center mb-4 sm:mb-6">
-              {Object.entries(statusCounts).map(([status, count]) => (
-                <button
-                  key={status}
-                  onClick={() => setActiveFilter(status)}
-                  className={`px-4 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-medium transition-all transform hover:scale-105 ${
-                    activeFilter === status
-                      ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
-                      : "bg-white/10 text-gray-300 hover:bg-white/20"
-                  }`}
-                >
-                  {statusLabels[status] || status} ({count})
-                </button>
-              ))}
-            </div>
+        <div className="container mx-auto px-4 py-6 sm:py-8">
+          {/* Search Section */}
+          <div className="max-w-4xl mx-auto mb-8">
+            <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-white/20 shadow-2xl">
+              <div className="flex flex-col gap-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Enter AniList username..."
+                    className="w-full px-6 py-4 bg-black/30 border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-lg"
+                  />
+                </div>
 
-            {/* Export Buttons */}
-            <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
-              {["json", "xml"].map((format) => (
-                <button
-                  key={format}
-                  onClick={() => exportList(format)}
-                  disabled={exporting}
-                  className={`px-5 py-2 sm:px-6 sm:py-3 ${
-                    format === "json"
-                      ? "bg-green-600 hover:bg-green-700"
-                      : "bg-orange-600 hover:bg-orange-700"
-                  } text-white font-medium rounded-xl transition-all transform hover:scale-105 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
-                >
-                  <svg
-                    className="w-4 h-4 sm:w-5 sm:h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={fetchAnimeList}
+                    disabled={loading}
+                    className="flex-1 sm:flex-none px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/50"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                  {exporting
-                    ? "Exporting..."
-                    : `Export ${format.toUpperCase()}`}
-                </button>
-              ))}
+                    {loading ? (
+                      <span className="flex items-center gap-2">
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        Loading...
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        <Search size={20} />
+                        Fetch List
+                      </span>
+                    )}
+                  </button>
+
+                  {isAuthenticated && (
+                    <button
+                      onClick={() => setShowAddModal(true)}
+                      className="flex-1 sm:flex-none px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg shadow-green-500/50 flex items-center justify-center gap-2"
+                    >
+                      <Plus size={20} />
+                      <span className="hidden sm:inline">Add Anime</span>
+                    </button>
+                  )}
+
+                  <div className="flex gap-2 ml-auto">
+                    {[0, 1, 2, 3].map((size) => (
+                      <button
+                        key={size}
+                        onClick={() => setGridSize(size)}
+                        className={`px-4 py-3 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 ${
+                          gridSize === size
+                            ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/50"
+                            : "bg-white/10 text-gray-300 hover:bg-white/20"
+                        }`}
+                        title={gridConfigs[size].name}
+                      >
+                        {size === 0 ? <List size={20} /> : size === 1 ? "S" : size === 2 ? "M" : "L"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {error && (
+                  <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-xl text-red-300 flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <X size={14} />
+                    </div>
+                    <p className="flex-1">{error}</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        )}
 
-        {/* Anime Grid */}
-        {filteredAnime.length > 0 && (
-          <div className="max-w-7xl mx-auto">
-            <div
-              className={
-                compact
-                  ? "grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 gap-1 sm:gap-1.5"
-                  : "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6"
-              }
-            >
-              {filteredAnime.map((anime) => (
-                <div
-                  key={anime.id}
-                  className="bg-white/10 backdrop-blur-lg rounded-xl overflow-hidden shadow-xl border border-white/20 hover:border-blue-400/50 transition-all transform hover:scale-[1.02] hover:-translate-y-2"
-                >
-                  <div className={compact?"relative h-40 sm:h-44 overflow-hidden":"relative h-56 sm:h-64 overflow-hidden"}>
-                    <img
-                      src={anime.cover_image_large || anime.cover_image_medium}
-                      alt={anime.title_english || anime.title_romaji}
-                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-                    />
-                    <div
-                      className={
-                        compact
-                          ? "hidden"
-                          : "absolute top-3 right-3 bg-black/70 px-3 py-1 rounded-full text-xs font-semibold text-white"
-                      }
+          {/* Filters & Stats */}
+          {animeList.length > 0 && (
+            <div className="mb-8">
+              <div className="flex flex-col lg:flex-row gap-4 items-center justify-between mb-6">
+                <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
+                  {Object.entries(statusCounts).map(([status, count]) => (
+                    <button
+                      key={status}
+                      onClick={() => setActiveFilter(status)}
+                      className={`group relative px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 overflow-hidden ${
+                        activeFilter === status
+                          ? "text-white shadow-xl"
+                          : "bg-white/10 text-gray-300 hover:bg-white/20"
+                      }`}
                     >
-                      ⭐ {anime.average_score + "/100" || "N/A"}
-                    </div>
-                  </div>
-                  <div className={compact?"p-0 sm:p-0.5":"p-4 sm:p-5"}>
-                    <h3 className={compact?"text-white font-semibold lg:font-bold text-xs sm:text-xs text-center mb-0.5":"text-white font-bold text-base sm:text-lg mb-2 line-clamp-2 text-center"}>
-                      {anime.title_english || anime.title_romaji}
-                    </h3>
-                    {compact ? (
-                      <></>
-                    ) : (
-                      <div className="flex flex-wrap items-center justify-between text-xs sm:text-sm mb-3">
-                        {anime.format == "MOVIE" ? (
-                          <span className="text-gray-300 text-bold">Movie</span>
-                        ) : (
-                          <span className="text-gray-300">
-                            {anime.progress}/{anime.episodes || "Airing--"}
-                          </span>
-                        )}
-
-                        <span
-                          className={`px-2 py-1 sm:px-3 rounded-full font-medium ${
-                            anime.status === "COMPLETED"
-                              ? "bg-green-500/20 text-green-300"
-                              : anime.status === "CURRENT"
-                              ? "bg-blue-500/20 text-blue-300"
-                              : anime.status === "PLANNING"
-                              ? "bg-purple-500/20 text-purple-300"
-                              : anime.status === "PAUSED"
-                              ? "bg-yellow-500/20 text-yellow-300"
-                              : "bg-red-500/20 text-red-300"
-                          }`}
-                        >
-                          {statusLabels[anime.status] || anime.status}
+                      {activeFilter === status && (
+                        <div className={`absolute inset-0 bg-gradient-to-r ${statusColors[status]} -z-10`}></div>
+                      )}
+                      <span className="flex items-center gap-2">
+                        {statusLabels[status]}
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                          activeFilter === status ? "bg-white/20" : "bg-black/30"
+                        }`}>
+                          {count}
                         </span>
-                      </div>
-                    )}
+                      </span>
+                    </button>
+                  ))}
+                </div>
 
-                    {anime.genres?.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {anime.genres.slice(0, 3).map((genre, idx) => (
+                <div className="flex gap-2">
+                  {["json", "xml"].map((format) => (
+                    <button
+                      key={format}
+                      onClick={() => exportList(format)}
+                      disabled={exporting}
+                      className={`px-4 sm:px-6 py-2.5 sm:py-3 ${
+                        format === "json"
+                          ? "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-green-500/50"
+                          : "bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 shadow-orange-500/50"
+                      } text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg flex items-center gap-2`}
+                    >
+                      <Download size={18} />
+                      <span className="hidden sm:inline uppercase">{format}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Stats Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+                {Object.entries(statusCounts).filter(([status]) => status !== "ALL").map(([status, count]) => (
+                  <div
+                    key={status}
+                    className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-105"
+                  >
+                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${statusColors[status]} flex items-center justify-center mb-2`}>
+                      {status === "CURRENT" && <Tv size={20} className="text-white" />}
+                      {status === "COMPLETED" && <Star size={20} className="text-white" />}
+                      {status === "PLANNING" && <Calendar size={20} className="text-white" />}
+                      {status === "PAUSED" && <Clock size={20} className="text-white" />}
+                      {status === "DROPPED" && <X size={20} className="text-white" />}
+                    </div>
+                    <p className="text-2xl font-black text-white mb-1">{count}</p>
+                    <p className="text-xs text-gray-400 font-medium">{statusLabels[status]}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Anime Grid/List */}
+          {filteredAnime.length > 0 && (
+            <div className={gridSize === 0 ? gridConfigs[0].cols : `grid ${gridConfigs[gridSize].cols}`}>
+              {filteredAnime.map((anime) => (
+                gridSize === 0 ? (
+                  // Horizontal List View
+                  <div
+                    key={anime.id}
+                    className="group bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-[1.02] shadow-xl hover:shadow-2xl cursor-pointer flex gap-4 p-4"
+                    onClick={() => viewAnimeDetails(anime)}
+                  >
+                    {/* Cover Image */}
+                    <div className="relative w-24 h-36 flex-shrink-0 overflow-hidden rounded-xl">
+                      <img
+                        src={anime.cover_image_large || anime.cover_image_medium}
+                        alt={anime.title_english || anime.title_romaji}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      {anime.format !== "MOVIE" && anime.episodes && (
+                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/50">
+                          <div
+                            className={`h-full bg-gradient-to-r ${statusColors[anime.status]} transition-all duration-300`}
+                            style={{ width: `${(anime.progress / anime.episodes) * 100}%` }}
+                          ></div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0 flex flex-col justify-between">
+                      <div>
+                        <h3 className="text-white font-bold text-base mb-2 line-clamp-1">
+                          {anime.title_english || anime.title_romaji}
+                        </h3>
+                        <div className="flex flex-wrap gap-2 mb-2">
+                          <span className={`px-3 py-1 rounded-lg text-xs font-bold text-white bg-gradient-to-r ${statusColors[anime.status]}`}>
+                            {statusLabels[anime.status]}
+                          </span>
+                          {anime.average_score && (
+                            <span className="px-3 py-1 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg flex items-center gap-1 text-xs font-bold text-white">
+                              <Star size={12} className="fill-white" />
+                              {anime.average_score}
+                            </span>
+                          )}
+                          <span className="px-3 py-1 bg-white/10 text-gray-300 rounded-lg text-xs font-medium">
+                            {anime.format === "MOVIE" ? (
+                              <span className="flex items-center gap-1">
+                                <Film size={12} />
+                                Movie
+                              </span>
+                            ) : (
+                              <span className="flex items-center gap-1">
+                                <Tv size={12} />
+                                {anime.progress}/{anime.episodes || "?"}
+                              </span>
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {anime.genres?.slice(0, 4).map((genre, idx) => (
                           <span
                             key={idx}
-                            className={compact?"hidden":"text-xs bg-white/10 text-gray-300 px-2 py-1 rounded"}
+                            className="px-2 py-1 bg-white/10 text-gray-300 rounded-lg text-xs font-medium"
                           >
                             {genre}
                           </span>
                         ))}
                       </div>
+                    </div>
+
+                    {/* Quick Actions */}
+                    <div className="flex flex-col gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          viewAnimeDetails(anime);
+                        }}
+                        className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-lg transform hover:scale-110 transition-all duration-300"
+                      >
+                        <Eye size={16} className="text-white" />
+                      </button>
+                      {isAuthenticated && (
+                        <>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              viewAnimeDetails(anime);
+                            }}
+                            className="p-2 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg shadow-lg transform hover:scale-110 transition-all duration-300"
+                          >
+                            <Edit3 size={16} className="text-white" />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteAnime(anime.media_id);
+                            }}
+                            className="p-2 bg-gradient-to-r from-red-600 to-rose-600 rounded-lg shadow-lg transform hover:scale-110 transition-all duration-300"
+                          >
+                            <Trash2 size={16} className="text-white" />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  // Grid View
+                  <div
+                    key={anime.id}
+                    className="group relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/20 hover:border-white/40 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 shadow-xl hover:shadow-2xl cursor-pointer"
+                    onClick={() => viewAnimeDetails(anime)}
+                  >
+                    {/* Image Container */}
+                    <div className={`relative overflow-hidden ${gridSize <= 1 ? "h-40 sm:h-48" : "h-56 sm:h-72"}`}>
+                      <img
+                        src={anime.cover_image_large || anime.cover_image_medium}
+                        alt={anime.title_english || anime.title_romaji}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      
+                      {/* Gradient Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
+                      
+                      {/* Score Badge */}
+                      {gridSize >= 1 && anime.average_score && (
+                        <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-orange-500 px-3 py-1.5 rounded-full flex items-center gap-1 shadow-lg">
+                          <Star size={14} className="text-white fill-white" />
+                          <span className="text-white font-black text-sm">{anime.average_score}</span>
+                        </div>
+                      )}
+
+                      {/* Status Badge */}
+                      <div className={`absolute top-3 left-3 px-3 py-1.5 rounded-full font-bold text-xs shadow-lg bg-gradient-to-r ${statusColors[anime.status]}`}>
+                        <span className="text-white">{statusLabels[anime.status]}</span>
+                      </div>
+
+                      {/* Quick Actions Overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black/60 backdrop-blur-sm">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            viewAnimeDetails(anime);
+                          }}
+                          className="p-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-xl transform hover:scale-110 transition-all duration-300"
+                        >
+                          <Eye size={20} className="text-white" />
+                        </button>
+                        {isAuthenticated && (
+                          <>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                viewAnimeDetails(anime);
+                              }}
+                              className="p-3 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full shadow-xl transform hover:scale-110 transition-all duration-300"
+                            >
+                              <Edit3 size={20} className="text-white" />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteAnime(anime.media_id);
+                              }}
+                              className="p-3 bg-gradient-to-r from-red-600 to-rose-600 rounded-full shadow-xl transform hover:scale-110 transition-all duration-300"
+                            >
+                              <Trash2 size={20} className="text-white" />
+                            </button>
+                          </>
+                        )}
+                      </div>
+
+                      {/* Progress Bar */}
+                      {anime.format !== "MOVIE" && anime.episodes && (
+                        <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-black/50">
+                          <div
+                            className={`h-full bg-gradient-to-r ${statusColors[anime.status]} transition-all duration-300`}
+                            style={{ width: `${(anime.progress / anime.episodes) * 100}%` }}
+                          ></div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Content */}
+                    <div className={`${gridSize <= 1 ? "p-2 sm:p-3" : "p-4 sm:p-5"}`}>
+                      <h3 className={`text-white font-bold line-clamp-2 mb-2 ${gridSize <= 1 ? "text-xs sm:text-sm" : "text-sm sm:text-base"}`}>
+                        {anime.title_english || anime.title_romaji}
+                      </h3>
+
+                      {gridSize >= 2 && (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-400 flex items-center gap-1">
+                              {anime.format === "MOVIE" ? (
+                                <>
+                                  <Film size={14} />
+                                  Movie
+                                </>
+                              ) : (
+                                <>
+                                  <Tv size={14} />
+                                  {anime.progress}/{anime.episodes || "?"}
+                                </>
+                              )}
+                            </span>
+                            {anime.season && (
+                              <span className="text-gray-400 text-xs">
+                                {anime.season} {anime.season_year}
+                              </span>
+                            )}
+                          </div>
+
+                          {gridSize >= 3 && anime.genres?.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5">
+                              {anime.genres.slice(0, 3).map((genre, idx) => (
+                                <span
+                                  key={idx}
+                                  className="px-2 py-1 bg-white/10 text-gray-300 rounded-lg text-xs font-medium"
+                                >
+                                  {genre}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
+              ))}
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!loading && animeList.length === 0 && !error && (
+            <div className="text-center py-20">
+              <div className="w-32 h-32 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Tv size={64} className="text-purple-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">No Anime Found</h3>
+              <p className="text-gray-400">Enter a username above to view their anime collection</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Anime Details Modal */}
+      {showAnimeModal && selectedAnime && (
+        <div
+          className="fixed inset-0 bg-black/90 backdrop-blur-xl z-50 flex items-center justify-center p-4 overflow-y-auto"
+          onClick={() => setShowAnimeModal(false)}
+        >
+          <div
+            className="bg-gradient-to-br from-slate-900 to-purple-900 rounded-3xl max-w-5xl w-full my-8 border border-white/20 shadow-2xl overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Banner with Cover Image Overlay */}
+            <div className="relative h-64 sm:h-80 overflow-hidden">
+              <img
+                src={selectedAnime.banner_image || selectedAnime.cover_image_large}
+                alt={selectedAnime.title_english || selectedAnime.title_romaji}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/50 to-transparent"></div>
+              
+              <button
+                onClick={() => setShowAnimeModal(false)}
+                className="absolute top-4 right-4 p-3 bg-black/70 hover:bg-black/90 rounded-full transition-all duration-300 transform hover:scale-110 hover:rotate-90"
+              >
+                <X size={24} className="text-white" />
+              </button>
+
+              {/* Cover Image Overlay */}
+              <div className="absolute bottom-0 left-6 sm:left-8 transform translate-y-1/2 z-10">
+                <div className="relative group">
+                  <img
+                    src={selectedAnime.cover_image_large}
+                    alt={selectedAnime.title_english || selectedAnime.title_romaji}
+                    className="w-32 h-48 sm:w-40 sm:h-60 object-cover rounded-2xl shadow-2xl border-4 border-slate-900 transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-purple-600/20 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-6 sm:p-8 pt-28 sm:pt-36">
+              <div className="mb-6">
+                <h2 className="text-3xl sm:text-4xl font-black text-white mb-2">
+                  {selectedAnime.title_english || selectedAnime.title_romaji}
+                </h2>
+                {selectedAnime.title_romaji && selectedAnime.title_english && (
+                  <p className="text-gray-400 text-lg mb-4">{selectedAnime.title_romaji}</p>
+                )}
+
+                <div className="flex flex-wrap gap-2">
+                  <div className={`px-4 py-2 rounded-xl font-bold text-white shadow-lg bg-gradient-to-r ${statusColors[selectedAnime.status]}`}>
+                    {statusLabels[selectedAnime.status]}
+                  </div>
+                  <div className="px-4 py-2 rounded-xl font-bold bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-lg flex items-center gap-2">
+                    <Star size={18} className="fill-white" />
+                    {selectedAnime.average_score || "N/A"}/100
+                  </div>
+                  <div className="px-4 py-2 rounded-xl font-bold bg-white/10 text-white">
+                    {selectedAnime.format}
+                  </div>
+                  {selectedAnime.score > 0 && (
+                    <div className="px-4 py-2 rounded-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-lg flex items-center gap-2">
+                      <TrendingUp size={18} />
+                      Your Score: {selectedAnime.score}/10
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Info Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+                  <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                    <Tv size={20} />
+                    Details
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Episodes</span>
+                      <span className="text-white font-bold">{selectedAnime.episodes || "Ongoing"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Progress</span>
+                      <span className="text-white font-bold">
+                        {selectedAnime.progress}/{selectedAnime.episodes || "?"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Season</span>
+                      <span className="text-white font-bold">
+                        {selectedAnime.season || "N/A"} {selectedAnime.season_year || ""}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-400">Source</span>
+                      <span className="text-white font-bold">{selectedAnime.source || "N/A"}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+                  <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                    <Filter size={20} />
+                    Genres
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedAnime.genres?.map((genre, idx) => (
+                      <span
+                        key={idx}
+                        className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-medium shadow-lg"
+                      >
+                        {genre}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Synopsis */}
+              {selectedAnime.description && (
+                <div className="bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 mb-6">
+                  <h3 className="text-white font-bold text-lg mb-4">Synopsis</h3>
+                  <div className="relative">
+                    <p
+                      className={`text-gray-300 leading-relaxed ${!showFullDescription ? 'line-clamp-4' : ''}`}
+                      dangerouslySetInnerHTML={{ 
+                        __html: showFullDescription 
+                          ? selectedAnime.description 
+                          : truncateText(selectedAnime.description, 300) 
+                      }}
+                    ></p>
+                    {selectedAnime.description && selectedAnime.description.replace(/<[^>]*>/g, "").length > 300 && (
+                      <button
+                        onClick={() => setShowFullDescription(!showFullDescription)}
+                        className="mt-3 flex items-center gap-2 text-purple-400 hover:text-purple-300 font-semibold transition-colors duration-300"
+                      >
+                        {showFullDescription ? (
+                          <>
+                            <ChevronUp size={18} />
+                            See Less
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown size={18} />
+                            See More
+                          </>
+                        )}
+                      </button>
                     )}
                   </div>
                 </div>
-              ))}
+              )}
+
+              {/* Modify Section */}
+              {isAuthenticated && (
+                <div className="bg-gradient-to-br from-purple-900/50 to-blue-900/50 backdrop-blur-xl rounded-2xl p-6 border border-purple-500/30">
+                  <h3 className="text-white font-bold text-xl mb-6 flex items-center gap-2">
+                    <Edit3 size={22} />
+                    Modify Anime
+                  </h3>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    <div>
+                      <label className="block text-gray-300 font-medium mb-2">Status</label>
+                      <div className="relative">
+                        <select
+                          value={modifyForm.status}
+                          onChange={(e) => setModifyForm({ ...modifyForm, status: e.target.value })}
+                          className="w-full px-4 py-3 bg-black/30 border border-white/20 rounded-xl text-white appearance-none focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300 cursor-pointer"
+                        >
+                          <option value="" className="bg-slate-900">Select Status</option>
+                          <option value="CURRENT" className="bg-slate-900">Watching</option>
+                          <option value="COMPLETED" className="bg-slate-900">Completed</option>
+                          <option value="PLANNING" className="bg-slate-900">Plan to Watch</option>
+                          <option value="PAUSED" className="bg-slate-900">On Hold</option>
+                          <option value="DROPPED" className="bg-slate-900">Dropped</option>
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={20} />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-gray-300 font-medium mb-2">Progress</label>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={decrementProgress}
+                          className="px-3 py-3 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white rounded-xl transition-all duration-300 transform hover:scale-105"
+                        >
+                          <Minus size={18} />
+                        </button>
+                        <input
+                          type="number"
+                          value={modifyForm.progress}
+                          onChange={(e) => setModifyForm({ ...modifyForm, progress: e.target.value })}
+                          placeholder="Episodes"
+                          className="flex-1 px-4 py-3 bg-black/30 border border-white/20 rounded-xl text-white text-center focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+                          min="0"
+                          max={selectedAnime.episodes || 999}
+                        />
+                        <button
+                          onClick={incrementProgress}
+                          className="px-3 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl transition-all duration-300 transform hover:scale-105"
+                        >
+                          <Plus size={18} />
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-gray-300 font-medium mb-2">Your Score</label>
+                      <input
+                        type="number"
+                        value={modifyForm.score}
+                        onChange={(e) => setModifyForm({ ...modifyForm, score: e.target.value })}
+                        placeholder="0-10"
+                        className="w-full px-4 py-3 bg-black/30 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+                        min="0"
+                        max="10"
+                        step="0.5"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      onClick={() => modifyAnime(selectedAnime.media_id)}
+                      className="flex-1 px-6 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-500/50 flex items-center justify-center gap-2"
+                    >
+                      <Save size={20} />
+                      Save Changes
+                    </button>
+                    <button
+                      onClick={() => deleteAnime(selectedAnime.media_id)}
+                      className="flex-1 sm:flex-none px-6 py-4 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg shadow-red-500/50 flex items-center justify-center gap-2"
+                    >
+                      <Trash2 size={20} />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Empty State */}
-        {!loading && animeList.length === 0 && !error && (
-          <div className="text-center text-gray-400 py-16 sm:py-20">
-            <svg
-              className="w-20 sm:w-24 h-20 sm:h-24 mx-auto mb-4 opacity-50"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-                d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"
-              />
-            </svg>
-            <p className="text-lg sm:text-xl">
-              Enter a username to view their anime list
-            </p>
+      {/* Add Anime Modal */}
+      {showAddModal && (
+        <div
+          className="fixed inset-0 bg-black/90 backdrop-blur-xl z-50 flex items-center justify-center p-4 overflow-y-auto"
+          onClick={() => setShowAddModal(false)}
+        >
+          <div
+            className="bg-gradient-to-br from-slate-900 to-purple-900 rounded-3xl max-w-4xl w-full my-8 border border-white/20 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-6 sm:p-8">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl sm:text-3xl font-black text-white flex items-center gap-3">
+                  <Plus size={28} />
+                  Add Anime to List
+                </h2>
+                <button
+                  onClick={() => setShowAddModal(false)}
+                  className="p-3 bg-white/10 hover:bg-white/20 rounded-full transition-all duration-300 transform hover:scale-110 hover:rotate-90"
+                >
+                  <X size={24} className="text-white" />
+                </button>
+              </div>
+
+              <div className="flex gap-3 mb-6">
+                <div className="relative flex-1">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyPress={(e) => e.key === "Enter" && searchAnime()}
+                    placeholder="Search anime by title..."
+                    className="w-full pl-12 pr-4 py-4 bg-black/30 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+                  />
+                </div>
+                <button
+                  onClick={searchAnime}
+                  disabled={searching}
+                  className="px-6 py-4 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 shadow-lg shadow-purple-500/50 flex items-center gap-2"
+                >
+                  {searching ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      Searching...
+                    </>
+                  ) : (
+                    <>
+                      <Search size={20} />
+                      Search
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Search Results */}
+              {searchResults.length > 0 && (
+                <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                  {searchResults.map((anime) => (
+                    <div
+                      key={anime.id}
+                      className="bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10 hover:border-white/30 transition-all duration-300 flex gap-4"
+                    >
+                      <img
+                        src={anime.coverImage?.large || anime.coverImage?.medium}
+                        alt={anime.title?.english || anime.title?.romaji}
+                        className="w-24 h-36 object-cover rounded-xl shadow-lg flex-shrink-0"
+                      />
+                      
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-white font-bold text-lg mb-2 line-clamp-2">
+                          {anime.title?.english || anime.title?.romaji}
+                        </h3>
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          <span className="px-3 py-1 bg-purple-600/30 text-purple-300 rounded-lg text-sm font-medium">
+                            {anime.format}
+                          </span>
+                          {anime.episodes && (
+                            <span className="px-3 py-1 bg-blue-600/30 text-blue-300 rounded-lg text-sm font-medium flex items-center gap-1">
+                              <Tv size={14} />
+                              {anime.episodes} eps
+                            </span>
+                          )}
+                          {anime.averageScore && (
+                            <span className="px-3 py-1 bg-yellow-600/30 text-yellow-300 rounded-lg text-sm font-medium flex items-center gap-1">
+                              <Star size={14} className="fill-yellow-300" />
+                              {anime.averageScore}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {anime.genres?.slice(0, 4).map((genre, idx) => (
+                            <span
+                              key={idx}
+                              className="px-2 py-1 bg-white/10 text-gray-300 rounded-lg text-xs font-medium"
+                            >
+                              {genre}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-2 flex-shrink-0">
+                        <div className="relative">
+                          <select
+                            id={`status-${anime.id}`}
+                            className="px-3 py-2 bg-black/30 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 appearance-none pr-8"
+                          >
+                            <option value="PLANNING" className="bg-slate-900">Plan to Watch</option>
+                            <option value="CURRENT" className="bg-slate-900">Watching</option>
+                            <option value="COMPLETED" className="bg-slate-900">Completed</option>
+                            <option value="PAUSED" className="bg-slate-900">On Hold</option>
+                            <option value="DROPPED" className="bg-slate-900">Dropped</option>
+                          </select>
+                          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
+                        </div>
+                        <button
+                          onClick={() => {
+                            const status = document.getElementById(`status-${anime.id}`).value;
+                            addAnimeToList(anime.id, status);
+                          }}
+                          className="px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white text-sm font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+                        >
+                          <Plus size={16} />
+                          Add
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {searchResults.length === 0 && !searching && searchQuery && (
+                <div className="text-center py-12">
+                  <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Search size={40} className="text-gray-500" />
+                  </div>
+                  <p className="text-gray-400 text-lg">No results found</p>
+                  <p className="text-gray-500 text-sm">Try a different search term</p>
+                </div>
+              )}
+
+              {searchResults.length === 0 && !searching && !searchQuery && (
+                <div className="text-center py-12">
+                  <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Search size={40} className="text-gray-500" />
+                  </div>
+                  <p className="text-gray-400 text-lg">Search for anime to add</p>
+                  <p className="text-gray-500 text-sm">Enter a title in the search box above</p>
+                </div>
+              )}
+            </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(139, 92, 246, 0.5);
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(139, 92, 246, 0.7);
+        }
+      `}</style>
     </div>
   );
 }
