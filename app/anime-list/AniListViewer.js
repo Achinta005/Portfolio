@@ -11,7 +11,7 @@ export default function AniListViewer() {
   const [error, setError] = useState("");
   const [activeFilter, setActiveFilter] = useState("ALL");
   const [exporting, setExporting] = useState(false);
-  const [compact, setCompact] = useState(false);
+  const [compact, setCompact] = useState(true);
   const router = useRouter();
 
   const handleClick = () => router.push("/admin");
