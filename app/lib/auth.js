@@ -49,9 +49,9 @@ export const getUserFromToken = () => {
     try {
       const decoded = jwtDecode(token);
       return {
-     userId: decoded.userId,
+     userId: decoded.id,
      username: decoded.username,
-      role: decoded.role,
+     role: decoded.role,
      };
     } catch (err) {
       console.error("Error decoding token:", err);

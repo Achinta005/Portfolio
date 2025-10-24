@@ -13,6 +13,7 @@ import Notepad from "../Components/Notepad";
 import Image from "next/image";
 import PythonFlask from "../Components/PythonFlask";
 import Blog from "../Components/Blog";
+import Ipaddress from "../Components/Ipaddress";
 
 const AdminPage = () => {
   const [user, setUser] = useState(null);
@@ -20,10 +21,11 @@ const AdminPage = () => {
   const [activeView, setActiveView] = useState("dashboard");
   const [documents, setDocuments] = useState([]);
   const [fetchError, setFetchError] = useState(null);
-   const router = useRouter();
+  const [ipAddress, setipAddress] = useState();
+  const router = useRouter();
 
   const handleClick = () => {
-    router.push('/anime-list');
+    router.push("/anime-list");
   };
 
   useEffect(() => {
@@ -35,6 +37,25 @@ const AdminPage = () => {
     }
     setLoading(false);
   }, [router]);
+
+  useEffect(() => {
+    const userData = getUserFromToken();
+    fetch("/api/get-ip", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user_id: userData.userId,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => setipAddress(data.ip))
+      .catch((error) => {
+        console.error("Error fetching IP:", error);
+        setipAddress("Currently not Available !");
+      });
+  }, []);
 
   const handleLogout = () => {
     removeAuthToken();
@@ -126,6 +147,19 @@ const AdminPage = () => {
       </div>
     );
   }
+  if (user.role === "admin" && activeView === "IP") {
+    return (
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-gradient-to-bl from-pink-600 via-yellow-400 to-purple-700">
+        <button
+          onClick={() => setActiveView("dashboard")}
+          className="mb-4 px-4 py-2 bg-white/30 backdrop-blur-3xl text-white cursor-pointer rounded-lg hover:bg-white/20 transition-colors"
+        >
+          ← Back to Dashboard
+        </button>
+        <Ipaddress />
+      </div>
+    );
+  }
 
   if (user.role === "editor" && activeView === "Notepad") {
     return (
@@ -156,14 +190,23 @@ const AdminPage = () => {
           <header className="mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               {/* Welcome message */}
-              <div className="bg-white/10 backdrop-blur-2xl px-4 py-2 rounded-lg">
-                <p className="text-green-400 font-bold text-lg sm:text-xl text-center sm:text-left">
-                  Welcome {user.username}
-                </p>
+              <div className="flex flex-col gap-4">
+                <div className="bg-white/10 backdrop-blur-2xl px-4 py-2 rounded-lg">
+                  <p className="text-green-400 font-bold text-lg sm:text-xl text-center sm:text-left">
+                    Welcome {user.username}
+                  </p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-2xl px-2 py-0.5 rounded-lg w-fit">
+                  <p className="text-red-600 font-bold text-lg sm:text-xl text-center sm:text-left">
+                    IP :{" "}
+                    <span className="text-green-400 font-semibold">
+                      {ipAddress}
+                    </span>
+                  </p>
+                </div>
               </div>
-
               {/* Dashboard title */}
-              <div className="bg-white/10 backdrop-blur-2xl px-4 py-2 rounded-lg flex-1 sm:flex-initial">
+              <div className="bg-white/10 backdrop-blur-2xl px-4 py-2 rounded-lg flex-1 sm:flex-initial -ml-20">
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-100 text-center">
                   Dashboard
                 </h1>
@@ -224,6 +267,26 @@ const AdminPage = () => {
                   <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
                   <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
                     AnimeList →
+                  </span>
+                </button>
+              </div>
+
+              <div className="bg-white/20 rounded-lg p-4 backdrop-blur-3xl flex flex-col items-center space-y-4 hover:bg-white/25 transition-colors">
+                <div className="w-full max-w-[280px] aspect-[4/3] relative">
+                  <Image
+                    src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1761317160/ip-address-lookup_czcb34.jpg"
+                    alt="Python Flask"
+                    fill
+                    className="rounded-lg border-2 border-white object-cover"
+                  />
+                </div>
+                <button
+                  className="relative inline-flex h-10 w-full max-w-[200px] overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
+                  onClick={() => setActiveView("IP")}
+                >
+                  <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#E2CBFF_0%,#393BB2_50%,#E2CBFF_100%)]" />
+                  <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-800 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
+                    IP Adresses →
                   </span>
                 </button>
               </div>

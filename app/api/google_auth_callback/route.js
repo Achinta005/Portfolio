@@ -68,12 +68,11 @@ export async function GET(req) {
       );
 
       user = {
-        id: result.insertId,
+        id: result.id,
         username,
         role,
       };
     }
-
     // 5️⃣ Generate JWT token
     const token = jwt.sign(
       { id: user.id, username: user.username, role: user.role },
@@ -84,7 +83,6 @@ export async function GET(req) {
     // 6️⃣ Redirect to frontend with token
     const redirectUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/login?token=${token}`;
     return Response.redirect(redirectUrl);
-
   } catch (error) {
     console.error(error.response?.data || error.message);
     return new Response("OAuth failed", { status: 500 });
