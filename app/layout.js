@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  metadataBase: new URL("https://achintahazra.shop"), // Added to resolve metadataBase warning
+  metadataBase: new URL("https://achintahazra.shop"),
   title: "Achinta Hazra | Full Stack Developer",
   description:
     "Official portfolio of Achinta Hazra, a full stack developer skilled in React, Next.js, Tailwind CSS, Node.js, Express, and MongoDB. Explore projects and contact for collaboration.",
@@ -33,7 +34,7 @@ export const metadata = {
     siteName: "Achinta Hazra Portfolio",
     images: [
       {
-        url: "/og-image.png", // Relative URL, resolved using metadataBase
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "Achinta Hazra Portfolio",
@@ -56,49 +57,50 @@ export default function RootLayout({ children }) {
           href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"
           rel="stylesheet"
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Person",
-              name: "Achinta Hazra",
-              url: "https://achintahazra.shop",
-              jobTitle: "Full Stack Web Developer",
-              description:
-                "Portfolio website of Achinta Hazra, showcasing projects in React, Next.js, Node.js, and MongoDB.",
-              image: "/og-image.png", // Updated to relative URL
-              sameAs: [
-                "https://github.com/Achinta005",
-                "https://www.linkedin.com/in/achintahazra",
-              ],
-            }),
-          }}
-        />
-        <script
-          type="module"
-          src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
-        ></script>
-        {/* GOOGLE ANALYTICS */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-J5KVDY0HCF"
-        ></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-J5KVDY0HCF');
-    `,
-          }}
-        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+
+        {/* Google Analytics */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-J5KVDY0HCF"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-J5KVDY0HCF');
+          `}
+        </Script>
+
+        {/* Model Viewer */}
+        <Script
+          type="module"
+          src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
+          strategy="beforeInteractive"
+        />
+
+        {/* Schema.org JSON-LD */}
+        <Script id="schema-org" type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            name: "Achinta Hazra",
+            url: "https://achintahazra.shop",
+            jobTitle: "Full Stack Web Developer",
+            description:
+              "Portfolio website of Achinta Hazra, showcasing projects in React, Next.js, Node.js, and MongoDB.",
+            image: "/og-image.png",
+            sameAs: [
+              "https://github.com/Achinta005",
+              "https://www.linkedin.com/in/achintahazra",
+            ],
+          })}
+        </Script>
       </body>
     </html>
   );
