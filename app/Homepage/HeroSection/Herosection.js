@@ -63,7 +63,7 @@ export default function HeroSection() {
   }, []);
 
   const handleView = async () => {
-      setPdfUrl('https://drive.google.com/file/d/14TZQ6x2LtRpjHNQ1-gjpJgXFBJ7k2xdR/view');
+      setPdfUrl('https://drive.google.com/file/d/1v5pvBLLHFNzLGG5t7m97CtUm_VadkVHB/view?usp=sharing');
       setIsModalOpen(true);
   };
 
