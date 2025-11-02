@@ -19,20 +19,6 @@ export default function Page() {
     };
   }, []);
 
-  useEffect(() => {
-    // Check backend health
-    const aliveBackend = async () => {
-      try {
-        const res = await fetch(`/api/health_check`);
-        const data = await res.json();
-        console.log(data.message);
-      } catch (err) {
-        console.warn("Backend check failed");
-      }
-    };
-    aliveBackend();
-  }, []);
-
   return (
     <>
       {/* Global CSS reset */}

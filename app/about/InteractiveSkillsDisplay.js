@@ -201,23 +201,10 @@ backdrop-blur-xl border border-purple-500/30 rounded-xl shadow-2xl p-4 sm:p-6 w-
   );
 };
 
-const SimplifiedSkillsGrid = () => {
+const SimplifiedSkillsGrid = ({skillsData}) => {
   const [hoveredNode, setHoveredNode] = useState(null);
   const [openDetailId, setOpenDetailId] = useState(null);
-  const [skillsData, setskillsData] = useState([]);
   const gridRef = useRef(null);
-
-  useEffect(() => {
-    const fetchSkillsData = async () => {
-      try {
-        const data = await PortfolioApiService.FetchSkillsData();
-        setskillsData(data);
-      } catch (error) {
-        console.error("Error fetching Skills data:", error);
-      }
-    };
-    fetchSkillsData();
-  }, []);
 
   // Flatten all skills from all categories
   const allSkills = Object.values(skillsData).flatMap(

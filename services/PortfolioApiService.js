@@ -24,40 +24,6 @@ export const PortfolioApiService = {
     window.URL.revokeObjectURL(url);
   },
 
-  //Fetch Education Data
-  FetchEducationData: async () => {
-    return apiCall("/api/education_data");
-  },
-
-  //Fecth Skills Data
-  FetchSkillsData: async () => {
-    return apiCall("/api/skill_data");
-  },
-
-  //Fecth Certificates
-  FetchCertificates: async () => {
-    return apiCall("/api/certificates_date");
-  },
-
-  //Fetch Projects
-  FetchProject: async () => {
-    return apiCall("/api/projects_data");
-  },
-
-  //Fetch All Blogs
-  FetchAllBlogs: async () => {
-    return apiCall("/api/blog_data", {
-      cache: "no-store",
-    });
-  },
-
-  //Fetch Blog By slug
-  FetchBlogBySlug: async (slug) => {
-    return apiCall(`/api/blog_data/${slug}`, {
-      cache: "no-store",
-    });
-  },
-
   //Post Contact response
   PostContactResponse: async (data) => {
     return apiCall("/api/upload_response", {

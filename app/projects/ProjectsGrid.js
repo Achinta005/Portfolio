@@ -15,43 +15,31 @@ const shuffleArray = (array) => {
   return newArray;
 };
 
-export default function ProjectsGrid() {
-  const isMobile = useIsMobile(1024);
-  const [projects, setProjects] = useState([]);
-  const [shuffledProjects, setShuffledProjects] = useState([]); // New state for shuffled projects
-
-  useEffect(() => {
-    const getProjects = async () => {
-      try {
-        const data = await PortfolioApiService.FetchProject();
-        setProjects(data);
-        setShuffledProjects(shuffleArray(data)); // Set the initial shuffled list
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching projects:", error);
-      }
-    };
-
-    getProjects();
-  }, []);
+export default function ProjectsGrid({ projectsData }) {
+  const [shuffledProjects, setShuffledProjects] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   const categories = ["All", "Web Development", "Machine Learning"];
-  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  // Initialize shuffledProjects when data is received
+  useEffect(() => {
+    if (projectsData && projectsData.length > 0) {
+      setShuffledProjects(shuffleArray(projectsData));
+    }
+  }, [projectsData]);
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
-    // When "All" is selected, create a new shuffle
     if (category === "All") {
-      setShuffledProjects(shuffleArray(projects));
+      setShuffledProjects(shuffleArray(projectsData));
     }
   };
 
   const currentProjects =
     selectedCategory === "All"
       ? shuffledProjects
-      : projects.filter((project) => project.category === selectedCategory);
+      : projectsData.filter((project) => project.category === selectedCategory);
 
-  // Map projects to testimonials format
   const testimonials = currentProjects.map((project) => {
     let techList = "No technologies listed";
     try {
@@ -87,7 +75,6 @@ export default function ProjectsGrid() {
     <section className="relative py-8 sm:py-12 lg:py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white/5 rounded-lg lg:rounded-2xl backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 overflow-hidden -top-28 relative">
-          {/* ... (rest of your JSX) */}
           <div className="relative p-4 sm:p-6">
             <div className="flex items-center space-x-2 mb-6 lg:mb-8">
               <div className="w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full"></div>
@@ -95,6 +82,7 @@ export default function ProjectsGrid() {
               <div className="w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full"></div>
             </div>
 
+            {/* Category buttons */}
             <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-8 lg:mb-8">
               {categories.map((category) => (
                 <button
@@ -112,11 +100,13 @@ export default function ProjectsGrid() {
             </div>
 
             <div className="relative min-h-[400px] sm:min-h-[500px]">
-              {projects.length === 0 ? (
+              {projectsData.length === 0 ? (
                 <div className="flex justify-center items-center h-64">
                   <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto mb-4"></div>
-                    <div className="text-gray-400 text-lg">Loading projects...</div>
+                    <div className="text-gray-400 text-lg">
+                      Loading projects...
+                    </div>
                   </div>
                 </div>
               ) : testimonials.length === 0 ? (

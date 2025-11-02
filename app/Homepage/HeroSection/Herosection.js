@@ -4,7 +4,6 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import * as THREE from "three";
-import { PortfolioApiService } from "@/services/PortfolioApiService";
 import { Contact, View } from "lucide-react";
 import PdfModal from "./PdfModal";
 
@@ -63,7 +62,7 @@ export default function HeroSection() {
   }, []);
 
   const handleView = async () => {
-      setPdfUrl('https://drive.google.com/file/d/1v5pvBLLHFNzLGG5t7m97CtUm_VadkVHB/view?usp=sharing');
+      setPdfUrl('https://drive.google.com/file/d/1p7NKQpOci-ZVZAb6lwZF93nc5KmkRAw4/view?usp=sharing');
       setIsModalOpen(true);
   };
 

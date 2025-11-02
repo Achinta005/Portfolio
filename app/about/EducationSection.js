@@ -42,21 +42,7 @@ const MotionDiv = ({ children, initial, whileInView, transition, className }) =>
   );
 };
 
-export default function EducationSection() {
-  const [education, setEducation] = useState([])
- 
-  useEffect(() => {
-    const fetchEducationData = async () => {
-      try {
-        const data = await PortfolioApiService.FetchEducationData();
-        setEducation(data);
-        console.log(data)
-      } catch (error) {
-        console.error("Error fetching education data:", error);
-      }
-    };
-    fetchEducationData();
-  }, []);
+export default function EducationSection({educationData}) {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-x-hidden">
@@ -96,11 +82,11 @@ export default function EducationSection() {
             <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-6 lg:p-8 shadow-2xl overflow-hidden">
               <div className="w-full relative">
                 <Timeline className="relative">
-                  {education.map((edu, index) => (
+                  {educationData.map((edu, index) => (
                     <TimelineItem key={index} className="relative z-10">
                       
                       {/* Custom connector line - only show between items */}
-                      {index < education.length - 1 && (
+                      {index < educationData.length - 1 && (
                         <div className="absolute left-4 sm:left-6 top-12 sm:top-14 w-0.5 h-40 sm:h-48 lg:h-56 bg-gradient-to-b from-blue-400 via-purple-400 to-pink-400 z-0"></div>
                       )}
 

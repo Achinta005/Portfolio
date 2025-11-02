@@ -320,23 +320,10 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
   );
 };
 
-export default function CertificationSection() {
+export default function CertificationSection({certificateData}) {
   const [selectedCert, setSelectedCert] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [certifications, setCertifications] = useState([]);
-
-  // Fetch certificates at the beginning of page load
-  useEffect(() => {
-    const fetchCertificates = async () => {
-      try {
-        const data = await PortfolioApiService.FetchCertificates();
-        setCertifications(data);
-      } catch (error) {
-        console.error("Error fetching certificates:", error);
-      }
-    };
-    fetchCertificates();
-  }, []);
+  
 
   const openCertificatePopup = (cert) => {
     console.log("Opening certificate:", cert.name, cert.path);
@@ -403,7 +390,7 @@ export default function CertificationSection() {
 
           {/* Mobile View - Cards Layout */}
           <div className="block md:hidden space-y-4">
-            {certifications.map((cert, index) => (
+            {certificateData.map((cert, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, x: -50 }}
@@ -442,7 +429,7 @@ export default function CertificationSection() {
 
           {/* Desktop View - 3D Pin Grid */}
           <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
-            {certifications.map((cert, index) => (
+            {certificateData.map((cert, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0 }}
