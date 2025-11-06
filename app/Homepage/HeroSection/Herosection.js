@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
-import * as THREE from "three";
 import { Contact, View } from "lucide-react";
 import PdfModal from "./PdfModal";
 
@@ -18,23 +17,34 @@ export default function HeroSection() {
     setIsLoaded(true);
   }, []);
 
-  // === ✅ VANTA Background Setup ===
+  // === ✅ FIXED VANTA Background Setup ===
   useEffect(() => {
     const loadVanta = async () => {
-      if (!window.VANTA) {
+      // Load THREE.js first
+      if (!window.THREE) {
         await new Promise((resolve) => {
-          const script = document.createElement("script");
-          script.src =
-            "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js";
-          script.onload = resolve;
-          document.body.appendChild(script);
+          const threeScript = document.createElement("script");
+          threeScript.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js";
+          threeScript.onload = resolve;
+          document.body.appendChild(threeScript);
         });
       }
 
+      // Then load Vanta.js
+      if (!window.VANTA) {
+        await new Promise((resolve) => {
+          const vantaScript = document.createElement("script");
+          vantaScript.src = "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js";
+          vantaScript.onload = resolve;
+          document.body.appendChild(vantaScript);
+        });
+      }
+
+      // Initialize Vanta effect
       if (!vantaEffect.current && window.VANTA && vantaRef.current) {
         vantaEffect.current = window.VANTA.NET({
           el: vantaRef.current,
-          THREE: THREE,
+          THREE: window.THREE, // Use the THREE from window
           mouseControls: true,
           touchControls: true,
           gyroControls: false,
@@ -62,8 +72,8 @@ export default function HeroSection() {
   }, []);
 
   const handleView = async () => {
-      setPdfUrl('https://drive.google.com/file/d/1p7NKQpOci-ZVZAb6lwZF93nc5KmkRAw4/view?usp=sharing');
-      setIsModalOpen(true);
+    setPdfUrl('https://drive.google.com/file/d/1p7NKQpOci-ZVZAb6lwZF93nc5KmkRAw4/view?usp=sharing');
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {

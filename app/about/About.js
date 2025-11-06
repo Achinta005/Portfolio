@@ -14,7 +14,6 @@ export default function About({ skillsData,educationData,certificateData }) {
 
   // Handle section navigation
   const handleSectionChange = (sectionId) => {
-    console.log("Navigating to section:", sectionId);
     setActiveSection(sectionId);
   };
 

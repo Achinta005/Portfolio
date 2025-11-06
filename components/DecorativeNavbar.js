@@ -24,7 +24,6 @@ const DecorativeNavbar = ({ onSectionChange, activeSection = "about" }) => {
   ];
 
   const handleNavClick = (sectionId) => {
-    console.log('Navbar clicked:', sectionId);
     
     if (onSectionChange) {
       onSectionChange(sectionId);

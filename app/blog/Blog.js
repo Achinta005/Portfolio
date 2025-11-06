@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
 import { motion, easeOut } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
 import Header from "@/components/Navbar";
 
 export default function BlogPage({ blogPostData }) {
@@ -11,7 +10,7 @@ export default function BlogPage({ blogPostData }) {
   const [error, setError] = useState(null);
   const [view, setView] = useState(1);
   const vantaRef = useRef(null);
-  const [vantaEffect, setVantaEffect] = useState(null);
+  const vantaEffect = useRef(null);
 
   // ✅ Stop loading once data arrives
   useEffect(() => {
@@ -20,49 +19,60 @@ export default function BlogPage({ blogPostData }) {
     } else {
       setError("No blog posts found.");
     }
-    console.log("Fetched blog data:", blogPostData);
   }, [blogPostData]);
 
-  // ✅ Load background animation
+  // ✅ FIXED: Load background animation
   useEffect(() => {
     async function loadVanta() {
-      if (!window.VANTA) {
+      // Load THREE.js first
+      if (!window.THREE) {
         await new Promise((resolve) => {
-          const script = document.createElement("script");
-          script.src =
-            "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js";
-          script.onload = resolve;
-          document.body.appendChild(script);
+          const threeScript = document.createElement("script");
+          threeScript.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js";
+          threeScript.onload = resolve;
+          document.body.appendChild(threeScript);
         });
       }
 
-      if (!vantaEffect && window.VANTA && vantaRef.current) {
-        setVantaEffect(
-          window.VANTA.NET({
-            el: vantaRef.current,
-            THREE: THREE,
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.0,
-            minWidth: 200.0,
-            scale: 1.0,
-            scaleMobile: 1.0,
-            backgroundColor: 0x0,
-            points: 20.0,
-            maxDistance: 10.0,
-            spacing: 20.0,
-          })
-        );
+      // Then load Vanta.js
+      if (!window.VANTA) {
+        await new Promise((resolve) => {
+          const vantaScript = document.createElement("script");
+          vantaScript.src = "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js";
+          vantaScript.onload = resolve;
+          document.body.appendChild(vantaScript);
+        });
+      }
+
+      // Initialize Vanta effect
+      if (!vantaEffect.current && window.VANTA && vantaRef.current) {
+        vantaEffect.current = window.VANTA.NET({
+          el: vantaRef.current,
+          THREE: window.THREE, // Use the THREE from window
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.0,
+          minWidth: 200.0,
+          scale: 1.0,
+          scaleMobile: 1.0,
+          backgroundColor: 0x0,
+          points: 20.0,
+          maxDistance: 10.0,
+          spacing: 20.0,
+        });
       }
     }
 
     loadVanta();
 
     return () => {
-      if (vantaEffect) vantaEffect.destroy();
+      if (vantaEffect.current) {
+        vantaEffect.current.destroy();
+        vantaEffect.current = null;
+      }
     };
-  }, [vantaEffect]);
+  }, []);
 
   if (loading) {
     return (
@@ -177,7 +187,7 @@ export default function BlogPage({ blogPostData }) {
 
             {/* Pagination */}
             {blogPostData.length > 3 && (
-              <div className="mt-8 flex justify-center">
+              <div className="mt-8 flex justify-center gap-2">
                 {Array.from({
                   length: Math.ceil(blogPostData.length / 3),
                 }).map((_, i) => (

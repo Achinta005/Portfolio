@@ -77,20 +77,12 @@ export default function RootLayout({ children }) {
           `}
         </Script>
 
-        {/* Model Viewer */}
-        <Script
-          type="module"
-          src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"
-          strategy="beforeInteractive"
-        />
-
         {/* Schema.org JSON-LD */}
         <Script id="schema-org" type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Person",
             name: "Achinta Hazra",
-            url: "https://achintahazra.shop",
             jobTitle: "Full Stack Web Developer",
             description:
               "Portfolio website of Achinta Hazra, showcasing projects in React, Next.js, Node.js, and MongoDB.",
