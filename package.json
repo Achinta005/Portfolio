@@ -50,16 +50,16 @@
     "tailwindcss-animated": "^2.0.0",
     "tailwindcss-motion": "^1.1.1",
     "three": "^0.179.1",
-    "tunnel-ssh": "^5.2.0"
+    "tunnel-ssh": "^5.2.0",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.17"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/d3": "^7.4.3",
     "@types/d3-dispatch": "^3.0.7",
-    "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.17"
   }
 }
