@@ -1,6 +1,6 @@
-
 export const apiCall = async (endpoint, options = {}) => {
-  const token = localStorage.getItem("token");
+  // ✅ Safe localStorage access - only run in browser
+  const token = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
   
   // Only set Content-Type for non-FormData requests
   const defaultHeaders = {};
@@ -16,15 +16,13 @@ export const apiCall = async (endpoint, options = {}) => {
     },
     ...options,
   };
-
+  
   try {
     const response = await fetch(`${endpoint}`, config);
     const data = await response.json();
-
     if (!response.ok) {
       throw new Error(data.message || `HTTP error! status: ${response.status}`);
     }
-
     return data;
   } catch (error) {
     console.error(`API call failed for ${endpoint}:`, error);
