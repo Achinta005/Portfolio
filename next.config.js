@@ -58,7 +58,15 @@ module.exports = {
         },
       ];
     }
-    // In production, no rewrites needed (direct API calls)
+    if (process.env.NODE_ENV === 'production') {
+      return [
+        {
+          source: '/api/python/:path*',
+          destination: 'https://deploy-euyc.onrender.com/:path*',
+        },
+      ];
+    }
+    
     return [];
   },
 };
