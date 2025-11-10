@@ -28,6 +28,15 @@ import {
   Minus,
   List,
 } from "lucide-react";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
+
+// FIXED: Consistent API URL helper
+const getApiUrl = (path) => {
+  if (process.env.NODE_ENV === "development") {
+    return `/api/python${path}`;
+  }
+  return `${process.env.NEXT_PUBLIC_PYTHON_API_URL}${path}`;
+};
 
 export default function AniListViewer() {
   const [username, setUsername] = useState("achinta");
@@ -38,6 +47,7 @@ export default function AniListViewer() {
   const [exporting, setExporting] = useState(false);
   const [gridSize, setGridSize] = useState(2);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
   const [selectedAnime, setSelectedAnime] = useState(null);
   const [showAnimeModal, setShowAnimeModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -54,19 +64,76 @@ export default function AniListViewer() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const router = useRouter();
+  useEffect(() => {
+    // Check if URL has code & state from AniList redirect
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    const state = params.get("state");
+
+    if (!code || !state) return; // Nothing to do if no OAuth params
+
+    const storedState = localStorage.getItem("anilist_oauth_state");
+
+    if (state !== storedState) {
+      console.error("State mismatch! Potential CSRF attack.");
+      return;
+    }
+
+    // State matched, exchange code for token
+    (async () => {
+      try {
+        const res = await fetch(getApiUrl("/Anilist-exchange"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code }),
+          credentials: "include",
+        });
+
+        if (!res.ok) throw new Error("Token exchange failed");
+
+        // Optionally, set authentication state
+        setIsAuthenticated(true);
+
+        // Clear state from localStorage
+        localStorage.removeItem("anilist_oauth_state");
+      } catch (err) {
+        console.error("OAuth token exchange error:", err);
+        setIsAuthenticated(false);
+      }
+    })();
+  }, []);
 
   const handleClick = () => router.push("/admin");
 
+  // Auth check
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch("/api/anilist/auth/check");
+        setAuthChecking(true);
+        const apiUrl = getApiUrl("/anilist/auth/check");
+        const res = await fetch(apiUrl, {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!res.ok) {
+          setIsAuthenticated(false);
+          return;
+        }
+
         const data = await res.json();
         setIsAuthenticated(data.authenticated);
       } catch (err) {
         console.error("Auth check failed:", err);
+        setIsAuthenticated(false);
+      } finally {
+        setAuthChecking(false);
       }
     };
+
     checkAuth();
   }, []);
 
@@ -115,14 +182,7 @@ export default function AniListViewer() {
     setAnimeList([]);
 
     try {
-      const response = await fetch("/api/anilist/BaseFunction/fetch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: username.trim() }),
-      });
-      const data = await response.json();
-      if (!response.ok)
-        throw new Error(data.error || "Failed to fetch anime list");
+      const data = await PortfolioApiService.FetchAnimeList(username);
       setAnimeList(data.animeList || []);
     } catch (err) {
       setError(err.message);
@@ -142,8 +202,10 @@ export default function AniListViewer() {
 
     setIsDeleting(true);
     try {
-      const response = await fetch("/api/anilist/modify", {
+      const apiUrl = getApiUrl("/anilist/modify");
+      const response = await fetch(apiUrl, {
         method: "DELETE",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ animeId: mediaId }),
       });
@@ -177,8 +239,10 @@ export default function AniListViewer() {
         ...(score && { score: parseFloat(score) }),
       };
 
-      const response = await fetch("/api/anilist/modify", {
+      const apiUrl = getApiUrl("/anilist/modify");
+      const response = await fetch(apiUrl, {
         method: "PUT",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(variables),
       });
@@ -202,8 +266,10 @@ export default function AniListViewer() {
 
     setSearching(true);
     try {
-      const response = await fetch("/api/anilist/modify", {
+      const apiUrl = getApiUrl("/anilist/modify");
+      const response = await fetch(apiUrl, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "search", query: searchQuery.trim() }),
       });
@@ -226,8 +292,10 @@ export default function AniListViewer() {
 
     setIsAdding(true);
     try {
-      const response = await fetch("/api/anilist/modify", {
+      const apiUrl = getApiUrl("/anilist/modify");
+      const response = await fetch(apiUrl, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "add", animeId: mediaId, status }),
       });
@@ -249,7 +317,6 @@ export default function AniListViewer() {
 
   const viewAnimeDetails = (anime) => {
     setSelectedAnime(anime);
-    console.log(anime);
     setShowFullDescription(false);
     setModifyForm({
       status: anime.status || "",
@@ -298,19 +365,23 @@ export default function AniListViewer() {
 
     setExporting(true);
     try {
-      const response = await fetch("/api/anilist/BaseFunction/export", {
+      const apiUrl = getApiUrl("/anilist/BaseFunction/export");
+
+      const response = await fetch(apiUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
         body: JSON.stringify({
-          username: username.trim(),
+          username,
           format,
           filter: activeFilter,
         }),
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || "Failed to export");
+        throw new Error("Export failed");
       }
 
       const blob = await response.blob();
@@ -323,7 +394,7 @@ export default function AniListViewer() {
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || "Export failed");
     } finally {
       setExporting(false);
     }
@@ -335,6 +406,16 @@ export default function AniListViewer() {
     return stripped.length > maxLength
       ? stripped.substring(0, maxLength) + "..."
       : stripped;
+  };
+
+  const handleConnect = () => {
+    // Generate random state for CSRF protection
+    const state = crypto.randomUUID(); // or any random string
+    localStorage.setItem("anilist_oauth_state", state);
+
+    // Append state as query param to backend auth URL
+    const authUrl = getApiUrl(`/Anilist-auth?state=${state}`);
+    window.location.href = authUrl;
   };
 
   return (
@@ -387,7 +468,14 @@ export default function AniListViewer() {
               </div>
 
               <div className="flex items-center gap-2">
-                {isAuthenticated ? (
+                {authChecking ? (
+                  <div className="flex items-center gap-2 px-3 py-2 bg-white/10 rounded-xl">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <span className="text-white text-sm font-medium hidden sm:inline">
+                      Checking...
+                    </span>
+                  </div>
+                ) : isAuthenticated ? (
                   <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-xl border border-green-500/30">
                     <WifiSync size={18} className="text-green-400" />
                     <span className="text-green-400 text-sm font-medium hidden sm:inline">
@@ -396,9 +484,7 @@ export default function AniListViewer() {
                   </div>
                 ) : (
                   <button
-                    onClick={() =>
-                      (window.location.href = "/api/anilist/auth/base")
-                    }
+                    onClick={handleConnect}
                     className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl text-white text-sm font-medium transition-all duration-300"
                   >
                     <WifiOff size={18} />
@@ -587,6 +673,31 @@ export default function AniListViewer() {
                     </div>
                   ))}
               </div>
+            </div>
+          )}
+
+          {/* Loading State */}
+          {loading && (
+            <div className="flex flex-col items-center justify-center py-20">
+              <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mb-4"></div>
+              <p className="text-white text-lg font-semibold">
+                Loading anime list...
+              </p>
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!loading && animeList.length === 0 && !error && (
+            <div className="text-center py-20">
+              <div className="w-32 h-32 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Tv size={64} className="text-purple-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">
+                No Anime Found
+              </h3>
+              <p className="text-gray-400">
+                Enter a username above to view their anime collection
+              </p>
             </div>
           )}
 
@@ -868,21 +979,6 @@ export default function AniListViewer() {
                   </div>
                 )
               )}
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!loading && animeList.length === 0 && !error && (
-            <div className="text-center py-20">
-              <div className="w-32 h-32 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Tv size={64} className="text-purple-400" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-2">
-                No Anime Found
-              </h3>
-              <p className="text-gray-400">
-                Enter a username above to view their anime collection
-              </p>
             </div>
           )}
         </div>

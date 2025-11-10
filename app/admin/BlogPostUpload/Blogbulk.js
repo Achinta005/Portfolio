@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Clock, Tag, FileText, Upload, Sparkles } from "lucide-react";
 import mammoth from "mammoth";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 const generateLineStyles = () =>
   Array.from({ length: 20 }, () => ({
@@ -71,14 +72,7 @@ const createStyledHTML = (content) => {
 // AI Enhancement using Hugging Face Inference API (Free)
 const enhanceContentWithAI = async (plainText) => {
 try {
-    // Call your Next.js API route instead of Hugging Face directly
-    const response = await fetch("/api/ai-enhance", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ text: plainText }),
-    });
+    const response = await PortfolioApiService.Ai_enhance(plainText)
 
     if (!response.ok) {
       const error = await response.json();
@@ -268,20 +262,14 @@ const handleSubmit = async () => {
   setLoading(true);
   try {
     // Send blog data to API
-    const response = await fetch("/api/upload_blog", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    const response = await PortfolioApiService.Upload_blog(formData)
 
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = await response;
       throw new Error(errorData.message || "Failed to upload blog post");
     }
 
-    const result = await response.json();
+    const result = await response;
     console.log("Blog created:", result);
 
     setMessage(`✓ Blog post "${result.title}" created successfully!`);

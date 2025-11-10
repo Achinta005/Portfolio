@@ -1,31 +1,40 @@
 import React from "react";
 import Projects from "./Project";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
-const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL;
+export const dynamic = "force-dynamic"; // SSR on every request
 
-// SSR Rendering
+// ✅ SSR Fetch Function (Server-side)
 async function getProjectsData() {
+
+  // ⏩ Skip fetch during Docker build
+  if (process.env.SKIP_BUILD_STATIC_GENERATION === "true") {
+    console.log("⏩ Skipping Projects fetch during Docker build");
+    return [];
+  }
+
   try {
-    const res = await fetch(`${baseUrl}/api/projects_data`, {
-      cache: "no-store", // Always get fresh data (SSR)
-    });
-
-    if (!res.ok) {
-      throw new Error("Failed to fetch projects data");
-    }
-
-    const data = await res.json();
-    return data;
+    return await PortfolioApiService.fetchProjects();
   } catch (error) {
-    console.error("Error fetching projects data:", error);
+    console.error("❌ Error fetching projects data:", error);
     return [];
   }
 }
 
-// The main page component (Server Component)
+// ✅ Server Component
 export default async function Page() {
   const projectsData = await getProjectsData();
 
+  // 🧩 Fallback if build skipped or data failed
+  if (!projectsData.length) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-gray-400">
+        <p>🚧 Projects data unavailable during build. It will load dynamically once the app runs.</p>
+      </main>
+    );
+  }
+
+  // ✅ Normal Render
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Projects projectsData={projectsData} />

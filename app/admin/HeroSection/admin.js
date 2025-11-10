@@ -14,6 +14,7 @@ import Image from "next/image";
 import PythonFlask from "../Components/PythonFlask";
 import Blog from "../Components/Blog";
 import Ipaddress from "../Components/Ipaddress";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 const AdminPage = () => {
   const [user, setUser] = useState(null);
@@ -40,16 +41,7 @@ const AdminPage = () => {
 
   useEffect(() => {
     const userData = getUserFromToken();
-    fetch("/api/get-ip", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_id: userData.userId,
-      }),
-    })
-      .then((response) => response.json())
+    PortfolioApiService.Fetch_IP(userData.userId)
       .then((data) => setipAddress(data.ip))
       .catch((error) => {
         console.error("Error fetching IP:", error);

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 const Ipaddress = () => {
   const [ipAddresses, setIpAddresses] = useState([]);
@@ -8,13 +9,8 @@ const Ipaddress = () => {
   useEffect(() => {
     const getIps = async () => {
       try {
-        const response = await fetch("/api/view-ip");
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error: ${response.status}`);
-        }
-        
-        const data = await response.json(); // Parse JSON response
+        const response = await PortfolioApiService.ViewIp();
+        const data = await response;
         setIpAddresses(data);
         setError(null);
       } catch (error) {

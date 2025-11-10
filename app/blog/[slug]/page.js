@@ -1,37 +1,32 @@
-// app/blog/[slug]/page.js
 import BlogPost from "./BlogPost";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
-const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL;
+const backendUrl =
+  process.env.NEXT_PUBLIC_PYTHON_API_URL
 
-// Generate static paths for all blog posts (build-time)
 export async function generateStaticParams() {
-  const res = await fetch(`${baseUrl}/api/blog_data`, {
-    next: { revalidate: 86400 }, // revalidate list daily
-  });
+  if (process.env.SKIP_BUILD_STATIC_GENERATION) {
+    console.log("⏩ Skipping blog static generation during Docker build");
+    return [];
+  }
 
-  if (!res.ok) throw new Error("Failed to fetch blog list");
-
-  const posts = await res.json();
-
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
+  const posts = await PortfolioApiService.fetchBlog();
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
-// Fetch single post (build-time + revalidate)
 async function getBlogPost(slug) {
-  const res = await fetch(`${baseUrl}/api/blog_data/${slug}`, {
-    next: { revalidate: 86400 }, // revalidate each post daily
-  });
-
-  if (!res.ok) throw new Error("Failed to fetch blog post");
-
-  return res.json();
+  return PortfolioApiService.fetchBlogBySlug(slug);
 }
 
-// The main page component (Server Component)
 export default async function BlogPostPage({ params }) {
-  const post = await getBlogPost(params.slug);
+  if (!params?.slug) {
+    return (
+      <div className="p-10 text-center text-gray-500">
+        ⏳ Blog post not generated during build. It will load automatically once the app runs.
+      </div>
+    );
+  }
 
+  const post = await getBlogPost(params.slug);
   return <BlogPost post={post} />;
 }

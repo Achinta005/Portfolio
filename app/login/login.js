@@ -63,7 +63,7 @@ const LoginContent = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = `/api/google_auth`;
+    window.location.href = `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/google-oAuth`;
   };
 
   const handleGithubLogin = () => {

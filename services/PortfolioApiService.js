@@ -1,11 +1,111 @@
 import { apiCall } from "./baseApi";
 
 export const PortfolioApiService = {
+  // Admin
+  Ai_enhance: async (plainText) => {
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/ai-enhance`, {
+      method: "POST",
+      body: JSON.stringify({ text: plainText }),
+    });
+  },
+
+  Upload_blog: async (formData) => {
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/upload_blog`, {
+      method: "POST",
+      body: JSON.stringify(formData),
+    });
+  },
+
+  Fetch_IP: async (userId) => {
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/get-ip`, {
+      method: "POST",
+      body: JSON.stringify({ user_id: userId }),
+    });
+  },
+
+  ViewIp: async () => {
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/view-ip`);
+  },
+
+  // Authentication
+  Register: async (formData) => {
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/register`, {
+      method: "POST",
+      body: JSON.stringify(formData),
+    });
+  },
+
+  Login: async (formData) => {
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/login`, {
+      method: "POST",
+      body: JSON.stringify(formData),
+    });
+  },
+
+  // AnimeList
+
+  FetchAnimeList: async (username) => {
+    return apiCall(
+      `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/anilist/BaseFunction/fetch`,
+      {
+        method: "POST",
+        body: JSON.stringify({ username: username.trim() }),
+      }
+    );
+  },
+
+  // About 
+  fetchSkill: async () => {
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/Skilldata`, {
+      next: { revalidate: 86400 },
+    });
+  },
+
+  fetchEducation: async () => {
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/Educationdata`, {
+      next: { revalidate: 86400 },
+    });
+  },
+
+  fetchCertificates: async () => {
+    return apiCall(
+      `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/Certificatesdata`,
+      { next: { revalidate: 86400 } }
+    );
+  },
+
+  fetchProjects: async () => {
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/projects_data`, {
+      cache: "no-store",
+      next: { revalidate: 0 },
+    });
+  },
+
+  UplaodProject: async (formData) => {
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/project_uplaod`, {
+      method: "POST",
+      body: formData,
+    });
+  },
+
+  fetchBlog: async () => {
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/blog_data`, {
+      next: { revalidate: 86400 },
+    });
+  },
+
+  fetchBlogBySlug: async (slug) => {
+    return apiCall(
+      `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/blog_data/${slug}`,
+      {
+        next: { revalidate: 86400 },
+      }
+    );
+  },
+
   //Download Resume
   downloadResume: async () => {
-    const response = await fetch(
-      `/api/resume`
-    );
+    const response = await fetch(`/resume`);
 
     if (!response.ok) throw new Error("Download failed");
 
@@ -26,52 +126,20 @@ export const PortfolioApiService = {
 
   //Post Contact response
   PostContactResponse: async (data) => {
-    return apiCall("/api/upload_response", {
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/upload_response`, {
       method: "POST",
       body: JSON.stringify(data),
     });
   },
 
-  //Register User
-  Register: async (formData) => {
-    return apiCall("/api/register", {
-      method: "POST",
-      body: JSON.stringify(formData),
-    });
-  },
-
-  //Login User
-  Login: async (formData) => {
-    return apiCall(`/api/login`, {
-      method: "POST",
-      body: JSON.stringify(formData),
-    });
-  },
-
-  //Upload Blog Post
-  UploadBlog: async (formData) => {
-    return apiCall("/api/upload_blog", {
-      method: "POST",
-      body: JSON.stringify(formData),
-    });
-  },
-
-  //Upload Project
-  UplaodProject: async (formData) => {
-    return apiCall("/api/project_uplaod", {
-      method: "POST",
-      body: formData,
-    });
-  },
-
   //View Contact Responses
   ContactResponses: async () => {
-    return apiCall("/api/contact_responses");
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/contact_responses`);
   },
 
   //Post Notepad Documents
   Notepad: async (title, content) => {
-    return apiCall("/api/create_documents", {
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/create_documents`, {
       method: "POST",
       body: JSON.stringify({ title, content }),
     });
@@ -79,6 +147,6 @@ export const PortfolioApiService = {
 
   //Fetch User Notepad Documents
   FetchNotepadDocs: async () => {
-    return apiCall("/api/fetch_documents");
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/fetch_documents`);
   },
 };

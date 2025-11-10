@@ -1,35 +1,48 @@
 import About from "./About";
+import { PortfolioApiService } from "@/services/PortfolioApiService";
 
-export const revalidate = 86400; // ISR – revalidate every 24 hours
+export const revalidate = 86400;
 
-//SSG Rendering
 export default async function AboutPage() {
-  const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL
+  const baseUrl = process.env.NEXT_PUBLIC_PYTHON_API_URL;
+  if (process.env.SKIP_BUILD_STATIC_GENERATION) {
+    console.log("⏩ Skipping About data fetch during Docker build");
+    return (
+      <div className="p-10 text-center text-gray-500">
+        ⏳ About data skipped during build. It will load dynamically once the app runs.
+      </div>
+    );
+  }
 
-  const [skillsRes, educationRes,certificateRes] = await Promise.all([
-    fetch(`${baseUrl}/api/skill_data`, {
-      next: { revalidate: 86400 },
-    }),
-    fetch(`${baseUrl}/api/education_data`, {
-      next: { revalidate: 86400 },
-    }),
-    fetch(`${baseUrl}/api/certificates_date`, {
-      next: { revalidate: 86400 },
-    }),
-  ]);
+  try {
+    // ✅ Fetch all datasets in parallel from your Python backend
+    const [skillsRes, educationRes, certificateRes] = await Promise.all([
+      PortfolioApiService.fetchSkill(),
+      PortfolioApiService.fetchEducation(),
+      PortfolioApiService.fetchCertificates(),
+    ]);
 
-  // Error handling for both requests
-  if (!skillsRes.ok) throw new Error("Failed to fetch skill data");
-  if (!educationRes.ok) throw new Error("Failed to fetch education data");
-  if (!certificateRes.ok) throw new Error("Failed to fetch Certificates data");
+    // ✅ Parse responses
+    const [skillsData, educationData, certificateData] = await Promise.all([
+      skillsRes,
+      educationRes,
+      certificateRes,
+    ]);
 
-  // Parse JSON data
-  const [skillsData, educationData,certificateData] = await Promise.all([
-    skillsRes.json(),
-    educationRes.json(),
-    certificateRes.json()
-  ]);
-
-  // Pass both datasets to client component
-  return <About skillsData={skillsData} educationData={educationData} certificateData={certificateData}/>;
+    // ✅ Render About page with data
+    return (
+      <About
+        skillsData={skillsData}
+        educationData={educationData}
+        certificateData={certificateData}
+      />
+    );
+  } catch (err) {
+    console.error("❌ Error fetching About page data:", err);
+    return (
+      <div className="p-10 text-center text-red-500">
+        ⚠️ Failed to load About data. Please try again later.
+      </div>
+    );
+  }
 }

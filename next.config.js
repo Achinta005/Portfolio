@@ -38,7 +38,27 @@ module.exports = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 's4.anilist.co',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
-  // Optionally, add other configurations here
+  
+  // Add API proxy for development
+  async rewrites() {
+    // Only use proxy in development
+    if (process.env.NODE_ENV === 'development') {
+      return [
+        {
+          source: '/api/python/:path*',
+          destination: 'http://localhost:5000/:path*',
+        },
+      ];
+    }
+    // In production, no rewrites needed (direct API calls)
+    return [];
+  },
 };
