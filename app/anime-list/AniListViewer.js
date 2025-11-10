@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
-  LayoutGrid,
-  Grid3x3,
   WifiSync,
   WifiOff,
   Eye,
@@ -14,23 +12,20 @@ import {
   Search,
   Save,
   Download,
-  Filter,
   Star,
   Calendar,
   Tv,
   Film,
   Clock,
-  TrendingUp,
   ArrowLeft,
   Edit3,
   ChevronDown,
   ChevronUp,
   Minus,
   List,
+  Filter,
 } from "lucide-react";
-import { PortfolioApiService } from "@/services/PortfolioApiService";
 
-// FIXED: Consistent API URL helper
 const getApiUrl = (path) => {
   if (process.env.NODE_ENV === "development") {
     return `/api/python${path}`;
@@ -63,23 +58,24 @@ export default function AniListViewer() {
   const [isModifying, setIsModifying] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+
   const router = useRouter();
+
+  // OAuth callback handler
   useEffect(() => {
-    // Check if URL has code & state from AniList redirect
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
     const state = params.get("state");
 
-    if (!code || !state) return; // Nothing to do if no OAuth params
+    if (!code || !state) return;
 
     const storedState = localStorage.getItem("anilist_oauth_state");
-
     if (state !== storedState) {
-      console.error("State mismatch! Potential CSRF attack.");
+      console.error("State mismatch!");
+      setError("Authentication failed - state mismatch");
       return;
     }
 
-    // State matched, exchange code for token
     (async () => {
       try {
         const res = await fetch(getApiUrl("/Anilist-exchange"), {
@@ -91,44 +87,44 @@ export default function AniListViewer() {
 
         if (!res.ok) throw new Error("Token exchange failed");
 
-        // Optionally, set authentication state
+        const data = await res.json();
         setIsAuthenticated(true);
-
-        // Clear state from localStorage
+        setUsername(data.username);
         localStorage.removeItem("anilist_oauth_state");
+
+        // Clean URL
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+
+        // Auto-fetch list
+        await fetchAnimeList(data.username);
       } catch (err) {
-        console.error("OAuth token exchange error:", err);
+        console.error("OAuth error:", err);
+        setError(err.message);
         setIsAuthenticated(false);
       }
     })();
   }, []);
-
-  const handleClick = () => router.push("/admin");
 
   // Auth check
   useEffect(() => {
     const checkAuth = async () => {
       try {
         setAuthChecking(true);
-        const apiUrl = getApiUrl("/anilist/auth/check");
-        const res = await fetch(apiUrl, {
+        const res = await fetch(getApiUrl("/anilist/auth/check"), {
           method: "GET",
           credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
         });
 
-        if (!res.ok) {
-          setIsAuthenticated(false);
-          return;
+        if (res.ok) {
+          const data = await res.json();
+          setIsAuthenticated(data.authenticated);
         }
-
-        const data = await res.json();
-        setIsAuthenticated(data.authenticated);
       } catch (err) {
         console.error("Auth check failed:", err);
-        setIsAuthenticated(false);
       } finally {
         setAuthChecking(false);
       }
@@ -171,18 +167,28 @@ export default function AniListViewer() {
     },
   ];
 
-  const fetchAnimeList = async () => {
-    if (!username.trim()) {
+  const fetchAnimeList = async (user = username) => {
+    if (!user?.trim()) {
       setError("Please enter a username");
       return;
     }
 
     setLoading(true);
     setError("");
-    setAnimeList([]);
 
     try {
-      const data = await PortfolioApiService.FetchAnimeList(username);
+      const res = await fetch(getApiUrl("/anilist/BaseFunction/fetch"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username: user }),
+      });
+
+      if (!res.ok) {
+        console.log(error);
+        throw new Error("Failed to fetch anime list");
+      }
+      const data = await res.json();
       setAnimeList(data.animeList || []);
     } catch (err) {
       setError(err.message);
@@ -197,21 +203,21 @@ export default function AniListViewer() {
       return;
     }
 
-    if (!confirm("Are you sure you want to delete this anime from your list?"))
-      return;
+    if (!confirm("Are you sure you want to delete this anime?")) return;
 
     setIsDeleting(true);
     try {
-      const apiUrl = getApiUrl("/anilist/modify");
-      const response = await fetch(apiUrl, {
+      const res = await fetch(getApiUrl("/anilist/modify"), {
         method: "DELETE",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ animeId: mediaId }),
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Failed to delete anime");
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to delete");
+      }
 
       await fetchAnimeList();
       setShowAnimeModal(false);
@@ -225,30 +231,30 @@ export default function AniListViewer() {
 
   const modifyAnime = async (mediaId) => {
     if (!isAuthenticated) {
-      setError("You must be authenticated to modify anime");
+      setError("You must be authenticated");
       return;
     }
 
     setIsModifying(true);
     try {
       const { status, progress, score } = modifyForm;
-      const variables = {
-        animeId: mediaId,
-        ...(status && { status }),
-        ...(progress && { progress: parseInt(progress, 10) }),
-        ...(score && { score: parseFloat(score) }),
-      };
+      const variables = { animeId: mediaId };
 
-      const apiUrl = getApiUrl("/anilist/modify");
-      const response = await fetch(apiUrl, {
+      if (status) variables.status = status;
+      if (progress) variables.progress = parseInt(progress, 10);
+      if (score) variables.score = parseFloat(score);
+
+      const res = await fetch(getApiUrl("/anilist/modify"), {
         method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(variables),
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Failed to modify anime");
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to modify");
+      }
 
       await fetchAnimeList();
       setShowAnimeModal(false);
@@ -266,16 +272,16 @@ export default function AniListViewer() {
 
     setSearching(true);
     try {
-      const apiUrl = getApiUrl("/anilist/modify");
-      const response = await fetch(apiUrl, {
+      const res = await fetch(getApiUrl("/anilist/modify"), {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "search", query: searchQuery.trim() }),
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Search failed");
+      if (!res.ok) throw new Error("Search failed");
+
+      const data = await res.json();
       setSearchResults(data.results || []);
     } catch (err) {
       setError(err.message);
@@ -286,22 +292,23 @@ export default function AniListViewer() {
 
   const addAnimeToList = async (mediaId, status = "PLANNING") => {
     if (!isAuthenticated) {
-      setError("You must be authenticated to add anime");
+      setError("You must be authenticated");
       return;
     }
 
     setIsAdding(true);
     try {
-      const apiUrl = getApiUrl("/anilist/modify");
-      const response = await fetch(apiUrl, {
+      const res = await fetch(getApiUrl("/anilist/modify"), {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: "add", animeId: mediaId, status }),
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Failed to add anime");
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to add");
+      }
 
       await fetchAnimeList();
       setShowAddModal(false);
@@ -315,13 +322,52 @@ export default function AniListViewer() {
     }
   };
 
+  const exportList = async (format) => {
+    if (!username) {
+      setError("No username found");
+      return;
+    }
+
+    setExporting(true);
+    try {
+      const res = await fetch(getApiUrl("/anilist/BaseFunction/export"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username, format, filter: activeFilter }),
+      });
+
+      if (!res.ok) throw new Error("Export failed");
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${username}_anime_list.${format}`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleConnect = () => {
+    const state = crypto.randomUUID();
+    localStorage.setItem("anilist_oauth_state", state);
+    window.location.href = getApiUrl(`/Anilist-auth?state=${state}`);
+  };
+
   const viewAnimeDetails = (anime) => {
     setSelectedAnime(anime);
     setShowFullDescription(false);
     setModifyForm({
       status: anime.status || "",
-      progress: anime.progress ? anime.progress.toString() : "",
-      score: anime.score ? anime.score.toString() : "",
+      progress: anime.progress?.toString() || "",
+      score: anime.score?.toString() || "",
     });
     setShowAnimeModal(true);
   };
@@ -341,7 +387,13 @@ export default function AniListViewer() {
     }
   };
 
-  const handleKeyPress = (e) => e.key === "Enter" && fetchAnimeList();
+  const truncateText = (text, maxLength = 300) => {
+    if (!text) return "";
+    const stripped = text.replace(/<[^>]*>/g, "");
+    return stripped.length > maxLength
+      ? stripped.substring(0, maxLength) + "..."
+      : stripped;
+  };
 
   const filteredAnime =
     activeFilter === "ALL"
@@ -357,67 +409,6 @@ export default function AniListViewer() {
     DROPPED: animeList.filter((a) => a.status === "DROPPED").length,
   };
 
-  const exportList = async (format) => {
-    if (!username) {
-      setError("No username found");
-      return;
-    }
-
-    setExporting(true);
-    try {
-      const apiUrl = getApiUrl("/anilist/BaseFunction/export");
-
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          username,
-          format,
-          filter: activeFilter,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Export failed");
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `${username}_anime_list.${format}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      setError(err.message || "Export failed");
-    } finally {
-      setExporting(false);
-    }
-  };
-
-  const truncateText = (text, maxLength = 300) => {
-    if (!text) return "";
-    const stripped = text.replace(/<[^>]*>/g, "");
-    return stripped.length > maxLength
-      ? stripped.substring(0, maxLength) + "..."
-      : stripped;
-  };
-
-  const handleConnect = () => {
-    // Generate random state for CSRF protection
-    const state = crypto.randomUUID(); // or any random string
-    localStorage.setItem("anilist_oauth_state", state);
-
-    // Append state as query param to backend auth URL
-    const authUrl = getApiUrl(`/Anilist-auth?state=${state}`);
-    window.location.href = authUrl;
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 relative">
       {/* Animated Background */}
@@ -426,10 +417,6 @@ export default function AniListViewer() {
         <div
           className="absolute w-96 h-96 bg-blue-500/10 rounded-full blur-3xl top-1/2 -right-20 animate-pulse"
           style={{ animationDelay: "1s" }}
-        ></div>
-        <div
-          className="absolute w-96 h-96 bg-pink-500/10 rounded-full blur-3xl bottom-0 left-1/3 animate-pulse"
-          style={{ animationDelay: "2s" }}
         ></div>
       </div>
 
@@ -440,40 +427,25 @@ export default function AniListViewer() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <button
-                  onClick={handleClick}
-                  className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white transition-all duration-300 group"
+                  onClick={() => router.push("/admin")}
+                  className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white transition-all duration-300"
                 >
-                  <ArrowLeft
-                    size={20}
-                    className="group-hover:-translate-x-1 transition-transform"
-                  />
-                  <span className="hidden sm:inline">Dashboard</span>
-                </button>
-                <button
-                  onClick={() => router.push("/")}
-                  className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-white transition-all duration-300 group"
-                >
-                  <X size={20} />
-                  <span className="hidden sm:inline">Close</span>
+                  <ArrowLeft size={20} />
+                  <span className="hidden sm:inline">Back</span>
                 </button>
               </div>
 
-              <div className="flex items-center gap-3">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white">
-                  Ani
-                  <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                    List
-                  </span>
-                </h1>
-              </div>
+              <h1 className="text-2xl sm:text-3xl font-black text-white">
+                Ani
+                <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                  List
+                </span>
+              </h1>
 
               <div className="flex items-center gap-2">
                 {authChecking ? (
-                  <div className="flex items-center gap-2 px-3 py-2 bg-white/10 rounded-xl">
+                  <div className="px-3 py-2 bg-white/10 rounded-xl">
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    <span className="text-white text-sm font-medium hidden sm:inline">
-                      Checking...
-                    </span>
                   </div>
                 ) : isAuthenticated ? (
                   <div className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-xl border border-green-500/30">
@@ -485,7 +457,7 @@ export default function AniListViewer() {
                 ) : (
                   <button
                     onClick={handleConnect}
-                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl text-white text-sm font-medium transition-all duration-300"
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-xl text-white text-sm font-medium transition-all"
                   >
                     <WifiOff size={18} />
                     <span className="hidden sm:inline">Connect</span>
@@ -496,35 +468,33 @@ export default function AniListViewer() {
           </div>
         </div>
 
-        <div className="container mx-auto px-4 py-6 sm:py-8">
+        <div className="container mx-auto px-4 py-8">
           {/* Search Section */}
           <div className="max-w-4xl mx-auto mb-8">
-            <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-white/20 shadow-2xl">
+            <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/20">
               <div className="flex flex-col gap-4">
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Enter AniList username..."
-                    className="w-full px-6 py-4 bg-black/30 border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-lg"
-                  />
-                </div>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && fetchAnimeList()}
+                  placeholder="Enter AniList username..."
+                  className="w-full px-6 py-4 bg-black/30 border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
 
                 <div className="flex flex-wrap gap-3">
                   <button
-                    onClick={fetchAnimeList}
+                    onClick={() => fetchAnimeList()}
                     disabled={loading}
-                    className="flex-1 sm:flex-none px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-purple-500/50"
+                    className="flex-1 px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-bold rounded-xl transition-all shadow-lg disabled:opacity-50"
                   >
                     {loading ? (
-                      <span className="flex items-center gap-2">
+                      <span className="flex items-center gap-2 justify-center">
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                         Loading...
                       </span>
                     ) : (
-                      <span className="flex items-center gap-2">
+                      <span className="flex items-center gap-2 justify-center">
                         <Search size={20} />
                         Fetch List
                       </span>
@@ -534,24 +504,22 @@ export default function AniListViewer() {
                   {isAuthenticated && (
                     <button
                       onClick={() => setShowAddModal(true)}
-                      className="flex-1 sm:flex-none px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg shadow-green-500/50 flex items-center justify-center gap-2"
+                      className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold rounded-xl transition-all shadow-lg"
                     >
                       <Plus size={20} />
-                      <span className="hidden sm:inline">Add Anime</span>
                     </button>
                   )}
 
-                  <div className="flex gap-2 ml-auto">
+                  <div className="flex gap-2">
                     {[0, 1, 2, 3].map((size) => (
                       <button
                         key={size}
                         onClick={() => setGridSize(size)}
-                        className={`px-4 py-3 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 ${
+                        className={`px-4 py-3 rounded-xl font-bold transition-all ${
                           gridSize === size
-                            ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/50"
+                            ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg"
                             : "bg-white/10 text-gray-300 hover:bg-white/20"
                         }`}
-                        title={gridConfigs[size].name}
                       >
                         {size === 0 ? (
                           <List size={20} />
@@ -568,110 +536,54 @@ export default function AniListViewer() {
                 </div>
 
                 {error && (
-                  <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-xl text-red-300 flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <X size={14} />
-                    </div>
-                    <p className="flex-1">{error}</p>
+                  <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-xl text-red-300">
+                    {error}
                   </div>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Filters & Stats */}
+          {/* Filters & Export */}
           {animeList.length > 0 && (
             <div className="mb-8">
-              <div className="flex flex-col lg:flex-row gap-4 items-center justify-between mb-6">
-                <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
+              <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+                <div className="flex flex-wrap gap-2">
                   {Object.entries(statusCounts).map(([status, count]) => (
                     <button
                       key={status}
                       onClick={() => setActiveFilter(status)}
-                      className={`group relative px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 overflow-hidden ${
+                      className={`px-4 py-2.5 rounded-xl font-bold transition-all ${
                         activeFilter === status
-                          ? "text-white shadow-xl"
+                          ? `text-white bg-gradient-to-r ${statusColors[status]}`
                           : "bg-white/10 text-gray-300 hover:bg-white/20"
                       }`}
                     >
-                      {activeFilter === status && (
-                        <div
-                          className={`absolute inset-0 bg-gradient-to-r ${statusColors[status]} -z-10`}
-                        ></div>
-                      )}
-                      <span className="flex items-center gap-2">
-                        {statusLabels[status]}
-                        <span
-                          className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                            activeFilter === status
-                              ? "bg-white/20"
-                              : "bg-black/30"
-                          }`}
-                        >
-                          {count}
-                        </span>
-                      </span>
+                      {statusLabels[status]} ({count})
                     </button>
                   ))}
                 </div>
 
-                <div className="flex gap-2">
-                  {["json", "xml"].map((format) => (
+                <div className="flex gap-3">
+                  {[
+                    { format: "json", label: "JSON" },
+                    { format: "xml", label: "XML" },
+                  ].map(({ format, label }) => (
                     <button
                       key={format}
                       onClick={() => exportList(format)}
                       disabled={exporting}
-                      className={`px-4 sm:px-6 py-2.5 sm:py-3 ${
-                        format === "json"
-                          ? "bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-green-500/50"
-                          : "bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 shadow-orange-500/50"
-                      } text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg flex items-center gap-2`}
+                      className={`flex items-center gap-2 px-4 py-2.5
+                 bg-gradient-to-r from-green-600 to-emerald-600
+                 hover:from-green-700 hover:to-emerald-700
+                 text-white font-semibold rounded-xl
+                 transition-all shadow-lg disabled:opacity-50`}
                     >
                       <Download size={18} />
-                      <span className="hidden sm:inline uppercase">
-                        {format}
-                      </span>
+                      <span>{label}</span>
                     </button>
                   ))}
                 </div>
-              </div>
-
-              {/* Stats Cards */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
-                {Object.entries(statusCounts)
-                  .filter(([status]) => status !== "ALL")
-                  .map(([status, count]) => (
-                    <div
-                      key={status}
-                      className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-105"
-                    >
-                      <div
-                        className={`w-10 h-10 rounded-xl bg-gradient-to-r ${statusColors[status]} flex items-center justify-center mb-2`}
-                      >
-                        {status === "CURRENT" && (
-                          <Tv size={20} className="text-white" />
-                        )}
-                        {status === "COMPLETED" && (
-                          <Star size={20} className="text-white" />
-                        )}
-                        {status === "PLANNING" && (
-                          <Calendar size={20} className="text-white" />
-                        )}
-                        {status === "PAUSED" && (
-                          <Clock size={20} className="text-white" />
-                        )}
-                        {status === "DROPPED" && (
-                          <X size={20} className="text-white" />
-                        )}
-                      </div>
-                      <p className="text-2xl font-black text-white mb-1">
-                        {count}
-                      </p>
-                      <p className="text-xs text-gray-400 font-medium">
-                        {statusLabels[status]}
-                      </p>
-                    </div>
-                  ))}
               </div>
             </div>
           )}
@@ -680,28 +592,11 @@ export default function AniListViewer() {
           {loading && (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mb-4"></div>
-              <p className="text-white text-lg font-semibold">
-                Loading anime list...
-              </p>
+              <p className="text-white text-lg">Loading anime list...</p>
             </div>
           )}
 
-          {/* Empty State */}
-          {!loading && animeList.length === 0 && !error && (
-            <div className="text-center py-20">
-              <div className="w-32 h-32 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Tv size={64} className="text-purple-400" />
-              </div>
-              <h3 className="text-2xl font-bold text-white mb-2">
-                No Anime Found
-              </h3>
-              <p className="text-gray-400">
-                Enter a username above to view their anime collection
-              </p>
-            </div>
-          )}
-
-          {/* Anime Grid/List */}
+          {/* Anime Grid */}
           {filteredAnime.length > 0 && (
             <div
               className={
@@ -710,280 +605,62 @@ export default function AniListViewer() {
                   : `grid ${gridConfigs[gridSize].cols}`
               }
             >
-              {filteredAnime.map((anime) =>
-                gridSize === 0 ? (
-                  // Horizontal List View
-                  <div
-                    key={anime.id}
-                    className="group bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/20 hover:border-white/40 transition-all duration-300 transform hover:scale-[1.02] shadow-xl hover:shadow-2xl cursor-pointer flex gap-4 p-4"
-                    onClick={() => viewAnimeDetails(anime)}
-                  >
-                    {/* Cover Image */}
-                    <div className="relative w-24 h-36 flex-shrink-0 overflow-hidden rounded-xl">
-                      <img
-                        src={
-                          anime.cover_image_large || anime.cover_image_medium
-                        }
-                        alt={anime.title_english || anime.title_romaji}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                      {anime.format !== "MOVIE" && anime.episodes && (
-                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/50">
-                          <div
-                            className={`h-full bg-gradient-to-r ${
-                              statusColors[anime.status]
-                            } transition-all duration-300`}
-                            style={{
-                              width: `${
-                                (anime.progress / anime.episodes) * 100
-                              }%`,
-                            }}
-                          ></div>
-                        </div>
-                      )}
-                    </div>
+              {filteredAnime.map((anime) => (
+                <div
+                  key={anime.id}
+                  className="group bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/20 hover:border-white/40 transition-all cursor-pointer"
+                  onClick={() => viewAnimeDetails(anime)}
+                >
+                  <div className="relative h-72 overflow-hidden">
+                    <img
+                      src={anime.cover_image_large || anime.cover_image_medium}
+                      alt={anime.title_english || anime.title_romaji}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
 
-                    {/* Content */}
-                    <div className="flex-1 min-w-0 flex flex-col justify-between">
-                      <div>
-                        <h3 className="text-white font-bold text-base mb-2 line-clamp-1">
-                          {anime.title_english || anime.title_romaji}
-                        </h3>
-                        <div className="flex flex-wrap gap-2 mb-2">
-                          <span
-                            className={`px-3 py-1 rounded-lg text-xs font-bold text-white bg-gradient-to-r ${
-                              statusColors[anime.status]
-                            }`}
-                          >
-                            {statusLabels[anime.status]}
-                          </span>
-                          {anime.average_score && (
-                            <span className="px-3 py-1 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg flex items-center gap-1 text-xs font-bold text-white">
-                              <Star size={12} className="fill-white" />
-                              {anime.average_score}
-                            </span>
-                          )}
-                          <span className="px-3 py-1 bg-white/10 text-gray-300 rounded-lg text-xs font-medium">
-                            {anime.format === "MOVIE" ? (
-                              <span className="flex items-center gap-1">
-                                <Film size={12} />
-                                Movie
-                              </span>
-                            ) : (
-                              <span className="flex items-center gap-1">
-                                <Tv size={12} />
-                                {anime.progress}/{anime.episodes || "?"}
-                              </span>
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {anime.genres?.slice(0, 4).map((genre, idx) => (
-                          <span
-                            key={idx}
-                            className="px-2 py-1 bg-white/10 text-gray-300 rounded-lg text-xs font-medium"
-                          >
-                            {genre}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Quick Actions */}
-                    <div className="flex flex-col gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          viewAnimeDetails(anime);
-                        }}
-                        className="p-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg shadow-lg transform hover:scale-110 transition-all duration-300"
-                      >
-                        <Eye size={16} className="text-white" />
-                      </button>
-                      {isAuthenticated && (
-                        <>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              viewAnimeDetails(anime);
-                            }}
-                            className="p-2 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg shadow-lg transform hover:scale-110 transition-all duration-300"
-                          >
-                            <Edit3 size={16} className="text-white" />
-                          </button>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              deleteAnime(anime.media_id);
-                            }}
-                            className="p-2 bg-gradient-to-r from-red-600 to-rose-600 rounded-lg shadow-lg transform hover:scale-110 transition-all duration-300"
-                          >
-                            <Trash2 size={16} className="text-white" />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  // Grid View
-                  <div
-                    key={anime.id}
-                    className="group relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/20 hover:border-white/40 transition-all duration-500 transform hover:scale-105 hover:-translate-y-1 shadow-xl hover:shadow-2xl cursor-pointer"
-                    onClick={() => viewAnimeDetails(anime)}
-                  >
-                    {/* Image Container */}
                     <div
-                      className={`relative overflow-hidden ${
-                        gridSize <= 1 ? "h-40 sm:h-48" : "h-56 sm:h-72"
+                      className={`absolute top-3 left-3 px-3 py-1.5 rounded-full font-bold text-xs bg-gradient-to-r ${
+                        statusColors[anime.status]
                       }`}
                     >
-                      <img
-                        src={
-                          anime.cover_image_large || anime.cover_image_medium
-                        }
-                        alt={anime.title_english || anime.title_romaji}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
+                      {statusLabels[anime.status]}
+                    </div>
 
-                      {/* Gradient Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
-
-                      {/* Score Badge */}
-                      {gridSize >= 1 && anime.average_score && (
-                        <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-orange-500 px-3 py-1.5 rounded-full flex items-center gap-1 shadow-lg">
-                          <Star size={14} className="text-white fill-white" />
-                          <span className="text-white font-black text-sm">
-                            {anime.average_score}
-                          </span>
-                        </div>
-                      )}
-
-                      {/* Status Badge */}
-                      <div
-                        className={`absolute top-3 left-3 px-3 py-1.5 rounded-full font-bold text-xs shadow-lg bg-gradient-to-r ${
-                          statusColors[anime.status]
-                        }`}
-                      >
-                        <span className="text-white">
-                          {statusLabels[anime.status]}
+                    {anime.average_score && (
+                      <div className="absolute top-3 right-3 bg-gradient-to-r from-yellow-500 to-orange-500 px-3 py-1.5 rounded-full flex items-center gap-1">
+                        <Star size={14} className="text-white fill-white" />
+                        <span className="text-white font-bold text-sm">
+                          {anime.average_score}
                         </span>
                       </div>
+                    )}
+                  </div>
 
-                      {/* Quick Actions Overlay */}
-                      <div className="absolute inset-0 flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 bg-black/60 backdrop-blur-sm">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            viewAnimeDetails(anime);
-                          }}
-                          className="p-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full shadow-xl transform hover:scale-110 transition-all duration-300"
-                        >
-                          <Eye size={20} className="text-white" />
-                        </button>
-                        {isAuthenticated && (
-                          <>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                viewAnimeDetails(anime);
-                              }}
-                              className="p-3 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full shadow-xl transform hover:scale-110 transition-all duration-300"
-                            >
-                              <Edit3 size={20} className="text-white" />
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteAnime(anime.media_id);
-                              }}
-                              className="p-3 bg-gradient-to-r from-red-600 to-rose-600 rounded-full shadow-xl transform hover:scale-110 transition-all duration-300"
-                            >
-                              <Trash2 size={20} className="text-white" />
-                            </button>
-                          </>
-                        )}
-                      </div>
-
-                      {/* Progress Bar */}
-                      {anime.format !== "MOVIE" && anime.episodes && (
-                        <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-black/50">
-                          <div
-                            className={`h-full bg-gradient-to-r ${
-                              statusColors[anime.status]
-                            } transition-all duration-300`}
-                            style={{
-                              width: `${
-                                (anime.progress / anime.episodes) * 100
-                              }%`,
-                            }}
-                          ></div>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Content */}
-                    <div
-                      className={`${
-                        gridSize <= 1 ? "p-2 sm:p-3" : "p-4 sm:p-5"
-                      }`}
-                    >
-                      <h3
-                        className={`text-white font-bold line-clamp-2 mb-2 ${
-                          gridSize <= 1
-                            ? "text-xs sm:text-sm"
-                            : "text-sm sm:text-base"
-                        }`}
-                      >
-                        {anime.title_english || anime.title_romaji}
-                      </h3>
-
-                      {gridSize >= 2 && (
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-400 flex items-center gap-1">
-                              {anime.format === "MOVIE" ? (
-                                <>
-                                  <Film size={14} />
-                                  Movie
-                                </>
-                              ) : (
-                                <>
-                                  <Tv size={14} />
-                                  {anime.progress}/{anime.episodes || "?"}
-                                </>
-                              )}
-                            </span>
-                            {anime.season && (
-                              <span className="text-gray-400 text-xs">
-                                {anime.season} {anime.season_year}
-                              </span>
-                            )}
-                          </div>
-
-                          {gridSize >= 3 && anime.genres?.length > 0 && (
-                            <div className="flex flex-wrap gap-1.5">
-                              {anime.genres.slice(0, 3).map((genre, idx) => (
-                                <span
-                                  key={idx}
-                                  className="px-2 py-1 bg-white/10 text-gray-300 rounded-lg text-xs font-medium"
-                                >
-                                  {genre}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
+                  <div className="p-4">
+                    <h3 className="text-white font-bold text-base line-clamp-2 mb-2">
+                      {anime.title_english || anime.title_romaji}
+                    </h3>
+                    <div className="flex items-center justify-between text-sm text-gray-400">
+                      <span className="flex items-center gap-1">
+                        <Tv size={14} />
+                        {anime.progress}/{anime.episodes || "?"}
+                      </span>
+                      {anime.score > 0 && (
+                        <span className="text-purple-400 font-bold">
+                          ★ {anime.score}
+                        </span>
                       )}
                     </div>
                   </div>
-                )
-              )}
+                </div>
+              ))}
             </div>
           )}
         </div>
       </div>
 
+      {/* Anime Modal & Add Modal - keeping original modal code but fixing API calls */}
       {/* Anime Details Modal */}
       {showAnimeModal && selectedAnime && (
         <div
