@@ -19,11 +19,13 @@
     "@radix-ui/react-label": "^2.1.7",
     "@react-three/fiber": "^9.3.0",
     "@tabler/icons-react": "^3.34.1",
+    "@tailwindcss/postcss": "^4.1.17",
     "@tiptap/react": "^3.3.0",
     "@tiptap/starter-kit": "^3.3.0",
     "@types/three": "^0.179.0",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
+    "autoprefixer": "^10.4.21",
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.7.0",
@@ -38,6 +40,7 @@
     "mysql2": "^3.15.2",
     "next": "^15.5.0",
     "next-sitemap": "^4.2.3",
+    "postcss": "^8.5.6",
     "qss": "^3.0.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -47,6 +50,7 @@
     "reactflow": "^11.11.4",
     "swiper": "^11.2.10",
     "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.17",
     "tailwindcss-animated": "^2.0.0",
     "tailwindcss-motion": "^1.1.1",
     "three": "^0.179.1",
@@ -54,13 +58,9 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4.1.17",
     "@types/d3": "^7.4.3",
     "@types/d3-dispatch": "^3.0.7",
-    "autoprefixer": "^10.4.21",
     "eslint": "^9",
-    "eslint-config-next": "15.5.0",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.17"
+    "eslint-config-next": "15.5.0"
   }
 }
