@@ -15,21 +15,18 @@ export default async function AboutPage() {
   }
 
   try {
-    // ✅ Fetch all datasets in parallel from your Python backend
     const [skillsRes, educationRes, certificateRes] = await Promise.all([
       PortfolioApiService.fetchSkill(),
       PortfolioApiService.fetchEducation(),
       PortfolioApiService.fetchCertificates(),
     ]);
 
-    // ✅ Parse responses
     const [skillsData, educationData, certificateData] = await Promise.all([
       skillsRes,
       educationRes,
       certificateRes,
     ]);
 
-    // ✅ Render About page with data
     return (
       <About
         skillsData={skillsData}

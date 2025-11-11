@@ -54,11 +54,9 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
     return path;
   };
 
-  // Fallback to Google Docs Viewer
   const getViewerUrl = (originalUrl) => {
     let cleanUrl = originalUrl;
 
-    // If it's a Google Drive link, get the direct download URL for viewer
     if (originalUrl.includes("drive.google.com")) {
       const fileIdMatch = originalUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
       if (fileIdMatch) {
@@ -76,7 +74,7 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
     setZoomLevel((prev) => Math.max(prev - 0.25, 0.5));
 
   const handleMouseDown = (e) => {
-    if (!useViewer) return; // Only allow dragging for images
+    if (!useViewer) return;
     setIsDragging(true);
     setDragStart({
       x: e.clientX - imagePosition.x,
@@ -109,7 +107,6 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
       return;
     }
 
-    // For direct URLs
     const link = document.createElement("a");
     link.href = cert.path;
     link.download = `${cert.name}.pdf`;
@@ -143,15 +140,12 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/60 backdrop-blur-lg"
         onClick={onClose}
       />
 
-      {/* Popup Container - Glass Effect */}
       <div className="relative bg-white/10 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 max-w-5xl max-h-[95vh] w-full mx-4 overflow-hidden">
-        {/* Header - Glass Effect */}
         <div className="flex items-center justify-between p-2 sm:p-4 border-b border-white/20 bg-white/5 backdrop-blur-sm">
           <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
             <img
@@ -171,7 +165,6 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
             </div>
           </div>
 
-          {/* Controls */}
           <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
             <button
               onClick={handleZoomOut}
@@ -232,7 +225,6 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
           </div>
         </div>
 
-        {/* Content Area */}
         <div
           className="relative overflow-hidden bg-black/20 backdrop-blur-sm"
           style={{ height: "60vh" }}
@@ -240,7 +232,6 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
         >
-          {/* Status indicator */}
           {loadError && (
             <div className="absolute top-4 left-4 z-10 bg-yellow-500/20 backdrop-blur-sm border border-yellow-400/30 text-yellow-200 px-3 py-2 rounded-lg text-sm flex items-center gap-2">
               <AlertCircle size={14} />
@@ -248,7 +239,6 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
             </div>
           )}
 
-          {/* Document Display */}
           <div className="w-full h-full flex items-center justify-center">
             {cert.path.toLowerCase().includes(".pdf") ||
             cert.path.includes("drive.google.com") ? (
@@ -280,7 +270,6 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
                 />
               )
             ) : (
-              // For image certificates
               <img
                 src={cert.path}
                 alt={cert.name}
@@ -302,7 +291,6 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
           </div>
         </div>
 
-        {/* Footer - Glass Effect */}
         <div className="p-2 sm:p-3 bg-white/5 backdrop-blur-sm border-t border-white/20">
           <p className="text-xs text-white/60 text-center">
             {cert.path.includes(".pdf") ||
@@ -329,10 +317,9 @@ export default function CertificationSection({certificateData}) {
 
   const closeCertificatePopup = () => {
     setIsPopupOpen(false);
-    setTimeout(() => setSelectedCert(null), 300); // Delay to allow animation
+    setTimeout(() => setSelectedCert(null), 300);
   };
 
-  // Handle ESC key to close popup
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === "Escape" && isPopupOpen) {
@@ -342,7 +329,7 @@ export default function CertificationSection({certificateData}) {
 
     if (isPopupOpen) {
       document.addEventListener("keydown", handleEsc);
-      document.body.style.overflow = "hidden"; // Prevent background scroll
+      document.body.style.overflow = "hidden";
 
       return () => {
         document.removeEventListener("keydown", handleEsc);
@@ -353,15 +340,12 @@ export default function CertificationSection({certificateData}) {
 
   return (
     <section className="py-12 sm:py-20 relative min-h-screen">
-      {/* Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900"></div>
       <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 via-purple-600/20 to-pink-600/20"></div>
-      
-      {/* Glassmorphism Container */}
+
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="backdrop-blur-xl bg-white/5 rounded-3xl border border-white/20 shadow-2xl p-6 sm:p-8 lg:p-12">
           
-          {/* Header Section */}
           <div className="text-center mb-12 sm:mb-16">
             <motion.div
               initial={{ opacity: 0, scale: 0 }}
@@ -384,7 +368,6 @@ export default function CertificationSection({certificateData}) {
             </motion.div>
           </div>
 
-          {/* Mobile View - Cards Layout */}
           <div className="block md:hidden space-y-4">
             {certificateData.map((cert, index) => (
               <motion.div
@@ -423,7 +406,6 @@ export default function CertificationSection({certificateData}) {
             ))}
           </div>
 
-          {/* Desktop View - 3D Pin Grid */}
           <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
             {certificateData.map((cert, index) => (
               <motion.div
@@ -467,7 +449,6 @@ export default function CertificationSection({certificateData}) {
         </div>
       </div>
 
-      {/* Certificate Popup */}
       <CertificatePopup
         cert={selectedCert}
         isOpen={isPopupOpen}

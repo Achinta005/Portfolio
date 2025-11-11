@@ -37,7 +37,6 @@ export default function Projects({projectsData}) {
   const [lineStyles, setLineStyles] = useState([]);
   const [particleStyles, setParticleStyles] = useState([]);
 
-  // Generate styles client-side only
   useEffect(() => {
     setLineStyles(generateLineStyles());
     setParticleStyles(generateParticleStyles());

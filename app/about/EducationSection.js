@@ -13,12 +13,10 @@ import {
 } from "@material-tailwind/react";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
 
-// Motion-like animation hooks (simple version)
 const useInView = () => {
   const [isInView, setIsInView] = useState(false);
   
   useEffect(() => {
-    // Simple timeout to simulate intersection observer
     const timer = setTimeout(() => setIsInView(true), 200);
     return () => clearTimeout(timer);
   }, []);
@@ -46,12 +44,10 @@ export default function EducationSection({educationData}) {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-x-hidden">
-      {/* Main Container with Glass Effect */}
       <div className="min-h-screen backdrop-blur-md bg-black/20 border-t border-white/10">
         <section className="py-12 sm:py-16 lg:py-20">
           <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-8">
             
-            {/* Header Section */}
             <div className="text-center mb-8 sm:mb-12 lg:mb-16">
               <MotionDiv
                 initial={{ opacity: 0, scale: 0 }}
@@ -78,14 +74,12 @@ export default function EducationSection({educationData}) {
               </MotionDiv>
             </div>
 
-            {/* Timeline Container */}
             <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-6 lg:p-8 shadow-2xl overflow-hidden grid justify-center">
               <div className="w-full relative ">
                 <Timeline className="relative">
                   {educationData.map((edu, index) => (
                     <TimelineItem key={index} className="relative z-10">
                       
-                      {/* Custom connector line - only show between items */}
                       {index < educationData.length - 1 && (
                         <div className="absolute left-4 sm:left-6 top-12 sm:top-14 w-0.5 h-40 sm:h-48 lg:h-56 bg-gradient-to-b from-blue-400 via-purple-400 to-pink-400 z-0"></div>
                       )}
@@ -124,7 +118,6 @@ export default function EducationSection({educationData}) {
                         >
                           <div className="flex justify-center p-0 rounded-lg shadow-lg w-full pointer-events-none">
                             <div className="relative shadow-2xl w-full max-w-full sm:max-w-2xl lg:max-w-3xl object-cover object-top rounded-xl sm:rounded-2xl lg:rounded-3xl pointer-events-auto backdrop-blur-lg bg-white/10 border border-white/20 p-2 sm:p-3">
-                              {/* Glowing Effect */}
                               <GlowingEffect
                                 spread={60}
                                 glow={true}
@@ -134,7 +127,6 @@ export default function EducationSection({educationData}) {
                                 borderWidth={2}
                               />
 
-                              {/* Content Container with Glowing Border */}
                               <div className="border-0.75 relative flex h-full w-full flex-col justify-between gap-3 sm:gap-4 lg:gap-6 overflow-hidden rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-8">
                                 <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4 lg:gap-6">
                                   <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 flex items-center justify-center backdrop-blur-md bg-white/20 border border-white/30 rounded-lg flex-shrink-0 overflow-hidden border-2 sm:border-4 border-amber-50 mx-auto sm:mx-0">

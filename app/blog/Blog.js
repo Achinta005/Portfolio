@@ -12,7 +12,6 @@ export default function BlogPage({ blogPostData }) {
   const vantaRef = useRef(null);
   const vantaEffect = useRef(null);
 
-  // ✅ Stop loading once data arrives
   useEffect(() => {
     if (blogPostData && blogPostData.length > 0) {
       setLoading(false);
@@ -21,10 +20,8 @@ export default function BlogPage({ blogPostData }) {
     }
   }, [blogPostData]);
 
-  // ✅ FIXED: Load background animation
   useEffect(() => {
     async function loadVanta() {
-      // Load THREE.js first
       if (!window.THREE) {
         await new Promise((resolve) => {
           const threeScript = document.createElement("script");
@@ -35,7 +32,6 @@ export default function BlogPage({ blogPostData }) {
         });
       }
 
-      // Then load Vanta.js
       if (!window.VANTA) {
         await new Promise((resolve) => {
           const vantaScript = document.createElement("script");
@@ -46,11 +42,10 @@ export default function BlogPage({ blogPostData }) {
         });
       }
 
-      // Initialize Vanta effect
       if (!vantaEffect.current && window.VANTA && vantaRef.current) {
         vantaEffect.current = window.VANTA.NET({
           el: vantaRef.current,
-          THREE: window.THREE, // Use the THREE from window
+          THREE: window.THREE,
           mouseControls: true,
           touchControls: true,
           gyroControls: false,
@@ -128,7 +123,6 @@ export default function BlogPage({ blogPostData }) {
               </motion.p>
             </div>
 
-            {/* ✅ Blog Grid */}
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
               {blogPostData
                 .slice((view - 1) * 3, view * 3)
@@ -189,7 +183,6 @@ export default function BlogPage({ blogPostData }) {
                 ))}
             </div>
 
-            {/* Pagination */}
             {blogPostData.length > 3 && (
               <div className="mt-8 flex justify-center gap-2">
                 {Array.from({

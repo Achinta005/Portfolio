@@ -12,12 +12,10 @@ import SectionIndicators from "../../components/SectionIndicator";
 export default function About({ skillsData, educationData, certificateData }) {
   const [activeSection, setActiveSection] = useState("about");
 
-  // Handle section navigation
   const handleSectionChange = (sectionId) => {
     setActiveSection(sectionId);
   };
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKeyPress = (event) => {
       const sections = ["about", "skills", "education", "certifications"];
@@ -47,7 +45,6 @@ export default function About({ skillsData, educationData, certificateData }) {
 
   return (
     <>
-      {/* Fixed position elements - outside AnimatePresence */}
       <Header />
       <DecorativeNavbar
         onSectionChange={handleSectionChange}
@@ -58,7 +55,6 @@ export default function About({ skillsData, educationData, certificateData }) {
         onSectionChange={handleSectionChange}
       />
 
-      {/* Animated content container */}
       <div style={{ position: "relative", zIndex: 1, minHeight: "100vh" }}>
         <AnimatePresence mode="wait">
           {activeSection === "about" && (

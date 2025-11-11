@@ -2,12 +2,10 @@ import React from "react";
 import Projects from "./Project";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
 
-export const dynamic = "force-dynamic"; // SSR on every request
+export const dynamic = "force-dynamic";
 
-// ✅ SSR Fetch Function (Server-side)
 async function getProjectsData() {
 
-  // ⏩ Skip fetch during Docker build
   if (process.env.SKIP_BUILD_STATIC_GENERATION === "true") {
     console.log("⏩ Skipping Projects fetch during Docker build");
     return [];
@@ -21,11 +19,9 @@ async function getProjectsData() {
   }
 }
 
-// ✅ Server Component
 export default async function Page() {
   const projectsData = await getProjectsData();
 
-  // 🧩 Fallback if build skipped or data failed
   if (!projectsData.length) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-gray-400">
@@ -34,7 +30,6 @@ export default async function Page() {
     );
   }
 
-  // ✅ Normal Render
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Projects projectsData={projectsData} />

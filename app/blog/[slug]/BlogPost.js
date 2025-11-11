@@ -48,7 +48,6 @@ export default function BlogPost({ post }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900">
-      {/* Background animations */}
       <div className="hidden lg:block absolute inset-0 overflow-hidden">
         {lineStyles.map((item, i) => (
           <motion.div
@@ -73,7 +72,6 @@ export default function BlogPost({ post }) {
         ))}
       </div>
 
-      {/* Main content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 relative z-10">
         <Link
           href="/blog"
@@ -83,7 +81,6 @@ export default function BlogPost({ post }) {
           <span className="text-sm sm:text-base">Back to Blog</span>
         </Link>
 
-        {/* Blog Article */}
         <article className="bg-white/5 rounded-lg lg:rounded-2xl backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 overflow-hidden">
           <div className="p-4 sm:p-6 lg:p-8">
             <header className="mb-6 sm:mb-8">
@@ -91,7 +88,6 @@ export default function BlogPost({ post }) {
                 {post.title}
               </h1>
 
-              {/* Meta */}
               <div className="flex flex-col sm:flex-row sm:items-center text-green-400 mb-4 gap-2 sm:gap-0">
                 <div className="flex items-center">
                   <Calendar className="w-4 h-4 mr-2" />
@@ -109,7 +105,6 @@ export default function BlogPost({ post }) {
                 </div>
               </div>
 
-              {/* Tags */}
               <div className="flex flex-wrap gap-2 mb-6">
                 {post.tags?.map((tag) => (
                   <span
@@ -122,14 +117,12 @@ export default function BlogPost({ post }) {
               </div>
             </header>
 
-            {/* Content */}
             <div className="prose prose-sm sm:prose-base lg:prose-lg max-w-none prose-headings:text-white prose-p:text-gray-200 prose-a:text-blue-400 prose-strong:text-white prose-code:text-green-400 prose-pre:bg-black/30 prose-pre:border prose-pre:border-purple-500/20">
               <div dangerouslySetInnerHTML={{ __html: post.content }} />
             </div>
           </div>
         </article>
 
-        {/* Navigation */}
         <div className="mt-8 sm:mt-12 bg-white/5 rounded-lg lg:rounded-2xl backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10">
           <div className="p-4 sm:p-6 flex justify-end">
             <Link

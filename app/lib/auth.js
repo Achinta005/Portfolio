@@ -24,9 +24,6 @@ export const getAuthToken = () => {
   return null;
 };
 
-/**
- * Removes the authentication token from localStorage.
- */
 export const removeAuthToken = () => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('token');

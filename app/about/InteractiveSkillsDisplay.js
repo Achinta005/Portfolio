@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronDown, X } from "lucide-react";
 
-// Custom Skill Node Component
 const SkillNode = ({
   skill,
   onHover,
@@ -22,19 +21,16 @@ const SkillNode = ({
     "4th": "#f59e0b",
   };
 
-  // Calculate detail position on mobile
   useEffect(() => {
     if (isDetailOpen && nodeRef.current) {
       const nodeRect = nodeRef.current.getBoundingClientRect();
       const viewportWidth = window.innerWidth;
-      const detailWidth = 320; // min-w-80 = 320px
-      const padding = 16; // 1rem padding on each side
+      const detailWidth = 320;
+      const padding = 16;
 
       let position = {};
 
       if (viewportWidth < 768) {
-        // Mobile breakpoint
-        // Center the detail card on mobile, but keep it within viewport
         const leftPosition = (viewportWidth - detailWidth) / 2;
         const maxLeft = viewportWidth - detailWidth - padding;
         const minLeft = padding;
@@ -47,13 +43,10 @@ const SkillNode = ({
           zIndex: 9999,
         };
 
-        // If detail would go below viewport, position it above
         if (position.top + 400 > window.innerHeight) {
-          // Estimated detail height
           position.top = nodeRect.top - 400 - 8;
         }
       } else {
-        // Desktop positioning (original logic)
         position = {
           position: "absolute",
           top: "100%",
@@ -68,11 +61,9 @@ const SkillNode = ({
     }
   }, [isDetailOpen]);
 
-  // Handle click outside to close
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (detailRef.current && !detailRef.current.contains(event.target)) {
-        // Check if click was on the button or skill node
         const skillNode = event.target.closest(
           '[data-skill-id="' + skill.id + '"]'
         );
@@ -98,16 +89,13 @@ const SkillNode = ({
 
   return (
     <div className="relative" data-skill-id={skill.id}>
-      {/* Main Node */}
       <div
         ref={nodeRef}
         className="lg:w-24 lg:h-28 w-20 h-24 rounded-2xl shadow-lg flex flex-col items-center justify-center relative overflow-visible transition-all duration-300 hover:scale-105 hover:-translate-y-1 backdrop-blur-md bg-white/10 border border-white/20 hover:bg-white/20"
         onMouseEnter={() => onHover(skill.id)}
         onMouseLeave={() => onHover(null)}
       >
-        {/* Content Container */}
         <div className="text-center p-3 w-full h-36 lg:flex lg:flex-col lg:items-center lg:justify-center rounded-2xl">
-          {/* Skill Icon Container */}
           <div className="w-full h-full rounded-lg flex items-center justify-center lg:mt-20 mt-12">
             <span className="h-32 w-32">
               <img src={skill.image} alt={skill.skill} />
@@ -115,7 +103,6 @@ const SkillNode = ({
           </div>
         </div>
 
-        {/* Button Container */}
         <div className="flex-1 flex items-center justify-center rounded-b-lg w-full relative top-[-5vh]">
           <button
             className={`cursor-pointer rounded-full transition-all duration-200 ${
@@ -131,7 +118,6 @@ const SkillNode = ({
         </div>
       </div>
 
-      {/* Animated Detail Card */}
       {isDetailOpen && (
         <div
           ref={detailRef}
@@ -143,13 +129,11 @@ backdrop-blur-xl border border-purple-500/30 rounded-xl shadow-2xl p-4 sm:p-6 w-
           }`}
           style={detailPosition}
         >
-          {/* Arrow pointer - only show on desktop */}
           {window.innerWidth >= 768 && (
             <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 w-6 h-6 backdrop-blur-md bg-white/10 border border-white/20 rotate-45 border-l border-t" />
           )}
 
           <div className="text-center relative">
-            {/* Close button */}
             <button
               onClick={() => toggleDetail(skill.id)}
               className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-7 h-7 backdrop-blur-md bg-red-500/20 hover:bg-red-500/30 border border-red-400/30 rounded-full flex items-center justify-center text-red-300 hover:text-red-100 transition-colors shadow-sm z-10"
@@ -166,7 +150,6 @@ backdrop-blur-xl border border-purple-500/30 rounded-xl shadow-2xl p-4 sm:p-6 w-
               {skill.description}
             </p>
 
-            {/* Animated Progress Bar */}
             <div className="mb-4">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-xs sm:text-sm font-semibold text-gray-200">
@@ -187,7 +170,6 @@ backdrop-blur-xl border border-purple-500/30 rounded-xl shadow-2xl p-4 sm:p-6 w-
               </div>
             </div>
 
-            {/* Stage Badge */}
             <div
               className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-white text-xs sm:text-sm font-bold shadow-lg backdrop-blur-md border border-white/20"
               style={{ backgroundColor: `${stageColors[skill.stage]}40` }}
@@ -209,27 +191,23 @@ const SimplifiedSkillsGrid = ({ skillsData }) => {
 
   const dataToUse = skillsData;
 
-  // Flatten all skills from all categories
   const allSkills = Object.values(dataToUse).flatMap(
     (category) => category.skills
   );
 
-  // Function to toggle detail view - only one can be open at a time
   const toggleDetail = (skillId) => {
     console.log("toggleDetail called with:", skillId);
     if (openDetailId === skillId) {
-      setOpenDetailId(null); // Close if already open
+      setOpenDetailId(null);
     } else {
-      setOpenDetailId(skillId); // Open this skill's detail and close others
+      setOpenDetailId(skillId);
     }
   };
 
   return (
     <>
       <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-x-hidden">
-        {/* Main Container with Glass Effect */}
         <div className="min-h-screen backdrop-blur-md bg-black/20 border border-white/10">
-          {/* Header */}
           <div className="text-center py-8 sm:py-12 px-4">
             <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 max-w-4xl mx-auto shadow-2xl">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4 sm:mb-6">
@@ -241,7 +219,6 @@ const SimplifiedSkillsGrid = ({ skillsData }) => {
             </div>
           </div>
 
-          {/* Fixed Categories Row */}
           <div className="relative w-full mb-8 sm:mb-12 px-4">
             <div className="flex gap-4 sm:gap-6 justify-center flex-wrap max-w-6xl mx-auto">
               {Object.entries(dataToUse).map(([category, data]) => (
@@ -257,7 +234,6 @@ const SimplifiedSkillsGrid = ({ skillsData }) => {
             </div>
           </div>
 
-          {/* Skills Grid - All Skills from All Categories */}
           <div className="max-w-6xl mx-auto px-2 sm:px-4 pb-8 sm:pb-12">
             <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl">
               <div

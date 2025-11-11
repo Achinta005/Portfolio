@@ -86,13 +86,11 @@ export default function IPManagement() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-8">
       <div className="max-w-5xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6">
             <h1 className="text-3xl font-bold text-white">IP Address Management</h1>
             <p className="text-blue-100 mt-2">Manage authorized IP addresses</p>
           </div>
 
-          {/* Add IP Form */}
           <div className="p-8 border-b border-slate-200 bg-slate-50">
             <div className="flex gap-4">
               <input
@@ -113,7 +111,6 @@ export default function IPManagement() {
             </div>
           </div>
 
-          {/* Messages */}
           {error && (
             <div className="mx-8 mt-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
               <AlertCircle className="text-red-600 flex-shrink-0" size={20} />
@@ -128,7 +125,6 @@ export default function IPManagement() {
             </div>
           )}
 
-          {/* Table */}
           <div className="p-8">
             {loading ? (
               <div className="flex justify-center items-center py-12">
@@ -184,7 +180,6 @@ export default function IPManagement() {
             )}
           </div>
 
-          {/* Footer */}
           <div className="px-8 py-4 bg-slate-50 border-t border-slate-200">
             <p className="text-sm text-slate-600 text-center">
               Total IP Addresses: <span className="font-semibold text-slate-800">{ips.length}</span>

@@ -5,7 +5,6 @@ import { AnimatedTestimonials } from "@/components/ui/animatedProjects";
 import useIsMobile from "@/components/useIsMobile";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
 
-// Fisher-Yates shuffle algorithm
 const shuffleArray = (array) => {
   const newArray = [...array];
   for (let i = newArray.length - 1; i > 0; i--) {
@@ -21,7 +20,6 @@ export default function ProjectsGrid({ projectsData }) {
 
   const categories = ["All", "Web Development", "Machine Learning"];
 
-  // Initialize shuffledProjects when data is received
   useEffect(() => {
     if (projectsData && projectsData.length > 0) {
       setShuffledProjects(shuffleArray(projectsData));
@@ -82,7 +80,6 @@ export default function ProjectsGrid({ projectsData }) {
               <div className="w-3 h-3 sm:w-4 sm:h-4 bg-green-500 rounded-full"></div>
             </div>
 
-            {/* Category buttons */}
             <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-8 lg:mb-8">
               {categories.map((category) => (
                 <button
