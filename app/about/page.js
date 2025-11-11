@@ -1,7 +1,7 @@
 import About from "./About";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
 
-export const revalidate = 86400;
+export const revalidate = 0;
 
 export default async function AboutPage() {
   const baseUrl = process.env.NEXT_PUBLIC_PYTHON_API_URL;

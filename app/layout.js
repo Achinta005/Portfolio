@@ -63,7 +63,6 @@ export default function RootLayout({ children }) {
       >
         {children}
 
-        {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-J5KVDY0HCF"
           strategy="afterInteractive"
@@ -77,7 +76,6 @@ export default function RootLayout({ children }) {
           `}
         </Script>
 
-        {/* Schema.org JSON-LD */}
         <Script id="schema-org" type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",

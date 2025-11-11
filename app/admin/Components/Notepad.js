@@ -26,13 +26,11 @@ const Notepad = ({ onDocumentSaved }) => {
     try {
       const token = getAuthToken();
       
-      // Check if token exists
       if (!token) {
         throw new Error("Authentication token not found. Please login again.");
       }
       const data = await PortfolioApiService.Notepad(title, content);
-      
-      // Better error handling
+
       if (!data) {
         throw new Error("Failed to save document. Please try again.");
       }
@@ -41,7 +39,6 @@ const Notepad = ({ onDocumentSaved }) => {
       setTitle("");
       setContent("");
       
-      // Refresh documents list
       fetchUserDocuments();
       
       if (onDocumentSaved) {
@@ -71,7 +68,6 @@ const Notepad = ({ onDocumentSaved }) => {
     }
   };
 
-  // Initialize user data
   useEffect(() => {
     const userData = getUserFromToken();
     if (userData) {
@@ -81,7 +77,6 @@ const Notepad = ({ onDocumentSaved }) => {
     }
   }, []);
 
-  // Fetch documents when user is set
   useEffect(() => {
     if (user) {
       fetchUserDocuments();
@@ -90,18 +85,15 @@ const Notepad = ({ onDocumentSaved }) => {
 
   return (
     <div className="min-h-screen pb-8 sm:pb-12">
-      {/* Header */}
       <div className="mb-6 sm:mb-8">
         <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-black dark:text-gray-100 text-center">
           Your Personal NotePad
         </h3>
       </div>
 
-      {/* Main Content */}
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
           
-          {/* Create Document Form */}
           <div className="order-1 xl:order-1">
             <div className="bg-white/10 backdrop-blur-3xl rounded-lg p-4 sm:p-6 lg:p-8 shadow-lg">
               <h4 className="text-lg sm:text-xl font-semibold text-black dark:text-gray-100 mb-4 sm:mb-6">
@@ -109,21 +101,18 @@ const Notepad = ({ onDocumentSaved }) => {
               </h4>
               
               <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-                {/* Error Message */}
                 {error && (
                   <div className="text-red-500 text-sm p-3 bg-red-100/80 dark:bg-red-900/20 rounded-lg border border-red-300 dark:border-red-700">
                     {error}
                   </div>
                 )}
                 
-                {/* Success Message */}
                 {success && (
                   <div className="text-green-500 text-sm p-3 bg-green-100/80 dark:bg-green-900/20 rounded-lg border border-green-300 dark:border-green-700">
                     {success}
                   </div>
                 )}
 
-                {/* Title Input */}
                 <div>
                   <label className="block text-black dark:text-gray-100 text-sm sm:text-base font-semibold mb-2">
                     Title *
@@ -138,8 +127,6 @@ const Notepad = ({ onDocumentSaved }) => {
                     disabled={loading}
                   />
                 </div>
-
-                {/* Content Textarea */}
                 <div>
                   <label className="block text-black dark:text-gray-100 text-sm sm:text-base font-semibold mb-2">
                     Content *
@@ -155,7 +142,6 @@ const Notepad = ({ onDocumentSaved }) => {
                   />
                 </div>
 
-                {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={loading || !user}
@@ -174,7 +160,6 @@ const Notepad = ({ onDocumentSaved }) => {
             </div>
           </div>
 
-          {/* Documents List */}
           <div className="order-2 xl:order-2">
             <div className="bg-white/10 backdrop-blur-3xl rounded-lg shadow-lg p-4 sm:p-6 lg:p-8">
               <h4 className="text-lg sm:text-xl font-semibold text-green-500 dark:text-green-400 mb-4 sm:mb-6 text-center">
@@ -229,7 +214,6 @@ const Notepad = ({ onDocumentSaved }) => {
         </div>
       </div>
 
-      {/* Custom Scrollbar Styles */}
       <style jsx>{`
         .line-clamp-2 {
           display: -webkit-box;

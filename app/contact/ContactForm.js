@@ -94,7 +94,6 @@ const ContactForm2 = () => {
             />
           </div>
 
-          {/* Fixed Submit Button */}
           <div className="flex justify-center">
             <button
               type="submit"
@@ -106,7 +105,6 @@ const ContactForm2 = () => {
           </div>
         </form>
 
-        {/* Social Links Section */}
         <div className="relative -top-10 mt-10">
           <h3 className="text-xl font-semibold text-yellow-100 mb-5">
             Follow Me

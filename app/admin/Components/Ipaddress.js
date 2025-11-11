@@ -23,7 +23,6 @@ const Ipaddress = () => {
     getIps();
   }, []);
 
-  // Format timestamp
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return "N/A";
     const date = new Date(timestamp);
@@ -57,7 +56,6 @@ const Ipaddress = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Header */}
       <header className="mb-8 text-center">
         <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-blue-600">
           IP Address Records
@@ -65,10 +63,8 @@ const Ipaddress = () => {
         <p className="text-gray-600 mt-2">Total Records: {ipAddresses.length}</p>
       </header>
 
-      {/* Table Container with shadow and rounded corners */}
       <section className="w-full overflow-x-auto shadow-2xl rounded-lg">
         <table className="min-w-full bg-white rounded-lg overflow-hidden">
-          {/* Table Header */}
           <thead className="bg-gradient-to-r from-green-500 to-blue-500 text-white">
             <tr>
               <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
@@ -86,7 +82,6 @@ const Ipaddress = () => {
             </tr>
           </thead>
 
-          {/* Table Body */}
           <tbody className="divide-y divide-gray-200">
             {ipAddresses.length === 0 ? (
               <tr>

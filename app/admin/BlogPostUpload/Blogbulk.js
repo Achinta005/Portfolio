@@ -33,7 +33,6 @@ const generateParticleStyles = () =>
     },
   }));
 
-// Beautiful inline CSS styles template
 const createStyledHTML = (content) => {
   const baseStyles = `
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -60,7 +59,6 @@ const createStyledHTML = (content) => {
 
   let styledContent = content;
   
-  // Apply styles to each element
   Object.entries(elementStyles).forEach(([tag, style]) => {
     const regex = new RegExp(`<${tag}([^>]*)>`, 'g');
     styledContent = styledContent.replace(regex, `<${tag} style="${style}"$1>`);
@@ -69,7 +67,6 @@ const createStyledHTML = (content) => {
   return `<div style="${baseStyles}">${styledContent}</div>`;
 };
 
-// AI Enhancement using Hugging Face Inference API (Free)
 const enhanceContentWithAI = async (plainText) => {
 try {
     const response = await PortfolioApiService.Ai_enhance(plainText)
@@ -83,35 +80,27 @@ try {
     return result.summary || plainText;
   } catch (error) {
     console.error("AI enhancement failed:", error);
-    return plainText; // Return original if AI fails
+    return plainText;
   }
 };
 
-// Alternative: Use local AI-like text enhancement (no API needed)
 const enhanceContentLocally = (html) => {
-  // Add semantic structure
   let enhanced = html;
   
-  // Auto-detect and wrap code blocks
   enhanced = enhanced.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
   
-  // Auto-detect inline code
   enhanced = enhanced.replace(/`([^`]+)`/g, '<code>$1</code>');
   
-  // Auto-detect lists if not already formatted
   enhanced = enhanced.replace(/^[-*]\s+(.+)$/gm, '<li>$1</li>');
   
-  // Wrap consecutive list items
   enhanced = enhanced.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
   
-  // Add line breaks for better readability
   enhanced = enhanced.replace(/\n\n/g, '</p><p>');
   enhanced = `<p>${enhanced}</p>`;
   
   return enhanced;
 };
 
-// Word Document Processor
 function WordDocProcessor({ onSubmit }) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -132,21 +121,17 @@ function WordDocProcessor({ onSubmit }) {
     try {
       const arrayBuffer = await file.arrayBuffer();
       
-      // Convert Word to HTML using mammoth
       const result = await mammoth.convertToHtml({ arrayBuffer });
       let htmlContent = result.value;
 
-      // Optional: Enhance with AI
       if (useAI) {
         const plainText = htmlContent.replace(/<[^>]*>/g, ' ').trim();
         const enhancedText = await enhanceContentWithAI(plainText);
         htmlContent = `<p>${enhancedText}</p>`;
       }
 
-      // Apply local enhancements
       htmlContent = enhanceContentLocally(htmlContent);
       
-      // Apply beautiful inline CSS styles
       const styledHTML = createStyledHTML(htmlContent);
       
       onSubmit(styledHTML);
@@ -261,7 +246,6 @@ const handleSubmit = async () => {
 
   setLoading(true);
   try {
-    // Send blog data to API
     const response = await PortfolioApiService.Upload_blog(formData)
 
     if (!response.ok) {
@@ -273,8 +257,6 @@ const handleSubmit = async () => {
     console.log("Blog created:", result);
 
     setMessage(`✓ Blog post "${result.title}" created successfully!`);
-    // Optionally clear form or reset state here
-    // setFormData({ title: "", excerpt: "", content: "", tags: [] });
   } catch (err) {
     console.error("Error submitting blog:", err);
     setMessage(`✗ ${err.message}`);
@@ -286,7 +268,6 @@ const handleSubmit = async () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6 bg-gray-400 rounded-lg space-y-6">
-      {/* Word Document Upload Section */}
       <div className="bg-white rounded-lg p-6 shadow">
         <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
           <FileText className="w-5 h-5" />
@@ -300,9 +281,7 @@ const handleSubmit = async () => {
         )}
       </div>
 
-      {/* Form and Preview Section */}
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Left - Form */}
         <div className="bg-gradient-to-br from-gray-100 via-gray-400 to-gray-700 p-4 rounded-2xl space-y-4">
           <input
             type="text"
@@ -345,10 +324,8 @@ const handleSubmit = async () => {
           </div>
         </div>
 
-        {/* Right - Decorated Preview */}
         <div className="relative">
           <div className="min-h-[500px] bg-gradient-to-br from-gray-900 via-black to-purple-900 rounded-2xl overflow-hidden">
-            {/* Background animations */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
               {lineStyles.map((item, i) => (
                 <motion.div
@@ -373,7 +350,6 @@ const handleSubmit = async () => {
               ))}
             </div>
 
-            {/* Preview Content */}
             <div className="relative z-10 p-4 max-h-[700px] overflow-y-auto">
               <div className="bg-white/5 rounded-lg backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 overflow-hidden">
                 <div className="p-3 sm:p-4">

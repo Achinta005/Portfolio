@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "../lib/util";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
-import { IconBrandGoogle, IconBrandGithub } from "@tabler/icons-react";
+import { IconBrandGoogle, IconBrandGithub, IconEye, IconEyeOff } from "@tabler/icons-react";
 
 const LoginContent = () => {
   const [formData, setFormData] = useState({
@@ -19,10 +19,10 @@ const LoginContent = () => {
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Handle OAuth token from URL
   useEffect(() => {
     const tokenFromUrl = searchParams.get("token");
     if (tokenFromUrl && tokenFromUrl.split(".").length === 3) {
@@ -72,14 +72,12 @@ const LoginContent = () => {
 
   return (
     <div className="min-h-screen w-full bg-black overflow-hidden flex items-center justify-center p-4 relative">
-      {/* Animated background gradient */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse"></div>
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-600/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse animation-delay-2000"></div>
         <div className="absolute top-1/2 right-1/3 w-96 h-96 bg-pink-600/20 rounded-full mix-blend-multiply filter blur-3xl animate-pulse animation-delay-4000"></div>
       </div>
 
-      {/* Floating particles */}
       <div className="absolute inset-0 pointer-events-none">
         {[...Array(20)].map((_, i) => (
           <div
@@ -96,7 +94,6 @@ const LoginContent = () => {
         ))}
       </div>
 
-      {/* HOME Button */}
       <Link
         href="/"
         className="absolute top-4 left-4 z-20 px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm font-medium rounded-lg border border-white/20 transition-all duration-300 backdrop-blur-sm"
@@ -104,9 +101,7 @@ const LoginContent = () => {
         HOME
       </Link>
 
-      {/* Main container */}
       <div className="relative z-10 w-full max-w-md">
-        {/* Header */}
         <div className="text-center mb-8 md:mb-12">
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
             Welcome Back
@@ -116,11 +111,8 @@ const LoginContent = () => {
           </p>
         </div>
 
-        {/* Card container */}
         <div className="backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8 shadow-2xl">
-          {/* Login Form */}
           <div className="space-y-6">
-            {/* Username Input */}
             <LabelInputContainer>
               <Label
                 htmlFor="username"
@@ -140,7 +132,6 @@ const LoginContent = () => {
               />
             </LabelInputContainer>
 
-            {/* Password Input */}
             <LabelInputContainer>
               <Label
                 htmlFor="password"
@@ -148,26 +139,37 @@ const LoginContent = () => {
               >
                 Password
               </Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                required
-                placeholder="Enter your password"
-                value={formData.password}
-                onChange={handleChange}
-                className="h-10 md:h-11 bg-white/5 border border-white/10 text-white placeholder:text-neutral-500 focus:border-cyan-500 focus:bg-white/10 transition-all duration-300"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="h-10 md:h-11 bg-white/5 border border-white/10 text-white placeholder:text-neutral-500 focus:border-cyan-500 focus:bg-white/10 transition-all duration-300 pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-700 hover:text-cyan-400 transition-colors duration-200"
+                >
+                  {showPassword ? (
+                    <IconEyeOff className="h-5 w-5 cursor-pointer" />
+                  ) : (
+                    <IconEye className="h-5 w-5 cursor-pointer" />
+                  )}
+                </button>
+              </div>
             </LabelInputContainer>
 
-            {/* Error Message */}
             {error && (
               <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg text-sm animate-pulse">
                 {error}
               </div>
             )}
 
-            {/* Sign In Button */}
             <button
               onClick={handleSubmit}
               disabled={loading}
@@ -181,16 +183,13 @@ const LoginContent = () => {
             </button>
           </div>
 
-          {/* Divider */}
           <div className="flex items-center gap-4 my-6">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
             <span className="text-xs text-neutral-500 uppercase tracking-widest">Or</span>
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
           </div>
 
-          {/* OAuth Buttons */}
           <div className="space-y-3">
-            {/* Google Button */}
             <button
               onClick={handleGoogleLogin}
               className="group/btn relative w-full h-12 md:h-13 rounded-lg font-semibold text-white bg-gradient-to-br from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 transition-all duration-300 overflow-hidden shadow-lg hover:shadow-blue-500/50"
@@ -203,7 +202,6 @@ const LoginContent = () => {
               <BottomGradient />
             </button>
 
-            {/* GitHub Button */}
             <button
               onClick={handleGithubLogin}
               className="group/btn relative w-full h-12 md:h-13 rounded-lg font-semibold text-white bg-gradient-to-br from-neutral-800 to-neutral-900 hover:from-neutral-700 hover:to-neutral-800 border border-neutral-700 hover:border-neutral-600 transition-all duration-300 overflow-hidden shadow-lg"
@@ -217,18 +215,16 @@ const LoginContent = () => {
             </button>
           </div>
 
-          {/* Register Link */}
           <div className="mt-6 text-center">
             <button
               onClick={() => router.push("/Register")}
-              className="text-cyan-400 hover:text-cyan-300 text-sm font-semibold transition-colors duration-200"
+              className="text-cyan-400 hover:text-cyan-300 text-sm font-semibold transition-colors duration-200 cursor-pointer"
             >
               Don&apos;t have an account? Register now
             </button>
           </div>
         </div>
 
-        {/* Bottom accent */}
         <div className="mt-6 text-center text-xs text-neutral-500">
           <p>Secure sign-in to your admin panel</p>
         </div>

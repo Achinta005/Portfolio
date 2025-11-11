@@ -61,7 +61,6 @@ export default function AniListViewer() {
 
   const router = useRouter();
 
-  // OAuth callback handler
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
@@ -92,14 +91,12 @@ export default function AniListViewer() {
         setUsername(data.username);
         localStorage.removeItem("anilist_oauth_state");
 
-        // Clean URL
         window.history.replaceState(
           {},
           document.title,
           window.location.pathname
         );
 
-        // Auto-fetch list
         await fetchAnimeList(data.username);
       } catch (err) {
         console.error("OAuth error:", err);
@@ -109,7 +106,6 @@ export default function AniListViewer() {
     })();
   }, []);
 
-  // Auth check
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -411,7 +407,6 @@ export default function AniListViewer() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 relative">
-      {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute w-96 h-96 bg-purple-500/10 rounded-full blur-3xl -top-20 -left-20 animate-pulse"></div>
         <div
@@ -421,7 +416,6 @@ export default function AniListViewer() {
       </div>
 
       <div className="relative z-10 min-h-screen">
-        {/* Header */}
         <div className="bg-black/20 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
@@ -469,7 +463,6 @@ export default function AniListViewer() {
         </div>
 
         <div className="container mx-auto px-4 py-8">
-          {/* Search Section */}
           <div className="max-w-4xl mx-auto mb-8">
             <div className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/20">
               <div className="flex flex-col gap-4">
@@ -544,7 +537,6 @@ export default function AniListViewer() {
             </div>
           </div>
 
-          {/* Filters & Export */}
           {animeList.length > 0 && (
             <div className="mb-8">
               <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
@@ -588,7 +580,6 @@ export default function AniListViewer() {
             </div>
           )}
 
-          {/* Loading State */}
           {loading && (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin mb-4"></div>
@@ -596,7 +587,6 @@ export default function AniListViewer() {
             </div>
           )}
 
-          {/* Anime Grid */}
           {filteredAnime.length > 0 && (
             <div
               className={
@@ -660,8 +650,6 @@ export default function AniListViewer() {
         </div>
       </div>
 
-      {/* Anime Modal & Add Modal - keeping original modal code but fixing API calls */}
-      {/* Anime Details Modal */}
       {showAnimeModal && selectedAnime && (
         <div
           className="fixed inset-0 bg-black/90 backdrop-blur-xl z-50 flex items-start justify-center p-2 sm:p-4 overflow-y-auto"
@@ -671,7 +659,6 @@ export default function AniListViewer() {
             className="bg-gradient-to-br from-slate-900 to-purple-900 rounded-2xl sm:rounded-3xl max-w-5xl w-full my-4 sm:my-8 border border-white/20 shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Banner with Cover Image Overlay */}
             <div className="relative h-32 sm:h-48 md:h-64 lg:h-72 w-full">
               <div className="absolute inset-0">
                 <img
@@ -703,7 +690,6 @@ export default function AniListViewer() {
                 />
               </button>
 
-              {/* Cover Image Overlay */}
               <div className="absolute bottom-0 left-3 sm:left-4 md:left-6 lg:left-8 transform translate-y-1/4 sm:translate-y-1/3 md:translate-y-1/2 z-10">
                 <div className="relative group">
                   <img
@@ -726,7 +712,6 @@ export default function AniListViewer() {
               </div>
             </div>
 
-            {/* Content */}
             <div className="p-3 sm:p-4 md:p-6 lg:p-8 pt-16 sm:pt-20 md:pt-28 lg:pt-36">
               <div className="mb-3 sm:mb-4 md:mb-6">
                 <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white mb-1 sm:mb-2">
@@ -768,7 +753,6 @@ export default function AniListViewer() {
                 </div>
               </div>
 
-              {/* Info Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 md:gap-6 mb-3 sm:mb-4 md:mb-6">
                 <div className="bg-white/5 backdrop-blur-xl rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 border border-white/10">
                   <h3 className="text-white font-bold text-sm sm:text-base md:text-lg mb-2 sm:mb-3 md:mb-4 flex items-center gap-1.5 sm:gap-2">
@@ -828,7 +812,6 @@ export default function AniListViewer() {
                 </div>
               </div>
 
-              {/* Synopsis */}
               {selectedAnime.description && (
                 <div className="bg-white/5 backdrop-blur-xl rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 border border-white/10 mb-3 sm:mb-4 md:mb-6">
                   <h3 className="text-white font-bold text-sm sm:text-base md:text-lg mb-2 sm:mb-3 md:mb-4">
@@ -877,7 +860,6 @@ export default function AniListViewer() {
                 </div>
               )}
 
-              {/* Modify Section */}
               {isAuthenticated && (
                 <div className="bg-gradient-to-br from-purple-900/50 to-blue-900/50 backdrop-blur-xl rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 border border-purple-500/30">
                   <h3 className="text-white font-bold text-base sm:text-lg md:text-xl mb-3 sm:mb-4 md:mb-6 flex items-center gap-1.5 sm:gap-2">
@@ -1041,7 +1023,6 @@ export default function AniListViewer() {
         </div>
       )}
 
-      {/* Add Anime Modal */}
       {showAddModal && (
         <div
           className="fixed inset-0 bg-black/90 backdrop-blur-xl z-50 flex items-center justify-center p-4 overflow-y-auto"
@@ -1099,7 +1080,6 @@ export default function AniListViewer() {
                 </button>
               </div>
 
-              {/* Search Results */}
               {searchResults.length > 0 && (
                 <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
                   {searchResults.map((anime) => (

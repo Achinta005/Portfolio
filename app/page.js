@@ -5,7 +5,6 @@ import Header from "../components/Navbar";
 
 export default function Page() {
   useEffect(() => {
-    // Maintain proper viewport height on mobile
     const setVH = () => {
       const vh = window.innerHeight * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
@@ -21,7 +20,6 @@ export default function Page() {
 
   return (
     <>
-      {/* Global CSS reset */}
       <style jsx global>{`
         * {
           box-sizing: border-box;
@@ -41,14 +39,13 @@ export default function Page() {
         }
       `}</style>
 
-      {/* Foreground content */}
       <div
         style={{
           position: "relative",
           width: "100%",
           minHeight: "calc(var(--vh, 1vh) * 100)",
           overflow: "hidden",
-          backgroundColor: "black", // optional background
+          backgroundColor: "black",
         }}
       >
         <Header />

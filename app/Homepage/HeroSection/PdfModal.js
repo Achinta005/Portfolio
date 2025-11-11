@@ -6,20 +6,17 @@ const PdfModal = ({ pdfUrl, onClose }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [useFallback, setUseFallback] = useState(false);
 
-  // Extract Google Drive file ID
   const extractGoogleDriveFileId = (url) => {
     if (!url) return null;
     const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
     return match ? match[1] : null;
   };
 
-  // Get preview URL for Google Drive
   const getGoogleDrivePreviewUrl = (url) => {
     const fileId = extractGoogleDriveFileId(url);
     return fileId ? `https://drive.google.com/file/d/${fileId}/preview` : null;
   };
 
-  // Get fallback viewer URL
   const getGoogleDocsViewerUrl = (url) => {
     const fileId = extractGoogleDriveFileId(url);
     const cleanUrl = fileId ? `https://drive.google.com/uc?id=${fileId}` : url;
@@ -28,7 +25,6 @@ const PdfModal = ({ pdfUrl, onClose }) => {
     )}&embedded=true`;
   };
 
-  // Determine which URL to use
   const getViewerUrl = () => {
     const isGoogleDrive = pdfUrl?.includes("drive.google.com");
 
@@ -91,7 +87,6 @@ const PdfModal = ({ pdfUrl, onClose }) => {
       }`}
       onClick={handleClose}
     >
-      {/* Animated Background Particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-700"></div>
@@ -109,14 +104,10 @@ const PdfModal = ({ pdfUrl, onClose }) => {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Outer Glow Effect */}
         <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 rounded-2xl blur-lg opacity-75 animate-pulse"></div>
 
-        {/* Main Container */}
         <div className="relative bg-slate-900 rounded-2xl overflow-hidden h-full flex flex-col">
-          {/* Enhanced Window Controls Bar */}
           <div className="relative bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 px-4 py-3 flex items-center justify-between border-b border-slate-600/50">
-            {/* macOS Style Controls */}
             <div className="flex items-center space-x-2.5 z-10">
               <button
                 onClick={handleClose}
@@ -141,7 +132,6 @@ const PdfModal = ({ pdfUrl, onClose }) => {
               ></button>
             </div>
 
-            {/* Title */}
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center space-x-2">
               <svg
                 className="w-5 h-5 text-purple-400"
@@ -161,7 +151,6 @@ const PdfModal = ({ pdfUrl, onClose }) => {
               </span>
             </div>
 
-            {/* Close Button */}
             <button
               onClick={handleClose}
               className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-slate-700/50 transition-all duration-200 z-10 group"
@@ -183,16 +172,13 @@ const PdfModal = ({ pdfUrl, onClose }) => {
             </button>
           </div>
 
-          {/* Content Area with Decorative Border */}
           <div className="flex-1 p-2 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-blue-500/20">
             <div className="relative w-full h-full bg-slate-900 rounded-lg overflow-hidden shadow-inner">
-              {/* Corner Decorations */}
               <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-purple-500/20 to-transparent rounded-br-full pointer-events-none z-10"></div>
               <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-blue-500/20 to-transparent rounded-bl-full pointer-events-none z-10"></div>
               <div className="absolute bottom-0 left-0 w-20 h-20 bg-gradient-to-tr from-pink-500/20 to-transparent rounded-tr-full pointer-events-none z-10"></div>
               <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-purple-500/20 to-transparent rounded-tl-full pointer-events-none z-10"></div>
 
-              {/* Loading Spinner */}
               {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-slate-900/95 z-10">
                   <div className="relative">
@@ -207,7 +193,6 @@ const PdfModal = ({ pdfUrl, onClose }) => {
                 </div>
               )}
 
-              {/* PDF Viewer */}
               <div className="absolute inset-0 rounded-lg overflow-hidden">
                 <iframe
                   key={`viewer-${useFallback}`}
@@ -231,10 +216,8 @@ const PdfModal = ({ pdfUrl, onClose }) => {
                 </iframe>
               </div>
 
-              {/* Decorative Gradient Overlay (subtle) */}
               <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-slate-900/10 via-transparent to-slate-900/10"></div>
 
-              {/* Fallback Indicator */}
               {useFallback && (
                 <div className="absolute top-4 left-4 z-20 bg-yellow-500/20 backdrop-blur-sm border border-yellow-400/30 text-yellow-200 px-3 py-1 rounded text-xs flex items-center gap-2">
                   <span>Using fallback viewer</span>
@@ -243,7 +226,6 @@ const PdfModal = ({ pdfUrl, onClose }) => {
             </div>
           </div>
 
-          {/* Footer Bar */}
           <div className="bg-gradient-to-r from-slate-800 via-slate-700 to-slate-800 px-4 py-2.5 flex items-center justify-between border-t border-slate-600/50">
             <div className="flex items-center space-x-2 text-xs text-gray-400">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-lg shadow-green-500/50"></div>

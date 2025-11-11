@@ -9,16 +9,19 @@ import { cn } from "../lib/util";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
+import { IconEye, IconEyeOff } from "@tabler/icons-react";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
     role: "editor",
+    email:"",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -140,6 +143,23 @@ const RegisterPage = () => {
                 onChange={handleChange}
               />
             </LabelInputContainer>
+            <LabelInputContainer>
+              <Label
+                htmlFor="email"
+                className="block text-sm font-medium mb-1"
+              >
+                Email
+              </Label>
+              <Input
+                id="email"
+                name="email"
+                type="text"
+                required              
+                placeholder="Choose a Email"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </LabelInputContainer>
 
             <LabelInputContainer>
               <Label
@@ -148,15 +168,29 @@ const RegisterPage = () => {
               >
                 Password
               </Label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                required                
-                placeholder="Choose a strong password"
-                value={formData.password}
-                onChange={handleChange}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  required                
+                  placeholder="Choose a strong password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-700 hover:text-cyan-400 transition-colors duration-200"
+                >
+                  {showPassword ? (
+                    <IconEyeOff className="h-5 w-5 cursor-pointer" />
+                  ) : (
+                    <IconEye className="h-5 w-5 cursor-pointer" />
+                  )}
+                </button>
+              </div>
             </LabelInputContainer>
           </div>
 
@@ -211,7 +245,7 @@ const RegisterPage = () => {
         <div className="text-center">
           <button
             onClick={() => router.push("/login")}
-            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            className="text-blue-600 hover:text-blue-800 text-sm font-medium cursor-pointer"
           >
             Already have an account? Sign in
           </button>

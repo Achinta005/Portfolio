@@ -79,8 +79,8 @@ export default function EducationSection({educationData}) {
             </div>
 
             {/* Timeline Container */}
-            <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-6 lg:p-8 shadow-2xl overflow-hidden">
-              <div className="w-full relative">
+            <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-6 lg:p-8 shadow-2xl overflow-hidden grid justify-center">
+              <div className="w-full relative ">
                 <Timeline className="relative">
                   {educationData.map((edu, index) => (
                     <TimelineItem key={index} className="relative z-10">

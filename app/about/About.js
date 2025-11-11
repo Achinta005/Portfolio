@@ -9,7 +9,7 @@ import InteractiveSkillsDisplay from "./InteractiveSkillsDisplay";
 import DecorativeNavbar from "@/components/DecorativeNavbar";
 import SectionIndicators from "../../components/SectionIndicator";
 
-export default function About({ skillsData,educationData,certificateData }) {
+export default function About({ skillsData, educationData, certificateData }) {
   const [activeSection, setActiveSection] = useState("about");
 
   // Handle section navigation
@@ -32,7 +32,9 @@ export default function About({ skillsData,educationData,certificateData }) {
         case "ArrowLeft":
         case "ArrowUp":
           event.preventDefault();
-          setActiveSection(sections[(currentIndex - 1 + sections.length) % sections.length]);
+          setActiveSection(
+            sections[(currentIndex - 1 + sections.length) % sections.length]
+          );
           break;
         default:
           break;
@@ -45,10 +47,18 @@ export default function About({ skillsData,educationData,certificateData }) {
 
   return (
     <>
-      <DecorativeNavbar onSectionChange={handleSectionChange} activeSection={activeSection} />
+      {/* Fixed position elements - outside AnimatePresence */}
+      <Header />
+      <DecorativeNavbar
+        onSectionChange={handleSectionChange}
+        activeSection={activeSection}
+      />
+      <SectionIndicators
+        activeSection={activeSection}
+        onSectionChange={handleSectionChange}
+      />
 
-      <SectionIndicators activeSection={activeSection} onSectionChange={handleSectionChange} />
-
+      {/* Animated content container */}
       <div style={{ position: "relative", zIndex: 1, minHeight: "100vh" }}>
         <AnimatePresence mode="wait">
           {activeSection === "about" && (
@@ -86,7 +96,7 @@ export default function About({ skillsData,educationData,certificateData }) {
               transition={{ duration: 0.5, ease: "easeInOut" }}
               className="min-h-screen"
             >
-              <EducationSection educationData={educationData}/>
+              <EducationSection educationData={educationData} />
             </motion.div>
           )}
 
@@ -99,12 +109,10 @@ export default function About({ skillsData,educationData,certificateData }) {
               transition={{ duration: 0.5, ease: "easeInOut" }}
               className="min-h-screen"
             >
-              <CertificationSection certificateData={certificateData}/>
+              <CertificationSection certificateData={certificateData} />
             </motion.div>
           )}
         </AnimatePresence>
-
-        <Header />
       </div>
     </>
   );

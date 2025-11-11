@@ -43,14 +43,14 @@ export default function AboutHero() {
 
   const stats = [
     {
-      number: "10+",
+      number: "15+",
       label: "Projects",
       mobileLabel: "Projects Completed",
       color: "text-green-400",
       icon: "🚀",
     },
     {
-      number: "1+",
+      number: "4+",
       label: "Years Learning",
       mobileLabel: "Years of Practical Learning",
       color: "text-blue-400",
@@ -64,7 +64,7 @@ export default function AboutHero() {
       icon: "👥",
     },
     {
-      number: "20+",
+      number: "35+",
       label: "Technologies",
       mobileLabel: "Technologies Mastered",
       color: "text-yellow-400",
@@ -179,13 +179,14 @@ export default function AboutHero() {
                   >
                     <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-purple-400/50 to-transparent rounded-full"></div>
                     <p className="text-xs xl:text-sm text-gray-200 leading-relaxed pl-2 relative z-10">
-                      Hi, I&apos;m a passionate Developer with a strong
-                      foundation in Web Development, Data Structures &
-                      Algorithms, and multiple programming languages including
-                      C, C++, and Python. I specialize in building responsive,
-                      scalable, and user-centric applications, combining
-                      frontend expertise with backend architecture, security,
-                      and optimization.
+                      Hi, I am a Computer Science undergraduate with hands-on
+                      experience in Machine Learning, Full-Stack Web
+                      Development, and Generative AI. Skilled in developing,
+                      deploying scalable systems integrating AI models with web
+                      technologies using React, Node.js, Docker. I have a strong
+                      foundation in DSA, OOP, DBMS, and System Design, enabling
+                      me to tackle complex problems and deliver impactful
+                      Solutions.
                     </p>
                   </motion.div>
 
@@ -214,11 +215,11 @@ export default function AboutHero() {
                   >
                     <div className="absolute -left-4 top-0 w-1 h-full bg-gradient-to-b from-green-400/50 to-transparent rounded-full"></div>
                     <p className="text-xs xl:text-sm text-gray-200 leading-relaxed pl-2">
-                      Currently, I am expanding my skills in Data Science and
-                      AI/ML, having already worked with Python, NumPy, and
+                      Currently, I am expanding my skills in Deep Learning,
+                      having already worked with Machine Learning, NumPy, and
                       Pandas for data analysis. My next focus is to dive deeper
-                      into Machine Learning,advanced optimization techniques. I
-                      am started to exploring new technologies and sharpening my
+                      into Generative Ai,advanced optimization techniques. I am
+                      started to exploring new technologies and sharpening my
                       abilities to solve real-world challenges.
                     </p>
                   </motion.div>
@@ -312,13 +313,14 @@ export default function AboutHero() {
                         transition={{ duration: 0.5, ease: easeOut }}
                       >
                         <p className="text-sm text-gray-200 mb-4">
-                          Hi, I&apos;m a passionate Developer with a strong
-                          foundation in Web Development, Data Structures &
-                          Algorithms, and multiple programming languages
-                          including C, C++, and Python. I specialize in building
-                          responsive, scalable, and user-centric applications,
-                          combining frontend expertise with backend
-                          architecture, security, and optimization.
+                          Hi, I am a Computer Science undergraduate with
+                          hands-on experience in Machine Learning, Full-Stack
+                          Web Development, and Generative AI. Skilled in
+                          developing, deploying scalable systems integrating AI
+                          models with web technologies using React, Node.js,
+                          Docker. I have a strong foundation in DSA, OOP, DBMS,
+                          and System Design, enabling me to tackle complex
+                          problems and deliver impactful Solutions.
                         </p>
                       </motion.div>
 
@@ -343,10 +345,10 @@ export default function AboutHero() {
                         transition={{ duration: 0.7, ease: easeOut }}
                       >
                         <p className="text-sm text-gray-200 mb-6">
-                          Currently, I am expanding my skills in Data Science
-                          and AI/ML, having already worked with Python, NumPy,
+                          Currently, I am expanding my skills in Deep Learning,
+                          having already worked with Machine Learning, NumPy,
                           and Pandas for data analysis. My next focus is to dive
-                          deeper into Machine Learning,advanced optimization
+                          deeper into Generative Ai,advanced optimization
                           techniques. I am started to exploring new technologies
                           and sharpening my abilities to solve real-world
                           challenges.
@@ -415,13 +417,14 @@ export default function AboutHero() {
                         transition={{ duration: 0.5, ease: easeOut }}
                       >
                         <p className="text-sm text-gray-200 mb-4">
-                          Hi, I&apos;m a passionate Developer with a strong
-                          foundation in Web Development, Data Structures &
-                          Algorithms, and multiple programming languages
-                          including C, C++, and Python. I specialize in building
-                          responsive, scalable, and user-centric applications,
-                          combining frontend expertise with backend
-                          architecture, security, and optimization.
+                          Hi, I am a Computer Science undergraduate with
+                          hands-on experience in Machine Learning, Full-Stack
+                          Web Development, and Generative AI. Skilled in
+                          developing, deploying scalable systems integrating AI
+                          models with web technologies using React, Node.js,
+                          Docker. I have a strong foundation in DSA, OOP, DBMS,
+                          and System Design, enabling me to tackle complex
+                          problems and deliver impactful Solutions.
                         </p>
                       </motion.div>
 
@@ -446,10 +449,10 @@ export default function AboutHero() {
                         transition={{ duration: 0.7, ease: easeOut }}
                       >
                         <p className="text-sm text-gray-200 mb-6">
-                          Currently, I am expanding my skills in Data Science
-                          and AI/ML, having already worked with Python, NumPy,
+                          Currently, I am expanding my skills in Deep Learning,
+                          having already worked with Machine Learning, NumPy,
                           and Pandas for data analysis. My next focus is to dive
-                          deeper into Machine Learning,advanced optimization
+                          deeper into Generative Ai,advanced optimization
                           techniques. I am started to exploring new technologies
                           and sharpening my abilities to solve real-world
                           challenges.
@@ -530,6 +533,7 @@ export default function AboutHero() {
               <span className="text-blue-400">developer</span> = {"{"}
               <br />
               &nbsp;&nbsp;<span className="text-yellow-400">passion</span>:{" "}
+              <span className="text-green-400">&quot;AI & ML&quot;</span>,
               <span className="text-green-400">&quot;Full Stack&quot;</span>,
               <br />
               &nbsp;&nbsp;<span className="text-yellow-400">mission</span>:{" "}

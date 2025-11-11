@@ -12,39 +12,61 @@ export default function HeroSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const vantaRef = useRef(null);
   const vantaEffect = useRef(null);
+  const requestAccessToken = async (user_id) => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/check-access`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id }),
+        }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        localStorage.setItem("admin_token", data.token);
+        console.log("Access granted and token stored!");
+      } else {
+        console.log("Access denied");
+      }
+    } catch (err) {
+      console.error("Access request failed:", err);
+    }
+  };
 
   useEffect(() => {
     setIsLoaded(true);
+    if (!localStorage.getItem("admin_token")) {
+      requestAccessToken();
+    }
   }, []);
 
-  // === ✅ FIXED VANTA Background Setup ===
   useEffect(() => {
     const loadVanta = async () => {
-      // Load THREE.js first
       if (!window.THREE) {
         await new Promise((resolve) => {
           const threeScript = document.createElement("script");
-          threeScript.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js";
+          threeScript.src =
+            "https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js";
           threeScript.onload = resolve;
           document.body.appendChild(threeScript);
         });
       }
 
-      // Then load Vanta.js
       if (!window.VANTA) {
         await new Promise((resolve) => {
           const vantaScript = document.createElement("script");
-          vantaScript.src = "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js";
+          vantaScript.src =
+            "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js";
           vantaScript.onload = resolve;
           document.body.appendChild(vantaScript);
         });
       }
 
-      // Initialize Vanta effect
       if (!vantaEffect.current && window.VANTA && vantaRef.current) {
         vantaEffect.current = window.VANTA.NET({
           el: vantaRef.current,
-          THREE: window.THREE, // Use the THREE from window
+          THREE: window.THREE,
           mouseControls: true,
           touchControls: true,
           gyroControls: false,
@@ -72,7 +94,9 @@ export default function HeroSection() {
   }, []);
 
   const handleView = async () => {
-    setPdfUrl('https://drive.google.com/file/d/1p7NKQpOci-ZVZAb6lwZF93nc5KmkRAw4/view?usp=sharing');
+    setPdfUrl(
+      "https://drive.google.com/file/d/1p7NKQpOci-ZVZAb6lwZF93nc5KmkRAw4/view?usp=sharing"
+    );
     setIsModalOpen(true);
   };
 
@@ -121,10 +145,8 @@ export default function HeroSection() {
       ref={vantaRef}
       className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:-top-8 overflow-hidden"
     >
-      {/* Dark overlay for better text contrast */}
       <div className="absolute inset-0 bg-black/40 z-0" />
 
-      {/* Hero Content */}
       <motion.div
         className="relative z-10 max-w-6xl mx-auto w-full"
         variants={containerVariants}
@@ -132,13 +154,11 @@ export default function HeroSection() {
         animate="visible"
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
-          {/* === TEXT CONTENT === */}
           <motion.div
             className="lg:col-span-7 space-y-6 lg:space-y-8 order-2 lg:order-1"
             variants={itemVariants}
           >
             <div className="relative p-4 sm:p-6 lg:p-8 rounded-lg lg:rounded-3xl border border-white/10 lg:border-none shadow-lg backdrop-blur-md lg:backdrop-blur-none lg:bg-transparent">
-
               <motion.div
                 className="hidden lg:block text-emerald-400 mb-4 font-medium tracking-wide text-sm uppercase"
                 variants={itemVariants}
@@ -169,7 +189,6 @@ export default function HeroSection() {
                 </span>
               </motion.h2>
 
-              {/* === DESKTOP BUTTONS === */}
               <motion.div
                 className="hidden lg:flex flex-col xl:flex-row gap-4"
                 variants={itemVariants}
@@ -199,7 +218,6 @@ export default function HeroSection() {
             </div>
           </motion.div>
 
-          {/* === IMAGE === */}
           <motion.div
             className="lg:col-span-5 flex justify-center lg:justify-end order-1 lg:order-2"
             variants={itemVariants}
@@ -226,7 +244,6 @@ export default function HeroSection() {
               </motion.div>
             </div>
 
-            {/* === MOBILE IMAGE === */}
             <div className="lg:hidden w-48 sm:w-52 h-48 sm:h-52 relative">
               <Image
                 src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755695343/profile_kxt3ue.png"
@@ -242,7 +259,6 @@ export default function HeroSection() {
             </div>
           </motion.div>
 
-          {/* === MOBILE BUTTONS === */}
           <motion.div
             className="lg:hidden flex flex-col sm:flex-row gap-3 w-full order-3 px-2"
             initial={{ opacity: 0, y: 20 }}
@@ -273,8 +289,6 @@ export default function HeroSection() {
           </motion.div>
         </div>
       </motion.div>
-
-      {/* PDF Modal */}
       {isModalOpen && <PdfModal pdfUrl={pdfUrl} onClose={closeModal} />}
     </section>
   );

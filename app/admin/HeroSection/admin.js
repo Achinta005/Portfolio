@@ -69,7 +69,6 @@ const AdminPage = () => {
     );
   }
 
-  // Conditionally render the full-page components for Admin and user(editor here)
   if (user.role === "admin" && activeView === "projects") {
     return (
       <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-gradient-to-tr from-blue-700 via-pink-600 to-yellow-300">
@@ -167,7 +166,6 @@ const AdminPage = () => {
     );
   }
 
-  // Main Dashboard View
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed"
@@ -178,10 +176,8 @@ const AdminPage = () => {
     >
       <div className="min-h-screen bg-black/20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          {/* Responsive Header */}
           <header className="mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              {/* Welcome message */}
               <div className="flex flex-col gap-4">
                 <div className="bg-white/10 backdrop-blur-2xl px-4 py-2 rounded-lg">
                   <p className="text-green-400 font-bold text-lg sm:text-xl text-center sm:text-left">
@@ -197,14 +193,12 @@ const AdminPage = () => {
                   </p>
                 </div>
               </div>
-              {/* Dashboard title */}
               <div className="bg-white/10 backdrop-blur-2xl px-4 py-2 rounded-lg flex-1 sm:flex-initial -ml-20">
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-100 text-center">
                   Dashboard
                 </h1>
               </div>
 
-              {/* Logout button */}
               <button
                 onClick={handleLogout}
                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors self-center sm:self-auto"
@@ -220,10 +214,8 @@ const AdminPage = () => {
             </div>
           )}
 
-          {/* Admin Dashboard Grid */}
           {user.role === "admin" && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {/* Project Management Card */}
               <div className="bg-white/20 rounded-lg p-4 backdrop-blur-3xl flex flex-col items-center space-y-4 hover:bg-white/25 transition-colors">
                 <div className="w-full max-w-[280px] aspect-[4/3] relative">
                   <Image
@@ -283,7 +275,6 @@ const AdminPage = () => {
                 </button>
               </div>
 
-              {/* Flask Card */}
               <div className="bg-white/20 rounded-lg p-4 backdrop-blur-3xl flex flex-col items-center space-y-4 hover:bg-white/25 transition-colors">
                 <div className="w-full max-w-[280px] aspect-[4/3] relative">
                   <Image
@@ -304,7 +295,6 @@ const AdminPage = () => {
                 </button>
               </div>
 
-              {/* Messages Card */}
               <div className="bg-white/20 rounded-lg p-4 backdrop-blur-3xl flex flex-col items-center space-y-4 hover:bg-white/25 transition-colors">
                 <div className="w-full max-w-[280px] aspect-[4/3] relative">
                   <Image
@@ -325,7 +315,6 @@ const AdminPage = () => {
                 </button>
               </div>
 
-              {/* Notepad Card */}
               <div className="bg-white/20 rounded-lg p-4 backdrop-blur-3xl flex flex-col items-center space-y-4 hover:bg-white/25 transition-colors">
                 <div className="w-full max-w-[280px] aspect-[4/3] relative">
                   <Image
@@ -346,7 +335,6 @@ const AdminPage = () => {
                 </button>
               </div>
 
-              {/* Blog Card */}
               <div className="bg-white/20 rounded-lg p-4 backdrop-blur-3xl flex flex-col items-center space-y-4 hover:bg-white/25 transition-colors">
                 <div className="w-full max-w-[280px] aspect-[4/3] relative">
                   <Image
@@ -369,7 +357,6 @@ const AdminPage = () => {
             </div>
           )}
 
-          {/* Editor Dashboard */}
           {user.role === "editor" && (
             <div className="flex justify-center">
               <div className="bg-white/20 rounded-lg backdrop-blur-3xl p-6 w-full max-w-sm flex flex-col items-center space-y-4 hover:bg-white/25 transition-colors">

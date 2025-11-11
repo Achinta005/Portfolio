@@ -43,7 +43,6 @@ export const PortfolioApiService = {
   },
 
   // AnimeList
-
   FetchAnimeList: async (username) => {
     return apiCall(
       `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/anilist/BaseFunction/fetch`,
@@ -112,15 +111,13 @@ export const PortfolioApiService = {
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
 
-    // Create a temporary link to trigger download
     const a = document.createElement("a");
     a.href = url;
-    a.download = "resume.pdf"; // You can set the filename here
+    a.download = "resume.pdf";
     document.body.appendChild(a);
     a.click();
     a.remove();
 
-    // Clean up the object URL
     window.URL.revokeObjectURL(url);
   },
 

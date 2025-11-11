@@ -28,7 +28,8 @@ export default function BlogPage({ blogPostData }) {
       if (!window.THREE) {
         await new Promise((resolve) => {
           const threeScript = document.createElement("script");
-          threeScript.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js";
+          threeScript.src =
+            "https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js";
           threeScript.onload = resolve;
           document.body.appendChild(threeScript);
         });
@@ -38,7 +39,8 @@ export default function BlogPage({ blogPostData }) {
       if (!window.VANTA) {
         await new Promise((resolve) => {
           const vantaScript = document.createElement("script");
-          vantaScript.src = "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js";
+          vantaScript.src =
+            "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js";
           vantaScript.onload = resolve;
           document.body.appendChild(vantaScript);
         });
@@ -76,10 +78,7 @@ export default function BlogPage({ blogPostData }) {
 
   if (loading) {
     return (
-      <div
-        ref={vantaRef}
-        className="fixed inset-0 w-screen h-screen -z-10"
-      >
+      <div ref={vantaRef} className="fixed inset-0 w-screen h-screen -z-10">
         <div className="min-h-screen flex flex-col items-center justify-center">
           <h1 className="text-3xl font-bold text-yellow-100">Blog</h1>
           <p className="text-gray-300">Loading blog posts...</p>
@@ -93,7 +92,7 @@ export default function BlogPage({ blogPostData }) {
     return (
       <div
         ref={vantaRef}
-        className="fixed inset-0 w-screen h-screen -z-10"
+        className="fixed inset-0 w-screen h-screen -z-10 mt-2.5"
       >
         <div className="min-h-screen flex flex-col items-center justify-center">
           <h1 className="text-3xl font-bold text-yellow-100">Blog</h1>
@@ -106,13 +105,10 @@ export default function BlogPage({ blogPostData }) {
 
   return (
     <>
-      <div
-        ref={vantaRef}
-        className="fixed inset-0 w-screen h-screen -z-10"
-      />
+      <div ref={vantaRef} className="fixed inset-0 w-screen h-screen -z-10" />
       <div style={{ position: "relative", zIndex: 1 }}>
         <div className="min-h-screen mb-16">
-          <div className="max-w-6xl mx-auto px-6">
+          <div className="max-w-6xl mx-auto px-6 mt-4">
             <div className="mb-12 text-center">
               <motion.h1
                 initial={{ opacity: 0, scale: 0 }}
@@ -145,7 +141,7 @@ export default function BlogPage({ blogPostData }) {
                     className="bg-white/10 border border-green-400 rounded-lg p-6"
                   >
                     <div className="flex items-center text-sm text-green-500 mb-3">
-                      <Calendar className="w-4 h-4 mr-2" />
+                      <Calendar className="w-4 h-4 mr-0.5" />
                       <span>
                         {new Date(post.date).toLocaleDateString("en-US", {
                           year: "numeric",
@@ -153,8 +149,14 @@ export default function BlogPage({ blogPostData }) {
                           day: "numeric",
                         })}
                       </span>
-                      <Clock className="w-4 h-4 ml-4 mr-2" />
-                      <span>{post.readTime}</span>
+                      <Clock className="w-4 h-4 ml-4 mr-0.5" />
+                      <span>
+                        {new Date(post.date).toLocaleTimeString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}
+                      </span>
                     </div>
 
                     <h2 className="text-xl font-bold text-amber-400 mb-3">
@@ -165,14 +167,16 @@ export default function BlogPage({ blogPostData }) {
                     </p>
 
                     <div className="flex flex-wrap gap-2 mb-4">
-                      {post.tags?.slice(0, 3).map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-2 py-1 bg-white/5 text-lime-400 text-xs font-semibold rounded-full"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                      {JSON.parse(post.tags)
+                        ?.slice(0, 3)
+                        .map((tag, index) => (
+                          <span
+                            key={index}
+                            className="px-2 py-1 bg-white/5 text-lime-400 text-xs font-semibold rounded-full"
+                          >
+                            {tag}
+                          </span>
+                        ))}
                     </div>
 
                     <Link

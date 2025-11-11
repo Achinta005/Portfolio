@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronDown, X } from "lucide-react";
-import { PortfolioApiService } from "@/services/PortfolioApiService";
 
 // Custom Skill Node Component
 const SkillNode = ({
@@ -33,32 +32,34 @@ const SkillNode = ({
 
       let position = {};
 
-      if (viewportWidth < 768) { // Mobile breakpoint
+      if (viewportWidth < 768) {
+        // Mobile breakpoint
         // Center the detail card on mobile, but keep it within viewport
         const leftPosition = (viewportWidth - detailWidth) / 2;
         const maxLeft = viewportWidth - detailWidth - padding;
         const minLeft = padding;
 
         position = {
-          position: 'fixed',
+          position: "fixed",
           left: Math.max(minLeft, Math.min(leftPosition, maxLeft)),
           top: nodeRect.bottom + 8,
-          transform: 'none',
+          transform: "none",
           zIndex: 9999,
         };
 
         // If detail would go below viewport, position it above
-        if (position.top + 400 > window.innerHeight) { // Estimated detail height
+        if (position.top + 400 > window.innerHeight) {
+          // Estimated detail height
           position.top = nodeRect.top - 400 - 8;
         }
       } else {
         // Desktop positioning (original logic)
         position = {
-          position: 'absolute',
-          top: '100%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          marginTop: '8px',
+          position: "absolute",
+          top: "100%",
+          left: "50%",
+          transform: "translateX(-50%)",
+          marginTop: "8px",
           zIndex: 50,
         };
       }
@@ -201,13 +202,15 @@ backdrop-blur-xl border border-purple-500/30 rounded-xl shadow-2xl p-4 sm:p-6 w-
   );
 };
 
-const SimplifiedSkillsGrid = ({skillsData}) => {
+const SimplifiedSkillsGrid = ({ skillsData }) => {
   const [hoveredNode, setHoveredNode] = useState(null);
   const [openDetailId, setOpenDetailId] = useState(null);
   const gridRef = useRef(null);
 
+  const dataToUse = skillsData;
+
   // Flatten all skills from all categories
-  const allSkills = Object.values(skillsData).flatMap(
+  const allSkills = Object.values(dataToUse).flatMap(
     (category) => category.skills
   );
 
@@ -222,78 +225,69 @@ const SimplifiedSkillsGrid = ({skillsData}) => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-x-hidden">
-      {/* Main Container with Glass Effect */}
-      <div className="min-h-screen backdrop-blur-md bg-black/20 border border-white/10">
-        {/* Header */}
-        <div className="text-center py-8 sm:py-12 px-4">
-          <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 max-w-4xl mx-auto shadow-2xl">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4 sm:mb-6">
-              My Skills Journey
-            </h1>
-            <p className="text-gray-200 text-base sm:text-xl">
-              Click the buttons to explore skills! ✨
-            </p>
+    <>
+      <div className="min-h-screen w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 overflow-x-hidden">
+        {/* Main Container with Glass Effect */}
+        <div className="min-h-screen backdrop-blur-md bg-black/20 border border-white/10">
+          {/* Header */}
+          <div className="text-center py-8 sm:py-12 px-4">
+            <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 max-w-4xl mx-auto shadow-2xl">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4 sm:mb-6">
+                My Skills Journey
+              </h1>
+              <p className="text-gray-200 text-base sm:text-xl">
+                Click the buttons to explore skills! ✨
+              </p>
+            </div>
           </div>
-        </div>
 
-        {/* Rotating Categories Row */}
-        <div className="relative overflow-hidden w-full mb-8 sm:mb-12">
-          <div className="flex gap-4 sm:gap-6 pb-4 animate-scroll-categories">
-            {/* First set of categories */}
-            {Object.entries(skillsData).map(([category, data]) => (
-              <div
-                key={category}
-                className="flex flex-col items-center min-w-fit flex-shrink-0"
-              >
-                <h2 className="text-base sm:text-lg lg:text-2xl font-bold text-white text-center mb-4 px-3 sm:px-4 lg:px-6 py-4 sm:py-6 backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-lg min-w-[140px] sm:min-w-[160px] lg:min-w-[220px] flex justify-center items-center hover:bg-white/20 transition-all duration-300">
-                  {data.title}
-                </h2>
-              </div>
-            ))}
-            {Object.entries(skillsData).map(([category, data]) => (
-              <div
-                key={`${category}-duplicate`}
-                className="flex flex-col items-center min-w-fit flex-shrink-0"
-              >
-                <h2 className="text-base sm:text-lg lg:text-2xl font-bold text-white text-center mb-4 px-3 sm:px-4 lg:px-6 py-4 sm:py-6 backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-lg min-w-[140px] sm:min-w-[160px] lg:min-w-[220px] flex justify-center items-center hover:bg-white/20 transition-all duration-300">
-                  {data.title}
-                </h2>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Skills Grid - All Skills from All Categories */}
-        <div className="max-w-6xl mx-auto px-2 sm:px-4 pb-8 sm:pb-12">
-          <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl">
-            <div 
-              ref={gridRef}
-              className="flex justify-center gap-3 sm:gap-4 lg:gap-8 flex-wrap"
-            >
-              {allSkills.map((skill, index) => (
+          {/* Fixed Categories Row */}
+          <div className="relative w-full mb-8 sm:mb-12 px-4">
+            <div className="flex gap-4 sm:gap-6 justify-center flex-wrap max-w-6xl mx-auto">
+              {Object.entries(dataToUse).map(([category, data]) => (
                 <div
-                  key={skill.id}
-                  className="transition-all duration-300"
-                  style={{
-                    animationDelay: `${index * 100}ms`,
-                  }}
+                  key={category}
+                  className="flex flex-col items-center"
                 >
-                  <SkillNode
-                    skill={skill}
-                    onHover={setHoveredNode}
-                    isHovered={hoveredNode === skill.id}
-                    isDetailOpen={openDetailId === skill.id}
-                    toggleDetail={toggleDetail}
-                    gridRef={gridRef}
-                  />
+                  <h2 className="text-base sm:text-lg lg:text-2xl font-bold text-white text-center px-3 sm:px-4 lg:px-6 py-3 sm:py-4 backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl shadow-lg min-w-[140px] sm:min-w-40 lg:min-w-[220px] flex justify-center items-center hover:bg-white/20 transition-all duration-300">
+                    {data.title}
+                  </h2>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Skills Grid - All Skills from All Categories */}
+          <div className="max-w-6xl mx-auto px-2 sm:px-4 pb-8 sm:pb-12">
+            <div className="backdrop-blur-lg bg-white/5 border border-white/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl">
+              <div
+                ref={gridRef}
+                className="flex justify-center gap-3 sm:gap-4 lg:gap-8 flex-wrap"
+              >
+                {allSkills.map((skill, index) => (
+                  <div
+                    key={skill.id}
+                    className="transition-all duration-300"
+                    style={{
+                      animationDelay: `${index * 100}ms`,
+                    }}
+                  >
+                    <SkillNode
+                      skill={skill}
+                      onHover={setHoveredNode}
+                      isHovered={hoveredNode === skill.id}
+                      isDetailOpen={openDetailId === skill.id}
+                      toggleDetail={toggleDetail}
+                      gridRef={gridRef}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

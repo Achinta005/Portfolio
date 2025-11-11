@@ -12,7 +12,6 @@ import {
 import { useState, useEffect } from "react";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
 
-// Certificate Popup Component
 const CertificatePopup = ({ cert, isOpen, onClose }) => {
   const [zoomLevel, setZoomLevel] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
@@ -32,7 +31,6 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
 
   if (!isOpen || !cert) return null;
 
-  // Function to get proper Google Drive preview URL
   const getGoogleDrivePreviewUrl = (url) => {
     const fileIdMatch = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
     if (fileIdMatch) {
@@ -41,7 +39,6 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
     return url;
   };
 
-  // Function to get Google Drive download URL
   const getGoogleDriveDownloadUrl = (url) => {
     const fileIdMatch = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
     if (fileIdMatch) {
@@ -50,7 +47,6 @@ const CertificatePopup = ({ cert, isOpen, onClose }) => {
     return url;
   };
 
-  // Function to get document URL for display
   const getDocumentUrl = (path) => {
     if (path.includes("drive.google.com")) {
       return getGoogleDrivePreviewUrl(path);

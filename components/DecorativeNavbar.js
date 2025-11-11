@@ -34,7 +34,6 @@ const DecorativeNavbar = ({ onSectionChange, activeSection = "about" }) => {
 
   return (
     <nav className={`fixed top-2 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-xs sm:max-w-md md:max-w-lg px-2 sm:px-0`}>
-      {/* Glassmorphism Container */}
       <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-xl sm:rounded-2xl px-3 sm:px-6 md:px-8 py-2 sm:py-3 shadow-2xl">
         <div className="flex items-center justify-between sm:justify-center sm:space-x-4 md:space-x-8">
           {navItems.map((item) => (
@@ -43,15 +42,12 @@ const DecorativeNavbar = ({ onSectionChange, activeSection = "about" }) => {
               onClick={() => handleNavClick(item.id)}
               className="relative group px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-white/80 hover:text-white transition-colors duration-300 font-medium text-xs sm:text-sm flex-1 sm:flex-none text-center"
             >
-              {/* Text */}
               <span className="relative z-10">
                 {isMobile ? item.shortLabel : item.label}
               </span>
               
-              {/* Hover Background */}
               <div className="absolute inset-0 bg-white/5 rounded-md sm:rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               
-              {/* Active/Hover Gradient Glow Line */}
               <motion.div
                 initial={{ scaleX: 0, opacity: 0 }}
                 animate={{
@@ -63,7 +59,6 @@ const DecorativeNavbar = ({ onSectionChange, activeSection = "about" }) => {
                 className="absolute -bottom-0.5 sm:-bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 rounded-full origin-left"
               />
               
-              {/* Extra glow effect for active state */}
               {activeSection === item.id && (
                 <motion.div
                   initial={{ opacity: 0 }}

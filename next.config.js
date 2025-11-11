@@ -5,8 +5,8 @@ module.exports = {
       {
         protocol: 'http',
         hostname: 'localhost',
-        port: '', // Leave empty if no specific port
-        pathname: '/**', // Allow all paths
+        port: '',
+        pathname: '/**',
       },
       {
         protocol: 'https',
@@ -47,9 +47,8 @@ module.exports = {
     ],
   },
   
-  // Add API proxy for development
+
   async rewrites() {
-    // Only use proxy in development
     if (process.env.NODE_ENV === 'development') {
       return [
         {
