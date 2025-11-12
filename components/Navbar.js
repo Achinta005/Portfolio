@@ -18,7 +18,6 @@ import {
 
 const getToken = () => localStorage.getItem("admin_token");
 const setToken = (token) => localStorage.setItem("admin_token", token);
-const removeToken = () => localStorage.removeItem("admin_token");
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

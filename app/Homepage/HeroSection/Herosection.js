@@ -28,6 +28,7 @@ export default function HeroSection() {
         console.log("Access granted and token stored!");
       } else {
         console.log("Access denied");
+        localStorage.removeItem("admin_token");
       }
     } catch (err) {
       console.error("Access request failed:", err);
