@@ -37,9 +37,7 @@ export default function HeroSection() {
 
   useEffect(() => {
     setIsLoaded(true);
-    if (!localStorage.getItem("admin_token")) {
-      requestAccessToken();
-    }
+    requestAccessToken();
   }, []);
 
   useEffect(() => {
