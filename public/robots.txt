@@ -1,9 +1,0 @@
-# *
-User-agent: *
-Allow: /
-
-# Host
-Host: https://achintahazra.shop
-
-# Sitemaps
-Sitemap: https://achintahazra.shop/sitemap.xml
