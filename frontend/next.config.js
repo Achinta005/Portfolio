@@ -46,26 +46,6 @@ module.exports = {
       },
     ],
   },
-  
-
-  // async rewrites() {
-  //   if (process.env.NODE_ENV === 'development') {
-  //     return [
-  //       {
-  //         source: '/alist/:path*',
-  //         destination: 'http://localhost:3001/portfolio:path*',
-  //       },
-  //     ];
-  //   }
-  //   if (process.env.NODE_ENV === 'production') {
-  //     return [
-  //       {
-  //         source: '/alist/:path*',
-  //         destination: 'https://deploy-euyc.onrender.com/portfolio:path*',
-  //       },
-  //     ];
-  //   }
-    
-  //   return [];
-  // },
+  reactStrictMode: true,
+  swcMinify: true,
 };

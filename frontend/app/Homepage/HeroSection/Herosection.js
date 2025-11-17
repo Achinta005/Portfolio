@@ -4,14 +4,25 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import { Contact, View } from "lucide-react";
-import PdfModal from "./PdfModal";
+import dynamic from "next/dynamic";
+
+// Lazy load PdfModal
+const PdfModal = dynamic(() => import("./PdfModal"), {
+  loading: () => <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+    <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
+  </div>,
+  ssr: false,
+});
 
 export default function HeroSection() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [pdfUrl, setPdfUrl] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const vantaRef = useRef(null);
   const vantaEffect = useRef(null);
+  const [vantaLoaded, setVantaLoaded] = useState(false);
+
   const requestAccessToken = async (user_id) => {
     try {
       const res = await fetch(
@@ -25,9 +36,7 @@ export default function HeroSection() {
       if (res.ok) {
         const data = await res.json();
         localStorage.setItem("admin_token", data.token);
-        console.log("Access granted and token stored!");
       } else {
-        console.log("Access denied");
         localStorage.removeItem("admin_token");
       }
     } catch (err) {
@@ -40,24 +49,36 @@ export default function HeroSection() {
     requestAccessToken();
   }, []);
 
+  // Load Vanta.js lazily after component mounts
   useEffect(() => {
-    const loadVanta = async () => {
+    // Delay Vanta loading to prioritize content
+    const timer = setTimeout(() => {
+      loadVanta();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const loadVanta = async () => {
+    try {
       if (!window.THREE) {
-        await new Promise((resolve) => {
+        await new Promise((resolve, reject) => {
           const threeScript = document.createElement("script");
           threeScript.src =
             "https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js";
           threeScript.onload = resolve;
+          threeScript.onerror = reject;
           document.body.appendChild(threeScript);
         });
       }
 
       if (!window.VANTA) {
-        await new Promise((resolve) => {
+        await new Promise((resolve, reject) => {
           const vantaScript = document.createElement("script");
           vantaScript.src =
             "https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js";
           vantaScript.onload = resolve;
+          vantaScript.onerror = reject;
           document.body.appendChild(vantaScript);
         });
       }
@@ -79,11 +100,14 @@ export default function HeroSection() {
           maxDistance: 8.0,
           spacing: 18.0,
         });
+        setVantaLoaded(true);
       }
-    };
+    } catch (error) {
+      console.error("Failed to load Vanta:", error);
+    }
+  };
 
-    loadVanta();
-
+  useEffect(() => {
     return () => {
       if (vantaEffect.current) {
         vantaEffect.current.destroy();
@@ -109,31 +133,31 @@ export default function HeroSection() {
     visible: {
       opacity: 1,
       transition: {
-        delayChildren: 0.2,
-        staggerChildren: 0.15,
+        delayChildren: 0.1,
+        staggerChildren: 0.1,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { y: 30, opacity: 0 },
+    hidden: { y: 20, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.6,
+        duration: 0.5,
         ease: "easeOut",
       },
     },
   };
 
   const mobileItemVariants = {
-    hidden: { opacity: 0, x: -50 },
+    hidden: { opacity: 0, x: -30 },
     visible: {
       opacity: 1,
       x: 0,
       transition: {
-        duration: 0.5,
+        duration: 0.4,
         ease: "easeOut",
       },
     },
@@ -144,6 +168,11 @@ export default function HeroSection() {
       ref={vantaRef}
       className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 lg:-top-8 overflow-hidden"
     >
+      {/* Fallback gradient background while Vanta loads */}
+      {!vantaLoaded && (
+        <div className="absolute inset-0 bg-gradient-to-br from-black via-slate-900 to-black" />
+      )}
+      
       <div className="absolute inset-0 bg-black/40 z-0" />
 
       <motion.div
@@ -230,6 +259,11 @@ export default function HeroSection() {
                   className="w-full h-full rounded-full overflow-hidden bg-black"
                   whileHover={{ scale: 1.02 }}
                 >
+                  {!imageLoaded && (
+                    <div className="w-full h-full flex items-center justify-center bg-slate-900">
+                      <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  )}
                   <Image
                     src="https://res.cloudinary.com/dc1fkirb4/image/upload/v1755695343/profile_kxt3ue.png"
                     alt="Achinta Hazra"
@@ -238,6 +272,8 @@ export default function HeroSection() {
                     height={320}
                     priority
                     sizes="320px"
+                    onLoad={() => setImageLoaded(true)}
+                    style={{ display: imageLoaded ? 'block' : 'none' }}
                   />
                 </motion.div>
               </motion.div>

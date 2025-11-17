@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev":"nodemon server.js"
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +24,7 @@
     "mongoose": "^8.19.3",
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0",
-    "mysql2": "^3.15.3"
+    "mysql2": "^3.15.3",
+    "nodemon": "^3.1.11"
   }
 }

@@ -1,9 +1,23 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { AnimatedTestimonials } from "@/components/ui/animatedProjects";
-import useIsMobile from "@/components/useIsMobile";
-import { PortfolioApiService } from "@/services/PortfolioApiService";
+import React, { useState, useEffect, useMemo } from "react";
+import dynamic from "next/dynamic";
+
+// Lazy load AnimatedTestimonials
+const AnimatedTestimonials = dynamic(
+  () => import("@/components/ui/animatedProjects").then(mod => ({ default: mod.AnimatedTestimonials })),
+  {
+    loading: () => (
+      <div className="flex justify-center items-center h-96">
+        <div className="text-center space-y-4">
+          <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-gray-400">Loading testimonials...</p>
+        </div>
+      </div>
+    ),
+    ssr: false,
+  }
+);
 
 const shuffleArray = (array) => {
   const newArray = [...array];
@@ -17,12 +31,14 @@ const shuffleArray = (array) => {
 export default function ProjectsGrid({ projectsData }) {
   const [shuffledProjects, setShuffledProjects] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [isLoading, setIsLoading] = useState(true);
 
-  const categories = ["All", "Web Development", "Machine Learning"];
+  const categories = useMemo(() => ["All", "Web Development", "Machine Learning"], []);
 
   useEffect(() => {
     if (projectsData && projectsData.length > 0) {
       setShuffledProjects(shuffleArray(projectsData));
+      setIsLoading(false);
     }
   }, [projectsData]);
 
@@ -33,41 +49,44 @@ export default function ProjectsGrid({ projectsData }) {
     }
   };
 
-  const currentProjects =
-    selectedCategory === "All"
+  const currentProjects = useMemo(() => {
+    return selectedCategory === "All"
       ? shuffledProjects
       : projectsData.filter((project) => project.category === selectedCategory);
+  }, [selectedCategory, shuffledProjects, projectsData]);
 
-  const testimonials = currentProjects.map((project) => {
-    let techList = "No technologies listed";
-    try {
-      if (Array.isArray(project.technologies)) {
-        techList = project.technologies.join(", ");
-      } else {
-        const parsedTech = JSON.parse(project.technologies);
-        if (Array.isArray(parsedTech)) {
-          techList = parsedTech.join(", ");
+  const testimonials = useMemo(() => {
+    return currentProjects.map((project) => {
+      let techList = "No technologies listed";
+      try {
+        if (Array.isArray(project.technologies)) {
+          techList = project.technologies.join(", ");
+        } else {
+          const parsedTech = JSON.parse(project.technologies);
+          if (Array.isArray(parsedTech)) {
+            techList = parsedTech.join(", ");
+          }
         }
+      } catch (err) {
+        techList = project.technologies || "No technologies listed";
       }
-    } catch (err) {
-      techList = project.technologies || "No technologies listed";
-    }
 
-    const isMachineLearning = project.category === "Machine Learning";
+      const isMachineLearning = project.category === "Machine Learning";
 
-    return {
-      quote: project.description || "No description available",
-      name: project.title || "Untitled Project",
-      src: project.image || "/placeholder-image.jpg",
-      githubUrl: project.github_url,
-      liveUrl: project.live_url,
-      designation: techList,
-      category: project.category,
-      accuracy: isMachineLearning ? project.model_accuracy : undefined,
-      features: isMachineLearning ? project.model_features : undefined,
-      showAllButtons: isMachineLearning,
-    };
-  });
+      return {
+        quote: project.description || "No description available",
+        name: project.title || "Untitled Project",
+        src: project.image || "/placeholder-image.jpg",
+        githubUrl: project.github_url,
+        liveUrl: project.live_url,
+        designation: techList,
+        category: project.category,
+        accuracy: isMachineLearning ? project.model_accuracy : undefined,
+        features: isMachineLearning ? project.model_features : undefined,
+        showAllButtons: isMachineLearning,
+      };
+    });
+  }, [currentProjects]);
 
   return (
     <section className="relative py-8 sm:py-12 lg:py-16">
@@ -97,11 +116,14 @@ export default function ProjectsGrid({ projectsData }) {
             </div>
 
             <div className="relative min-h-[400px] sm:min-h-[500px]">
-              {projectsData.length === 0 ? (
+              {isLoading ? (
                 <div className="flex justify-center items-center h-64">
-                  <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto mb-4"></div>
-                    <div className="text-gray-400 text-lg">
+                  <div className="text-center space-y-4">
+                    <div className="relative w-16 h-16 mx-auto">
+                      <div className="absolute inset-0 border-4 border-transparent border-t-purple-500 border-r-pink-500 rounded-full animate-spin" />
+                      <div className="absolute inset-2 border-4 border-transparent border-t-blue-500 border-r-purple-500 rounded-full animate-spin" style={{ animationDirection: 'reverse' }} />
+                    </div>
+                    <div className="text-gray-400 text-lg font-medium bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                       Loading projects...
                     </div>
                   </div>

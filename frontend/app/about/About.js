@@ -1,22 +1,86 @@
 "use client";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Header from "@/components/Navbar";
-import AboutHero from "./AboutHero";
-import EducationSection from "./EducationSection";
-import CertificationSection from "./CertificationSection";
-import InteractiveSkillsDisplay from "./InteractiveSkillsDisplay";
-import DecorativeNavbar from "@/components/DecorativeNavbar";
-import SectionIndicators from "../../components/SectionIndicator";
+import dynamic from "next/dynamic";
+
+// Lazy load all components
+const Header = dynamic(() => import("@/components/Navbar"), {
+  loading: () => <div className="h-16 bg-black/20 animate-pulse" />,
+});
+
+const AboutHero = dynamic(() => import("./AboutHero"), {
+  loading: () => <SectionLoadingState section="About Me" />,
+  ssr: false,
+});
+
+const EducationSection = dynamic(() => import("./EducationSection"), {
+  loading: () => <SectionLoadingState section="Education" />,
+  ssr: false,
+});
+
+const CertificationSection = dynamic(() => import("./CertificationSection"), {
+  loading: () => <SectionLoadingState section="Certifications" />,
+  ssr: false,
+});
+
+const InteractiveSkillsDisplay = dynamic(() => import("./InteractiveSkillsDisplay"), {
+  loading: () => <SectionLoadingState section="Skills" />,
+  ssr: false,
+});
+
+const DecorativeNavbar = dynamic(() => import("@/components/DecorativeNavbar"), {
+  loading: () => null,
+});
+
+const SectionIndicators = dynamic(() => import("../../components/SectionIndicator"), {
+  loading: () => null,
+});
+
+// Section loading state component
+function SectionLoadingState({ section }) {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
+      <div className="text-center space-y-6">
+        {/* Animated icon */}
+        <div className="relative w-24 h-24 mx-auto">
+          <div className="absolute inset-0 border-4 border-transparent border-t-purple-500 border-r-pink-500 rounded-full animate-spin" />
+          <div className="absolute inset-2 border-4 border-transparent border-t-blue-500 border-r-purple-500 rounded-full animate-spin" style={{ animationDirection: 'reverse' }} />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full animate-pulse" />
+          </div>
+        </div>
+
+        {/* Loading text */}
+        <div>
+          <h3 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
+            Loading {section}
+          </h3>
+          <div className="flex items-center justify-center gap-2">
+            <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" />
+            <div className="w-2 h-2 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
+            <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function About({ skillsData, educationData, certificateData }) {
   const [activeSection, setActiveSection] = useState("about");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSectionChange = (sectionId) => {
     setActiveSection(sectionId);
   };
 
   useEffect(() => {
+    if (!mounted) return;
+
     const handleKeyPress = (event) => {
       const sections = ["about", "skills", "education", "certifications"];
       const currentIndex = sections.indexOf(activeSection);
@@ -41,7 +105,11 @@ export default function About({ skillsData, educationData, certificateData }) {
 
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [activeSection]);
+  }, [activeSection, mounted]);
+
+  if (!mounted) {
+    return <SectionLoadingState section="Page" />;
+  }
 
   return (
     <>
