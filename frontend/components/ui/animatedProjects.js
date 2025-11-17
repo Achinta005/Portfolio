@@ -73,7 +73,7 @@ export const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-center w-full max-w-6xl">
         {/* Image Container */}
         <div className="flex items-center justify-center order-1 lg:order-1">
-          <div className="relative h-48 w-full max-w-sm sm:h-56 sm:max-w-md lg:h-64 lg:max-w-lg">
+          <div className="relative w-full h-64 sm:h-72 lg:h-80 max-w-xl">
             <AnimatePresence>
               {testimonials.map((testimonial, index) => (
                 <motion.div
@@ -110,7 +110,7 @@ export const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
                     src={testimonial.src}
                     alt={testimonial.name}
                     draggable={false}
-                    className="h-full w-full rounded-xl object-cover object-center shadow-xl"
+                    className="w-full h-full rounded-xl object-cover object-center shadow-xl"
                   />
                 </motion.div>
               ))}
@@ -169,32 +169,32 @@ export const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
 
               {/* ML Buttons - Only show when description is expanded */}
               {showFullDescription && currentTestimonial.showAllButtons && (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3, delay: 0.1 }}
                   className="flex flex-wrap gap-4 mt-4 pt-3 border-t border-purple-400/30"
                 >
                   {currentTestimonial.accuracy && (
-                    <a
-                      className="flex items-center text-amber-400 transition-colors group"
-                    >
+                    <a className="flex items-center text-amber-400 transition-colors group">
                       <div className="w-4 h-4 flex items-center justify-center mr-2 group-hover:scale-110 transition-transform">
                         <span className="text-sm">📊</span>
                       </div>
-                      <span className="text-sm font-medium">Accuracy :&nbsp;</span>
+                      <span className="text-sm font-medium">
+                        Accuracy :&nbsp;
+                      </span>
                       <span> {currentTestimonial.accuracy} %</span>
                     </a>
                   )}
 
                   {currentTestimonial.features && (
-                    <a
-                      className="flex items-center text-amber-400 transition-colors group"
-                    >
+                    <a className="flex items-center text-amber-400 transition-colors group">
                       <div className="w-4 h-4 flex items-center justify-center mr-2 group-hover:scale-110 transition-transform">
                         <span className="text-sm">⚡</span>
                       </div>
-                      <span className="text-sm font-medium">No of Features :&nbsp;</span>
+                      <span className="text-sm font-medium">
+                        No of Features :&nbsp;
+                      </span>
                       <span> {currentTestimonial.features}</span>
                     </a>
                   )}
