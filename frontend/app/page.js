@@ -76,7 +76,10 @@ export default function Page() {
 
   return (
     <>
-      <LoadingBar />
+      <Suspense fallback={null}>
+  <LoadingBar />
+</Suspense>
+
       
       <style jsx global>{`
         * {

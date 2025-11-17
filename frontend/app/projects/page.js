@@ -14,8 +14,11 @@ export const dynamic = "force-dynamic";
 function ProjectsLoadingSkeleton() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
-      <LoadingBar />
-      
+
+    <Suspense fallback={null}>
+  <LoadingBar />
+</Suspense>
+
       {/* Animated background */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-purple-400 rounded-full animate-ping opacity-40" />

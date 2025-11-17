@@ -1,12 +1,14 @@
-import React from 'react'
-import Herosection from './HeroSection/Herosection'
+"use client";
 
-const page = () => {
+import React, { Suspense } from "react";
+import Herosection from './HeroSection/Herosection';
+
+const Page = () => {
   return (
-    <div>
-      <Herosection/>
-    </div>
-  )
-}
+    <Suspense fallback={null}>
+      <Herosection />
+    </Suspense>
+  );
+};
 
-export default page
+export default Page;
