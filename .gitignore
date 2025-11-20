@@ -26,7 +26,7 @@ next-env.d.ts
 /frontend/node_modules/
 /frontend/build/
 /frontend/coverage/
-/frontend/.env*
+/frontend/.env
 /frontend/.pnp
 /frontend/.pnp.*
 /frontend/.DS_Store
