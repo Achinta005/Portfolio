@@ -41,11 +41,25 @@ const AdminPage = () => {
 
   useEffect(() => {
     const userData = getUserFromToken();
+
+    if (!userData || !userData.userId) {
+      setipAddress("User Not Logged In");
+      return;
+    }
+
     PortfolioApiService.Fetch_IP(userData.userId)
-      .then((data) => setipAddress(data.ip))
+      .then((result) => {
+        console.log("IP Fetch Result:", result);
+
+        if (result && !result.error) {
+          setipAddress(result.ip || "Not Available");
+        } else {
+          setipAddress("Not Available");
+        }
+      })
       .catch((error) => {
         console.error("Error fetching IP:", error);
-        setipAddress("Currently not Available !");
+        setipAddress("Currently Not Available !");
       });
   }, []);
 

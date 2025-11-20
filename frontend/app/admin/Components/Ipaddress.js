@@ -11,7 +11,7 @@ const Ipaddress = () => {
       try {
         const response = await PortfolioApiService.ViewIp();
         const data = await response;
-        setIpAddresses(data);
+        setIpAddresses(data.data || []);
         setError(null);
       } catch (error) {
         console.error("Error fetching IP addresses:", error);
@@ -26,13 +26,13 @@ const Ipaddress = () => {
   const formatTimestamp = (timestamp) => {
     if (!timestamp) return "N/A";
     const date = new Date(timestamp);
-    return date.toLocaleString('en-IN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
+    return date.toLocaleString("en-IN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
     });
   };
 
@@ -60,7 +60,9 @@ const Ipaddress = () => {
         <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-blue-600">
           IP Address Records
         </h1>
-        <p className="text-gray-600 mt-2">Total Records: {ipAddresses.length}</p>
+        <p className="text-gray-600 mt-2">
+          Total Records: {ipAddresses.length}
+        </p>
       </header>
 
       <section className="w-full overflow-x-auto shadow-2xl rounded-lg">
@@ -96,7 +98,7 @@ const Ipaddress = () => {
                   className="hover:bg-gradient-to-r hover:from-green-50 hover:to-blue-50 transition-all duration-200 ease-in-out"
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {ip.id || "N/A"}
+                    {ip._id || "N/A"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 font-semibold">
                     {ip.username || "N/A"}

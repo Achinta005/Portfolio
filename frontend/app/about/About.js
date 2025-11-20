@@ -72,7 +72,8 @@ export default function About({ skillsData, educationData, certificateData }) {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    console.log("SKILL:",skillsData)
+  }, [skillsData]);
 
   const handleSectionChange = (sectionId) => {
     setActiveSection(sectionId);

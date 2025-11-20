@@ -41,26 +41,27 @@ const createStyledHTML = (content) => {
   `;
 
   const elementStyles = {
-    h1: 'font-size: 2.5em; font-weight: 700; color: #ffffff; margin: 1.5em 0 0.75em 0; line-height: 1.2;',
-    h2: 'font-size: 2em; font-weight: 600; color: #60a5fa; margin: 1.5em 0 0.75em 0; line-height: 1.3; border-bottom: 2px solid rgba(96, 165, 250, 0.3); padding-bottom: 0.5em;',
-    h3: 'font-size: 1.5em; font-weight: 600; color: #7dd3fc; margin: 1.25em 0 0.5em 0; line-height: 1.4;',
-    h4: 'font-size: 1.25em; font-weight: 600; color: #93c5fd; margin: 1em 0 0.5em 0;',
-    p: 'margin: 1em 0; color: #d1d5db; font-size: 1.05em;',
-    ul: 'margin: 1em 0; padding-left: 2em; color: #d1d5db;',
-    ol: 'margin: 1em 0; padding-left: 2em; color: #d1d5db;',
-    li: 'margin: 0.5em 0; line-height: 1.7;',
-    a: 'color: #60a5fa; text-decoration: underline;',
-    strong: 'font-weight: 700; color: #ffffff;',
-    em: 'font-style: italic; color: #a5b4fc;',
-    code: 'background-color: rgba(0, 0, 0, 0.3); color: #4ade80; padding: 0.2em 0.4em; border-radius: 0.25em; font-family: monospace; font-size: 0.9em;',
-    pre: 'background-color: rgba(0, 0, 0, 0.4); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 0.5em; padding: 1em; overflow-x: auto; margin: 1.5em 0;',
-    blockquote: 'border-left: 4px solid #8b5cf6; padding-left: 1em; margin: 1.5em 0; color: #c4b5fd; font-style: italic; background-color: rgba(139, 92, 246, 0.05); padding: 1em;'
+    h1: "font-size: 2.5em; font-weight: 700; color: #ffffff; margin: 1.5em 0 0.75em 0; line-height: 1.2;",
+    h2: "font-size: 2em; font-weight: 600; color: #60a5fa; margin: 1.5em 0 0.75em 0; line-height: 1.3; border-bottom: 2px solid rgba(96, 165, 250, 0.3); padding-bottom: 0.5em;",
+    h3: "font-size: 1.5em; font-weight: 600; color: #7dd3fc; margin: 1.25em 0 0.5em 0; line-height: 1.4;",
+    h4: "font-size: 1.25em; font-weight: 600; color: #93c5fd; margin: 1em 0 0.5em 0;",
+    p: "margin: 1em 0; color: #d1d5db; font-size: 1.05em;",
+    ul: "margin: 1em 0; padding-left: 2em; color: #d1d5db;",
+    ol: "margin: 1em 0; padding-left: 2em; color: #d1d5db;",
+    li: "margin: 0.5em 0; line-height: 1.7;",
+    a: "color: #60a5fa; text-decoration: underline;",
+    strong: "font-weight: 700; color: #ffffff;",
+    em: "font-style: italic; color: #a5b4fc;",
+    code: "background-color: rgba(0, 0, 0, 0.3); color: #4ade80; padding: 0.2em 0.4em; border-radius: 0.25em; font-family: monospace; font-size: 0.9em;",
+    pre: "background-color: rgba(0, 0, 0, 0.4); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: 0.5em; padding: 1em; overflow-x: auto; margin: 1.5em 0;",
+    blockquote:
+      "border-left: 4px solid #8b5cf6; padding-left: 1em; margin: 1.5em 0; color: #c4b5fd; font-style: italic; background-color: rgba(139, 92, 246, 0.05); padding: 1em;",
   };
 
   let styledContent = content;
-  
+
   Object.entries(elementStyles).forEach(([tag, style]) => {
-    const regex = new RegExp(`<${tag}([^>]*)>`, 'g');
+    const regex = new RegExp(`<${tag}([^>]*)>`, "g");
     styledContent = styledContent.replace(regex, `<${tag} style="${style}"$1>`);
   });
 
@@ -68,14 +69,14 @@ const createStyledHTML = (content) => {
 };
 
 const enhanceContentWithAI = async (plainText) => {
-try {
-    const response = await PortfolioApiService.Ai_enhance(plainText)
+  try {
+    const response = await PortfolioApiService.Ai_enhance(plainText);
 
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.error || "AI API failed");
     }
-    
+
     const result = await response.json();
     return result.summary || plainText;
   } catch (error) {
@@ -86,18 +87,21 @@ try {
 
 const enhanceContentLocally = (html) => {
   let enhanced = html;
-  
-  enhanced = enhanced.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-  
-  enhanced = enhanced.replace(/`([^`]+)`/g, '<code>$1</code>');
-  
-  enhanced = enhanced.replace(/^[-*]\s+(.+)$/gm, '<li>$1</li>');
-  
-  enhanced = enhanced.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
-  
-  enhanced = enhanced.replace(/\n\n/g, '</p><p>');
+
+  enhanced = enhanced.replace(
+    /```([\s\S]*?)```/g,
+    "<pre><code>$1</code></pre>"
+  );
+
+  enhanced = enhanced.replace(/`([^`]+)`/g, "<code>$1</code>");
+
+  enhanced = enhanced.replace(/^[-*]\s+(.+)$/gm, "<li>$1</li>");
+
+  enhanced = enhanced.replace(/(<li>.*<\/li>\n?)+/g, "<ul>$&</ul>");
+
+  enhanced = enhanced.replace(/\n\n/g, "</p><p>");
   enhanced = `<p>${enhanced}</p>`;
-  
+
   return enhanced;
 };
 
@@ -120,22 +124,21 @@ function WordDocProcessor({ onSubmit }) {
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-      
+
       const result = await mammoth.convertToHtml({ arrayBuffer });
       let htmlContent = result.value;
 
       if (useAI) {
-        const plainText = htmlContent.replace(/<[^>]*>/g, ' ').trim();
+        const plainText = htmlContent.replace(/<[^>]*>/g, " ").trim();
         const enhancedText = await enhanceContentWithAI(plainText);
         htmlContent = `<p>${enhancedText}</p>`;
       }
 
       htmlContent = enhanceContentLocally(htmlContent);
-      
+
       const styledHTML = createStyledHTML(htmlContent);
-      
+
       onSubmit(styledHTML);
-      
     } catch (error) {
       console.error("Error processing Word document:", error);
       alert("Failed to process Word document. Please try again.");
@@ -157,9 +160,17 @@ function WordDocProcessor({ onSubmit }) {
             ) : (
               <>
                 <FileText className="w-10 h-10 text-blue-400 mb-2" />
-                <span className="text-sm text-gray-300 font-medium">Upload Word Document</span>
-                <span className="text-xs text-gray-400 mt-1">(.docx or .doc)</span>
-                {fileName && <span className="text-xs text-green-400 mt-2">{fileName}</span>}
+                <span className="text-sm text-gray-300 font-medium">
+                  Upload Word Document
+                </span>
+                <span className="text-xs text-gray-400 mt-1">
+                  (.docx or .doc)
+                </span>
+                {fileName && (
+                  <span className="text-xs text-green-400 mt-2">
+                    {fileName}
+                  </span>
+                )}
               </>
             )}
           </div>
@@ -181,14 +192,18 @@ function WordDocProcessor({ onSubmit }) {
           onChange={(e) => setUseAI(e.target.checked)}
           className="w-4 h-4 text-blue-600 rounded"
         />
-        <label htmlFor="useAI" className="text-gray-300 flex items-center gap-1">
+        <label
+          htmlFor="useAI"
+          className="text-gray-300 flex items-center gap-1"
+        >
           <Sparkles className="w-4 h-4 text-yellow-400" />
           Enhance with AI (requires API key)
         </label>
       </div>
 
       <div className="text-xs text-gray-400 bg-black/20 p-3 rounded border border-gray-600">
-        <strong className="text-gray-300">Note:</strong> Your Word document will be automatically converted to beautiful HTML with inline CSS styling. 
+        <strong className="text-gray-300">Note:</strong> Your Word document will
+        be automatically converted to beautiful HTML with inline CSS styling.
         {useAI && " AI enhancement requires a free Hugging Face API token."}
       </div>
     </div>
@@ -234,37 +249,42 @@ export function BlogUpload() {
   const handleTagsChange = (e) => {
     setFormData((prev) => ({
       ...prev,
-      tags: e.target.value.split(",").map((tag) => tag.trim()).filter(Boolean),
+      tags: e.target.value
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean),
     }));
   };
 
-const handleSubmit = async () => {
-  if (!formData.content) {
-    setMessage("✗ Please upload a Word document first");
-    return;
-  }
-
-  setLoading(true);
-  try {
-    const response = await PortfolioApiService.Upload_blog(formData)
-
-    if (!response.ok) {
-      const errorData = await response;
-      throw new Error(errorData.message || "Failed to upload blog post");
+  const handleSubmit = async () => {
+    if (!formData.content) {
+      setMessage("✗ Please upload a Word document first");
+      return;
     }
 
-    const result = await response;
-    console.log("Blog created:", result);
+    setLoading(true);
 
-    setMessage(`✓ Blog post "${result.title}" created successfully!`);
-  } catch (err) {
-    console.error("Error submitting blog:", err);
-    setMessage(`✗ ${err.message}`);
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      const result = await PortfolioApiService.Upload_blog(formData);
 
+      if (!result || result.error) {
+        throw new Error(result?.message || "Failed to upload blog post");
+      }
+
+      console.log("Blog created:", result);
+
+      setMessage(
+        `✓ Blog post "${
+          result.title
+        }" created successfully in ${result.from?.toUpperCase()}!`
+      );
+    } catch (err) {
+      console.error("Error submitting blog:", err);
+      setMessage(`✗ ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6 bg-gray-400 rounded-lg space-y-6">
@@ -275,7 +295,11 @@ const handleSubmit = async () => {
         </h3>
         <WordDocProcessor onSubmit={handleWordDocSubmit} />
         {message && (
-          <p className={`mt-3 text-sm font-medium ${message.includes("✗") ? "text-red-600" : "text-green-600"}`}>
+          <p
+            className={`mt-3 text-sm font-medium ${
+              message.includes("✗") ? "text-red-600" : "text-green-600"
+            }`}
+          >
             {message}
           </p>
         )}
@@ -294,7 +318,7 @@ const handleSubmit = async () => {
           <input
             type="text"
             name="slug"
-            placeholder='Enter a Url Friendly Slug (e.g., my-blog-post)'
+            placeholder="Enter a Url Friendly Slug (e.g., my-blog-post)"
             value={formData.slug}
             onChange={handleChange}
             className="w-full text-purple-700 px-4 py-3 border border-blue-800 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-[1em] font-semibold"
@@ -365,11 +389,14 @@ const handleSubmit = async () => {
                             <div className="flex items-center">
                               <Calendar className="w-4 h-4 mr-2" />
                               <span>
-                                {new Date(formData.date).toLocaleDateString("en-US", {
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                })}
+                                {new Date(formData.date).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                  }
+                                )}
                               </span>
                             </div>
                             <div className="flex items-center">
@@ -394,15 +421,21 @@ const handleSubmit = async () => {
                       )}
 
                       {formData.content ? (
-                        <div dangerouslySetInnerHTML={{ __html: formData.content }} />
+                        <div
+                          dangerouslySetInnerHTML={{ __html: formData.content }}
+                        />
                       ) : (
-                        <p className="text-gray-400 text-sm">Preview will appear here...</p>
+                        <p className="text-gray-400 text-sm">
+                          Preview will appear here...
+                        </p>
                       )}
                     </article>
                   ) : (
                     <div className="flex flex-col items-center justify-center py-12 text-gray-400">
                       <FileText className="w-12 h-12 mb-3 opacity-50" />
-                      <p className="text-sm">Upload a Word document to see preview</p>
+                      <p className="text-sm">
+                        Upload a Word document to see preview
+                      </p>
                     </div>
                   )}
                 </div>

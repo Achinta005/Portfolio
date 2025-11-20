@@ -1,97 +1,183 @@
 const express = require("express");
 const router = express.Router();
-const mysql = require("mysql2/promise");
 const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
 const dotenv = require("dotenv");
 dotenv.config();
 
-// Multer setup for handling multipart/form-data
+const getMySQLConnection = require("../config/mysqldb");
+const connectMongoDB = require("../config/mongodb");
+const ProjectModelMongo = require("../models/projectmodel");
+
 const upload = multer({ storage: multer.memoryStorage() });
 
-// MySQL connection helper
-const getConnection = async () => {
-  return mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT || 3306,
-    ssl: {
-      rejectUnauthorized: true // verify server certificate
-    }
-  });
-};
-
-
-// Cloudinary configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// -------- GET all projects --------
+
+// =======================================================================
+// 📌 GET PROJECTS → FASTEST DB + FALLBACK (CLEAN LOGGING)
+// =======================================================================
 router.get("/projects_data", async (req, res) => {
-  let conn;
+  console.log("\n[GET] /projects_data");
+
   try {
-    conn = await getConnection();
-    const [rows] = await conn.execute("SELECT * FROM project_model ORDER BY order_position DESC");
-    res.status(200).json(rows);
+    await connectMongoDB();
+    console.log("MongoDB connected");
+
+    // ---------- MYSQL PROMISE ----------
+    const mysqlPromise = new Promise(async (resolve, reject) => {
+      try {
+        const conn = await getMySQLConnection();
+        const [rows] = await conn.execute(
+          "SELECT * FROM project_model ORDER BY order_position DESC"
+        );
+        resolve({ source: "mysql", data: rows });
+      } catch (err) {
+        reject({ source: "mysql", error: err });
+      }
+    });
+
+    // ---------- MONGO PROMISE ----------
+    const mongoPromise = new Promise(async (resolve, reject) => {
+      try {
+        const docs = await ProjectModelMongo.find().sort({ order: -1 });
+        resolve({ source: "mongodb", data: docs });
+      } catch (err) {
+        reject({ source: "mongodb", error: err });
+      }
+    });
+
+    // ---------- RACE ----------
+    let fastest;
+    try {
+      fastest = await Promise.race([mysqlPromise, mongoPromise]);
+      console.log("✔ Fastest DB:", fastest.source);
+
+      return res.status(200).json({
+        from: fastest.source,
+        data: fastest.data,
+      });
+
+    } catch (err) {
+      console.log("⚠ Fastest DB failed:", err.source);
+
+      const fallback =
+        err.source === "mysql" ? await mongoPromise : await mysqlPromise;
+
+      console.log("✔ Fallback DB:", fallback.source);
+
+      return res.status(200).json({
+        from: fallback.source,
+        data: fallback.data,
+        fallback: true,
+      });
+    }
   } catch (err) {
-    console.error("Error fetching projects:", err);
-    res.status(500).json({ error: "Failed to fetch projects", message: err.message });
-  } finally {
-    if (conn) await conn.end();
+    console.log("❌ GET Error:", err.message);
+    return res.status(500).json({
+      error: "Failed to fetch projects",
+      message: err.message,
+    });
   }
 });
 
-// -------- POST upload a project --------
+
+// =======================================================================
+// 📌 POST PROJECT UPLOAD → STORE IN MYSQL + MONGO (CLEAN LOGGING)
+// =======================================================================
 router.post("/project_upload", upload.single("image"), async (req, res) => {
+  console.log("\n[POST] /project_upload");
   let conn;
+
   try {
+    await connectMongoDB();
+    console.log("MongoDB connected");
+
+    const { title, description, category, technologies, githubUrl, liveUrl, order } =
+      req.body;
     const file = req.file;
-    const { category, title, technologies, liveUrl, githubUrl, description, order } = req.body;
 
     if (!file) {
       return res.status(400).json({ error: "Image is required" });
     }
 
-    // Upload to Cloudinary
-    const uploadResult = await cloudinary.uploader.upload_stream(
-      { folder: "Uploaded_Images", resource_type: "image" },
-      async (error, result) => {
-        if (error) {
-          return res.status(500).json({ error: error.message });
+    cloudinary.uploader
+      .upload_stream(
+        { folder: "Uploaded_Images", resource_type: "image" },
+        async (error, result) => {
+          if (error) return res.status(500).json({ error: error.message });
+
+          const image_url = result.secure_url;
+          const techList = technologies
+            ? technologies.split(",").map((t) => t.trim())
+            : [];
+
+          // --------- MySQL Insert ----------
+          const mysqlData = [
+            title,
+            description,
+            category,
+            JSON.stringify(techList),
+            githubUrl,
+            liveUrl,
+            image_url,
+            order,
+          ];
+
+          const mysqlInsert = new Promise(async (resolve, reject) => {
+            try {
+              conn = await getMySQLConnection();
+              const [insertResult] = await conn.execute(
+                `INSERT INTO project_model 
+                 (title, description, category, technologies, github_url, live_url, image, order_position, created_at, updated_at)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+                mysqlData
+              );
+              console.log("✔ MySQL insert:", insertResult.insertId);
+              resolve(insertResult.insertId);
+            } catch (err) {
+              console.log("❌ MySQL insert error:", err.message);
+              reject(err);
+            }
+          });
+
+          // --------- MongoDB Insert ----------
+          const mongoInsert = ProjectModelMongo.create({
+            title,
+            description,
+            category,
+            technologies: techList,
+            githubUrl,
+            liveUrl,
+            image: image_url,
+            order,
+          })
+            .then((doc) => {
+              console.log("✔ Mongo insert:", doc._id);
+              return doc;
+            })
+            .catch((err) => {
+              console.log("❌ Mongo insert error:", err.message);
+              throw err;
+            });
+
+          const results = await Promise.allSettled([mysqlInsert, mongoInsert]);
+
+          res.status(200).json({
+            message: "Project stored in both databases",
+            mysql: results[0],
+            mongo: results[1],
+          });
         }
+      )
+      .end(file.buffer);
 
-        const image_url = result.secure_url;
-
-        // Convert technologies string to JSON array
-        const json_technologies = technologies
-          ? JSON.stringify(technologies.split(",").map((tech) => tech.trim()).filter(Boolean))
-          : "[]";
-
-        // Insert into DB
-        conn = await getConnection();
-        const [insertResult] = await conn.execute(
-          `INSERT INTO project_model 
-           (title, description, category, technologies, github_url, live_url, image, order_position, created_at, updated_at)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
-          [title, description, category, json_technologies, githubUrl, liveUrl, image_url, order]
-        );
-
-        res.status(200).json({
-          message: "Uploaded successfully",
-          project_id: insertResult.insertId,
-        });
-      }
-    );
-
-    // Write the buffer to the upload_stream
-    uploadResult.end(file.buffer);
   } catch (err) {
-    console.error("Error:", err);
+    console.log("❌ POST Error:", err.message);
     res.status(500).json({ error: err.message });
   } finally {
     if (conn) await conn.end();

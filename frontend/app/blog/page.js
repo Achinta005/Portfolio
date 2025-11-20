@@ -9,7 +9,7 @@ export default async function BlogPostPage() {
   try {
     const blogPostData = await PortfolioApiService.fetchBlog();
 
-    return <BlogPage blogPostData={blogPostData} />;
+    return <BlogPage blogPostData={blogPostData.data} />;
   } catch (error) {
     console.error("Error fetching blog data:", error);
     return (

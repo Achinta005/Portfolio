@@ -70,7 +70,15 @@ export default function AniListViewer() {
         throw new Error("Failed to fetch anime list");
       }
       const data = await res.json();
-      setAnimeList(data.animeList || []);
+      if (data.success && Array.isArray(data.animeList)) {
+        setAnimeList(data.animeList);
+        if (data.cached) {
+          setError("AniList fetch failed — showing synced cached data");
+        }
+      } else {
+        setAnimeList([]);
+        setError("Unexpected response format");
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -248,23 +256,23 @@ export default function AniListViewer() {
                 </div>
 
                 <div className="flex gap-3">
-                  {[
-                    { format: "json", label: "JSON" }
-                  ].map(({ format, label }) => (
-                    <button
-                      key={format}
-                      onClick={() => exportList(format)}
-                      disabled={exporting}
-                      className={`flex items-center gap-2 px-4 py-2.5
+                  {[{ format: "json", label: "JSON" }].map(
+                    ({ format, label }) => (
+                      <button
+                        key={format}
+                        onClick={() => exportList(format)}
+                        disabled={exporting}
+                        className={`flex items-center gap-2 px-4 py-2.5
                  bg-gradient-to-r from-green-600 to-emerald-600
                  hover:from-green-700 hover:to-emerald-700
                  text-white font-semibold rounded-xl
                  transition-all shadow-lg disabled:opacity-50`}
-                    >
-                      <Download size={18} />
-                      <span>{label}</span>
-                    </button>
-                  ))}
+                      >
+                        <Download size={18} />
+                        <span>{label}</span>
+                      </button>
+                    )
+                  )}
                 </div>
               </div>
             </div>

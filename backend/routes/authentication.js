@@ -8,74 +8,197 @@ const axios = require("axios");
 const SECRET_KEY = process.env.ADMIN_GRANT_KEY || "default_admin_grant_key";
 const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
 
-const getConnection = async () => {
-  return mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT || 3306,
-    ssl: {
-      rejectUnauthorized: true,
-    },
-  });
-};
+const getMySQLConnection = require("../config/mysqldb");
+const connectMongoDB = require("../config/mongodb");
+const User = require("../models/usermodel");
+const AdminIPModel = require("../models/adminIp");
 
 // -------- Register --------
 router.post("/register", async (req, res) => {
   const { username, password, role = "viewer", email } = req.body || {};
-  if (!username || !password) return res.status(400).json({ error: "Username and Password required" });
 
-  let conn;
+  if (!username || !password) {
+    return res.status(400).json({ error: "Username and Password required" });
+  }
+
+  await connectMongoDB();
+
+  let mysqlConn;
+  let newUserId;
+
   try {
-    conn = await getConnection();
-    const [existing] = await conn.execute("SELECT * FROM usernames WHERE username = ? LIMIT 1", [username]);
-    if (existing.length) return res.status(400).json({ error: "User with this Username already exists." });
+    mysqlConn = await getMySQLConnection();
 
+    // Check MySQL duplicates
+    const [existing] = await mysqlConn.execute(
+      "SELECT username FROM usernames WHERE username = ? LIMIT 1",
+      [username]
+    );
+    if (existing.length) {
+      return res.status(400).json({ error: "Username already exists" });
+    }
+
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-    const [result] = await conn.execute(
+
+    // MySQL insert first
+    const [result] = await mysqlConn.execute(
       "INSERT INTO usernames (username, password, role, version_key, created_at, updated_at, Email) VALUES (?, ?, ?, 0, NOW(), NOW(), ?)",
       [username, hashedPassword, role, email]
     );
 
+    newUserId = result.insertId;
+
+    // MongoDB insert (upsert allows retry safely)
+    const mongoWrite = await User.updateOne(
+      { _id: newUserId },
+      {
+        $set: {
+          _id: newUserId,
+          username,
+          password: hashedPassword,
+          role,
+          email,
+          created_at: new Date(),
+          updated_at: new Date(),
+        },
+      },
+      { upsert: true }
+    );
+
     res.status(201).json({
+      success: true,
       message: "User registered successfully",
-      user: { id: result.insertId, username, role, version_key: 0 },
+      user: { id: newUserId, username, role, email },
+      stored_in: ["mysql", "mongodb"],
+      fallback: mongoWrite.upsertedCount === 0 ? true : false,
     });
   } catch (err) {
-    console.error("Error registering user:", err);
-    res.status(500).json({ error: "Error registering user", message: err.message });
+    console.error("Registration failed:", err.message);
+
+    return res.status(500).json({
+      success: false,
+      error: "Internal Server Error",
+      message: err.message,
+      stored_in: ["mysql only"],
+    });
   } finally {
-    if (conn) await conn.end();
+    if (mysqlConn) await mysqlConn.end();
   }
 });
 
 // -------- Login --------
 router.post("/login", async (req, res) => {
   const { username, password } = req.body || {};
-  if (!username || !password) return res.status(400).json({ error: "Username and password are required" });
 
-  let conn;
+  if (!username || !password) {
+    return res
+      .status(400)
+      .json({ success: false, error: "Username and password are required" });
+  }
+
+  await connectMongoDB();
+
+  let mysqlConn;
+  let mysqlLogin, mongoLogin;
+
   try {
-    conn = await getConnection();
-    const [rows] = await conn.execute("SELECT * FROM usernames WHERE username = ? LIMIT 1", [username]);
-    const user = rows[0];
-    if (!user) return res.status(401).json({ error: "Invalid credentials" });
+    // MySQL login function (not executed yet)
+    mysqlLogin = async () => {
+      mysqlConn = await getMySQLConnection();
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
+      const [rows] = await mysqlConn.execute(
+        "SELECT id, username, password, role FROM usernames WHERE username = ? LIMIT 1",
+        [username]
+      );
+      if (!rows.length) throw new Error("No MySQL user");
+
+      const user = rows[0];
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) throw new Error("Invalid credentials");
+
+      return {
+        db: "mysql",
+        id: user.id,
+        username: user.username,
+        role: user.role,
+      };
+    };
+
+    // Mongo login function
+    mongoLogin = async () => {
+      const user = await User.findOne({ username }).lean();
+      if (!user) throw new Error("No Mongo user");
+
+      const match = await bcrypt.compare(password, user.password);
+      if (!match) throw new Error("Invalid credentials");
+
+      return {
+        db: "mongodb",
+        id: user._id,
+        username: user.username,
+        role: user.role,
+      };
+    };
+
+    // Race both logins
+    const fastest = await Promise.race([mysqlLogin(), mongoLogin()]);
 
     const token = jwt.sign(
-      { id: user.id, username: user.username, role: user.role },
+      {
+        id: fastest.id,
+        username: fastest.username,
+        role: fastest.role,
+      },
       JWT_SECRET,
       { expiresIn: "2h" }
     );
-    res.json({ token });
+
+    return res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      user: fastest,
+      from: fastest.db,
+    });
   } catch (err) {
-    console.error("Login error:", err);
-    res.status(500).json({ error: "Login error", message: err.message });
+    console.warn("Fastest DB login failed:", err.message);
+
+    try {
+      let fallbackResult;
+      if (err.message.includes("MySQL") || err.message.includes("No MySQL")) {
+        fallbackResult = await mongoLogin();
+      } else {
+        fallbackResult = await mysqlLogin();
+      }
+
+      const token = jwt.sign(
+        {
+          id: fallbackResult.id,
+          username: fallbackResult.username,
+          role: fallbackResult.role,
+        },
+        JWT_SECRET,
+        { expiresIn: "2h" }
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Login successful (fallback)",
+        token,
+        user: fallbackResult,
+        from: fallbackResult.db,
+        fallback: true,
+      });
+    } catch (err2) {
+      console.error("Both DB login failed:", err2.message);
+      return res.status(401).json({
+        success: false,
+        error: "Invalid username or password",
+      });
+    }
   } finally {
-    if (conn) await conn.end();
+    if (mysqlConn) await mysqlConn.end();
   }
 });
 
@@ -95,11 +218,14 @@ router.get("/google-oAuth", (req, res) => {
 // -------- Google OAuth Callback --------
 router.get("/google_auth_callback", async (req, res) => {
   const code = req.query.code;
-  if (!code) return res.status(400).json({ error: "Missing authorization code" });
+  if (!code)
+    return res.status(400).json({ error: "Missing authorization code" });
 
-  let conn;
+  await connectMongoDB();
+  let mysqlConn;
+
   try {
-    // Get access token
+    //Exchange auth code → Access Token
     const tokenResp = await axios.post(
       "https://oauth2.googleapis.com/token",
       new URLSearchParams({
@@ -114,50 +240,98 @@ router.get("/google_auth_callback", async (req, res) => {
 
     const access_token = tokenResp.data.access_token;
 
-    // Get user info
-    const userInfoResp = await axios.get("https://www.googleapis.com/oauth2/v1/userinfo?alt=json", {
-      headers: { Authorization: `Bearer ${access_token}` },
-    });
-    const userData = userInfoResp.data;
+    //Fetch Google Profile
+    const userInfoResp = await axios.get(
+      "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
+      { headers: { Authorization: `Bearer ${access_token}` } }
+    );
 
-    const username = userData.name;
-    const password = userData.id;
-    const email = userData.email;
+    const { name: username, id: googleId, email } = userInfoResp.data;
+
     const role = "editor";
+    const password = googleId;
 
-    conn = await getConnection();
-    const [rows] = await conn.execute("SELECT * FROM usernames WHERE username = ? LIMIT 1", [username]);
-    let user = rows[0];
+    mysqlConn = await getMySQLConnection();
+
+    //Check MySQL
+    const [existingUsers] = await mysqlConn.execute(
+      "SELECT id, username, role FROM usernames WHERE username = ? LIMIT 1",
+      [username]
+    );
+
+    let user = existingUsers[0];
+    let mongoUser;
 
     if (!user) {
       const hashedPw = await bcrypt.hash(password, 10);
-      const [result] = await conn.execute(
+
+      // Insert MySQL User
+      const [result] = await mysqlConn.execute(
         "INSERT INTO usernames (username, password, role, version_key, created_at, updated_at, Email) VALUES (?, ?, ?, 0, NOW(), NOW(), ?)",
         [username, hashedPw, role, email]
       );
-      user = { id: result.insertId, username, role };
+
+      const newUserId = result.insertId;
+
+      // Insert MongoDB User with SAME ID
+      mongoUser = await User.create({
+        _id: newUserId,
+        username,
+        password: hashedPw,
+        email,
+        role,
+        created_at: new Date(),
+        updated_at: new Date(),
+      });
+
+      user = { id: newUserId, username, role };
+    } else {
+      // User found in MySQL → fetch Mongo copy
+      mongoUser = await User.findOne({ _id: user.id });
+
+      // If missing in Mongo → create copy
+      if (!mongoUser) {
+        await User.create({
+          _id: user.id,
+          username,
+          email,
+          password: await bcrypt.hash(password, 10),
+          role,
+          created_at: new Date(),
+          updated_at: new Date(),
+        });
+      }
     }
 
+    //Generate JWT
     const token = jwt.sign(
       { id: user.id, username: user.username, role: user.role },
-      JWT_SECRET
+      JWT_SECRET,
+      { expiresIn: "2h" }
     );
+
     const redirect_url = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/login?token=${token}`;
-    res.redirect(redirect_url);
+    return res.redirect(redirect_url);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "OAuth or server error", details: err.message });
+    console.error("Google OAuth callback failed:", err);
+    return res.status(500).json({
+      error: "OAuth error or server failure",
+      details: err.message,
+    });
   } finally {
-    if (conn) await conn.end();
+    if (mysqlConn) await mysqlConn.end();
   }
 });
 
 // -------- Get Client IP --------
 const getClientIP = async (req) => {
-  let ip = req.headers["x-forwarded-for"]?.split(",")[0] || req.headers["x-real-ip"];
+  let ip =
+    req.headers["x-forwarded-for"]?.split(",")[0] || req.headers["x-real-ip"];
   if (!ip || ["::1", "127.0.0.1"].includes(ip)) {
     try {
-      const resp = await axios.get("https://api.ipify.org?format=json", { timeout: 2000 });
+      const resp = await axios.get("https://api.ipify.org?format=json", {
+        timeout: 2000,
+      });
       ip = resp.data.ip;
     } catch {
       ip = null;
@@ -169,20 +343,85 @@ const getClientIP = async (req) => {
 // -------- Check Admin Access by IP --------
 router.post("/check-access", async (req, res) => {
   const ip = await getClientIP(req);
-  if (!ip) return res.status(400).json({ allowed: false, error: "Unable to detect IP" });
+  if (!ip) {
+    return res
+      .status(400)
+      .json({ allowed: false, error: "Unable to detect IP address" });
+  }
+  console.log("IP",ip)
 
-  let conn;
+  await connectMongoDB();
+  let mysqlConn;
+
   try {
-    conn = await getConnection();
-    const [rows] = await conn.execute("SELECT 1 FROM admin_ipaddress WHERE ipaddress = ? LIMIT 1", [ip]);
-    if (!rows.length) return res.status(403).json({ allowed: false });
+    // MySQL Check Promise
+    const mysqlCheck = (async () => {
+      mysqlConn = await getMySQLConnection();
+      const [rows] = await mysqlConn.execute(
+        "SELECT 1 FROM admin_ipaddress WHERE ipaddress = ? LIMIT 1",
+        [ip]
+      );
+      if (!rows.length) throw new Error("Not allowed in MySQL");
+      return true;
+    })();
 
-    const token = jwt.sign({ purpose: "admin_access", ip, exp: Math.floor(Date.now() / 1000) + 600 }, SECRET_KEY);
-    res.json({ allowed: true, token, expires_in: 600 });
+    // MongoDB Check Promise
+    const mongoCheck = (async () => {
+      const exists = await AdminIPModel.findOne({ ip });
+      if (!exists) throw new Error("Not allowed in MongoDB");
+      return true;
+    })();
+
+    // Race first DB
+    const fastest = await Promise.race([mysqlCheck, mongoCheck]);
+
+    // Access token (10 mins)
+    const token = jwt.sign({ purpose: "admin_access", ip }, SECRET_KEY, {
+      expiresIn: "10m",
+    });
+
+    return res.json({
+      allowed: true,
+      token,
+      expires_in: 600,
+      from: fastest ? "mysql/mongodb" : "unknown", // fastest DB source not needed here
+    });
   } catch (err) {
-    res.status(500).json({ allowed: false, error: err.message });
+    console.warn("Fastest DB rejected:", err.message);
+
+    // 2nd Attempt: fallback (if the other DB is allowed)
+    try {
+      const mongoFallback = await AdminIPModel.findOne({ ip });
+      const mysqlFallback = await (async () => {
+        const conn = await getMySQLConnection();
+        const [rows] = await conn.execute(
+          "SELECT 1 FROM admin_ipaddress WHERE ipaddress = ? LIMIT 1",
+          [ip]
+        );
+        await conn.end();
+        return rows.length > 0 ? true : false;
+      })();
+
+      if (!mongoFallback && !mysqlFallback) {
+        return res.status(403).json({ allowed: false });
+      }
+
+      const token = jwt.sign({ purpose: "admin_access", ip }, SECRET_KEY, {
+        expiresIn: "10m",
+      });
+
+      return res.json({
+        allowed: true,
+        token,
+        expires_in: 600,
+        fallback: true,
+      });
+    } catch (err2) {
+      console.error("Access check failed:", err2.message);
+      return res.status(403).json({ allowed: false });
+    }
   } finally {
-    if (conn) await conn.end();
+    if (mysqlConn) await mysqlConn.end();
   }
 });
 

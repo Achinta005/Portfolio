@@ -14,24 +14,35 @@ export const dynamic = "force-dynamic";
 function ProjectsLoadingSkeleton() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
-
-    <Suspense fallback={null}>
-  <LoadingBar />
-</Suspense>
+      <Suspense fallback={null}>
+        <LoadingBar />
+      </Suspense>
 
       {/* Animated background */}
       <div className="absolute inset-0">
         <div className="absolute top-1/4 left-1/4 w-3 h-3 bg-purple-400 rounded-full animate-ping opacity-40" />
-        <div className="absolute top-1/2 right-1/3 w-3 h-3 bg-blue-400 rounded-full animate-ping opacity-40" style={{ animationDelay: '0.5s' }} />
-        <div className="absolute bottom-1/4 left-1/2 w-3 h-3 bg-pink-400 rounded-full animate-ping opacity-40" style={{ animationDelay: '1s' }} />
+        <div
+          className="absolute top-1/2 right-1/3 w-3 h-3 bg-blue-400 rounded-full animate-ping opacity-40"
+          style={{ animationDelay: "0.5s" }}
+        />
+        <div
+          className="absolute bottom-1/4 left-1/2 w-3 h-3 bg-pink-400 rounded-full animate-ping opacity-40"
+          style={{ animationDelay: "1s" }}
+        />
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
         {/* Animated rings */}
         <div className="relative w-32 h-32 mb-8">
           <div className="absolute inset-0 border-4 border-transparent border-t-purple-500 border-r-pink-500 rounded-full animate-spin" />
-          <div className="absolute inset-3 border-4 border-transparent border-t-blue-500 border-r-purple-500 rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }} />
-          <div className="absolute inset-6 border-4 border-transparent border-t-pink-400 border-r-blue-400 rounded-full animate-spin" style={{ animationDuration: '2s' }} />
+          <div
+            className="absolute inset-3 border-4 border-transparent border-t-blue-500 border-r-purple-500 rounded-full animate-spin"
+            style={{ animationDirection: "reverse", animationDuration: "1.5s" }}
+          />
+          <div
+            className="absolute inset-6 border-4 border-transparent border-t-pink-400 border-r-blue-400 rounded-full animate-spin"
+            style={{ animationDuration: "2s" }}
+          />
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-10 h-10 bg-gradient-to-br from-purple-500 via-pink-500 to-blue-500 rounded-full animate-pulse shadow-lg shadow-purple-500/50" />
           </div>
@@ -42,20 +53,31 @@ function ProjectsLoadingSkeleton() {
           <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-blue-500 bg-clip-text text-transparent animate-pulse">
             Loading Projects
           </h2>
-          <p className="text-gray-400 text-lg">Preparing something amazing for you...</p>
-          
+          <p className="text-gray-400 text-lg">
+            Preparing something amazing for you...
+          </p>
+
           {/* Bouncing dots */}
           <div className="flex items-center justify-center gap-2 pt-4">
             <div className="w-3 h-3 bg-purple-400 rounded-full animate-bounce" />
-            <div className="w-3 h-3 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-            <div className="w-3 h-3 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }} />
+            <div
+              className="w-3 h-3 bg-pink-400 rounded-full animate-bounce"
+              style={{ animationDelay: "0.2s" }}
+            />
+            <div
+              className="w-3 h-3 bg-blue-400 rounded-full animate-bounce"
+              style={{ animationDelay: "0.4s" }}
+            />
           </div>
         </div>
 
         {/* Skeleton cards preview */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-purple-500/20 animate-pulse">
+            <div
+              key={i}
+              className="bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-purple-500/20 animate-pulse"
+            >
               <div className="w-full h-40 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg mb-4" />
               <div className="h-4 bg-purple-500/30 rounded w-3/4 mb-3" />
               <div className="h-3 bg-purple-500/20 rounded w-full mb-2" />
@@ -78,13 +100,10 @@ function ProjectsLoadingSkeleton() {
 }
 
 async function getProjectsData() {
-  if (process.env.SKIP_BUILD_STATIC_GENERATION === "true") {
-    console.log("⏩ Skipping Projects fetch during Docker build");
-    return [];
-  }
-
   try {
-    const { PortfolioApiService } = await import("@/services/PortfolioApiService");
+    const { PortfolioApiService } = await import(
+      "@/services/PortfolioApiService"
+    );
     return await PortfolioApiService.fetchProjects();
   } catch (error) {
     console.error("❌ Error fetching projects data:", error);
@@ -93,15 +112,16 @@ async function getProjectsData() {
 }
 
 export default async function Page() {
-  const projectsData = await getProjectsData();
+  const response = await getProjectsData();
 
-  if (!projectsData.length) {
+  const projects = response?.data || [];
+
+  if (!projects.length) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
         <div className="text-center space-y-4">
-          <div className="text-6xl mb-4">🚧</div>
           <p className="text-gray-400 text-lg max-w-md">
-            Projects data unavailable during build. It will load dynamically once the app runs.
+            No project data found!
           </p>
         </div>
       </main>
@@ -111,7 +131,7 @@ export default async function Page() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       <Suspense fallback={<ProjectsLoadingSkeleton />}>
-        <Projects projectsData={projectsData} />
+        <Projects projectsData={projects} />
       </Suspense>
     </main>
   );

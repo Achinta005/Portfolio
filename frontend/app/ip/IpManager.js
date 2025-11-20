@@ -24,7 +24,8 @@ export default function IPManagement() {
       const response = await fetch(`${API_URL}/adminIp/ips`);
       if (!response.ok) throw new Error("Failed to fetch IPs");
       const data = await response.json();
-      setIps(data.ips || []);
+      console.log(data);
+      setIps(data.data || []);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -42,7 +43,7 @@ export default function IPManagement() {
       const response = await fetch(`${API_URL}/adminIp/ips`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ipaddress: newIp.trim() }),
+        body: JSON.stringify({ ip: newIp.trim() }),
       });
 
       const data = await response.json();
@@ -97,7 +98,7 @@ export default function IPManagement() {
       setexistIp(false);
       return;
     }
-    const exists = ips.some((item) => item.ipaddress === newIp);
+    const exists = ips.some((item) => item.ip === newIp);
     setexistIp(exists);
   }, [newIp, ips]);
 
@@ -127,10 +128,7 @@ export default function IPManagement() {
 
               {!existIp ? (
                 <button
-                  onClick={() => {
-                    if (!newIp) return;
-                    addIP();
-                  }}
+                  onClick={() => newIp && addIP()}
                   title="Click to add your current IP"
                   className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white rounded-full p-2.5 transition-all duration-300 shadow-md hover:shadow-lg active:scale-95"
                 >
@@ -215,23 +213,26 @@ export default function IPManagement() {
                   <tbody>
                     {ips.map((ip, index) => (
                       <tr
-                        key={ip.id}
+                        key={ip.ip_id}
                         className={`border-b border-slate-100 hover:bg-slate-50 transition-colors ${
                           index % 2 === 0 ? "bg-white" : "bg-slate-50/50"
                         }`}
                       >
-                        <td className="py-4 px-4 text-slate-600">{ip.id}</td>
+                        <td className="py-4 px-4 text-slate-600">{ip.ip_id}</td>
+
                         <td className="py-4 px-4">
                           <span className="font-mono bg-blue-50 text-blue-700 px-3 py-1 rounded-md">
-                            {ip.ipaddress}
+                            {ip.ip}
                           </span>
                         </td>
+
                         <td className="py-4 px-4 text-slate-600">
                           {new Date(ip.created_at).toLocaleString()}
                         </td>
+
                         <td className="py-4 px-4 text-right">
                           <button
-                            onClick={() => deleteIP(ip.id)}
+                            onClick={() => deleteIP(ip.ip_id)}
                             className="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors font-medium"
                           >
                             <Trash2 size={16} />

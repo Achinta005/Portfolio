@@ -10,7 +10,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "../lib/util";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
-import { IconBrandGoogle, IconBrandGithub, IconEye, IconEyeOff } from "@tabler/icons-react";
+import {
+  IconBrandGoogle,
+  IconBrandGithub,
+  IconEye,
+  IconEyeOff,
+} from "@tabler/icons-react";
 
 const LoginContent = () => {
   const [formData, setFormData] = useState({
@@ -50,13 +55,21 @@ const LoginContent = () => {
     setError("");
 
     try {
-      const data = await PortfolioApiService.Login(formData);
+      const response = await PortfolioApiService.Login(formData);
+      const data = await response;
+
+      if (!data.success || !data.token) {
+        setError(data.error || "Invalid username or password");
+        return;
+      }
+
       setAuthToken(data.token);
+
       router.push("/admin");
       router.refresh();
     } catch (err) {
-      setError("Network error. Please try again.");
       console.error("Login error:", err);
+      setError("Unable to login. Check network or credentials.");
     } finally {
       setLoading(false);
     }
@@ -172,6 +185,7 @@ const LoginContent = () => {
 
             <button
               onClick={handleSubmit}
+              type="submit"
               disabled={loading}
               className="group/btn relative w-full h-12 md:h-13 rounded-lg font-semibold text-white bg-gradient-to-br from-black to-neutral-600 hover:from-neutral-900 hover:to-neutral-700 transition-all duration-300 overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-neutral-500/50"
             >
@@ -185,7 +199,9 @@ const LoginContent = () => {
 
           <div className="flex items-center gap-4 my-6">
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-            <span className="text-xs text-neutral-500 uppercase tracking-widest">Or</span>
+            <span className="text-xs text-neutral-500 uppercase tracking-widest">
+              Or
+            </span>
             <div className="flex-1 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
           </div>
 
@@ -232,7 +248,8 @@ const LoginContent = () => {
 
       <style jsx>{`
         @keyframes float {
-          0%, 100% {
+          0%,
+          100% {
             transform: translateY(0px) translateX(0px);
           }
           25% {
@@ -275,14 +292,16 @@ const LabelInputContainer = ({ children, className }) => {
 
 function LoginPageWrapper() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen w-full bg-black flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
-          <p className="text-neutral-400">Loading...</p>
+    <Suspense
+      fallback={
+        <div className="min-h-screen w-full bg-black flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto mb-4"></div>
+            <p className="text-neutral-400">Loading...</p>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <LoginContent />
     </Suspense>
   );

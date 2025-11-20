@@ -10,7 +10,8 @@ const ContactResponse = () => {
     const getContacts = async () => {
       try {
         const data = await PortfolioApiService.ContactResponses();
-        setcontact(data);
+        const contact = data?.data || [];
+        setcontact(contact);
       } catch (error) {
         console.error("Error fetching Contacts:", error);
       }
