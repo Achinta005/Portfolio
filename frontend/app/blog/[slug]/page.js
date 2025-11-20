@@ -1,12 +1,7 @@
 import BlogPost from "./BlogPost";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
-
+export const dynamic = "force-dynamic";
 export async function generateStaticParams() {
-  if (process.env.SKIP_BUILD_STATIC_GENERATION) {
-    console.log("⏩ Skipping blog static generation during Docker build");
-    return [];
-  }
-
   const result = await PortfolioApiService.fetchBlog();
 
   const posts = Array.isArray(result.data)

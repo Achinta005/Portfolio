@@ -88,17 +88,12 @@ export const PortfolioApiService = {
   },
 
   fetchBlog: async () => {
-    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/blog/blog_data`, {
-      next: { revalidate: 86400 },
-    });
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/blog/blog_data`);
   },
 
   fetchBlogBySlug: async (slug) => {
     return apiCall(
-      `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/blog/blog_data/${slug}`,
-      {
-        next: { revalidate: 86400 },
-      }
+      `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/blog/blog_data/${slug}`
     );
   },
 
