@@ -14,6 +14,7 @@ A modern, responsive, and accessible portfolio built with Next.js (App Router) a
 - **SEO**: `next-sitemap` integration and optimized head tags
 - **Analytics**: Vercel Web Analytics integration
 
+
 ## 🧭 App Structure (high-level)
 - `app/page.js`: Landing page and sections
 - `app/projects/page.js`: Projects grid
