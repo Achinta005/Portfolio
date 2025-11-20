@@ -2,8 +2,8 @@ import React from "react";
 import BlogPage from "./Blog";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
 
-// export const revalidate = 86400;
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
 export default async function BlogPostPage() {
 

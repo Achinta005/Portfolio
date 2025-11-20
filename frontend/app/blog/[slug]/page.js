@@ -1,6 +1,8 @@
 import BlogPost from "./BlogPost";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
 export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 export async function generateStaticParams() {
   const result = await PortfolioApiService.fetchBlog();
 
