@@ -18,16 +18,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build & Push Frontend Image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/my-frontend:latest
-          build-args: |
-            NEXT_PUBLIC_PYTHON_API_URL=${{ secrets.NEXT_PUBLIC_PYTHON_API_URL }}
-
       - name: Build & Push Backend Image
         uses: docker/build-push-action@v6
         with:
