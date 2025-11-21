@@ -80,7 +80,7 @@ const LoginContent = () => {
   };
 
   const handleGithubLogin = () => {
-    window.location.href = `/api/github_auth`;
+    window.location.href = `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/auth/github-oAuth`;
   };
 
   return (

@@ -425,4 +425,134 @@ router.post("/check-access", async (req, res) => {
   }
 });
 
+//Github OAuth
+// -------- GitHub OAuth Redirect --------
+router.get("/github-oAuth", (req, res) => {
+  try {
+    const client_id = process.env.GITHUB_CLIENT_ID;
+    const redirect_uri = process.env.GITHUB_REDIRECT_URL;
+    const scope = "user:email";
+
+    const oauth_url = `https://github.com/login/oauth/authorize?client_id=${client_id}&redirect_uri=${redirect_uri}&scope=${scope}`;
+
+    res.redirect(oauth_url);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to redirect", message: err.message });
+  }
+});
+
+// -------- GitHub OAuth Callback --------
+router.get("/github_auth_callback", async (req, res) => {
+  const code = req.query.code;
+  if (!code)
+    return res.status(400).json({ error: "Missing authorization code" });
+
+  await connectMongoDB();
+  let mysqlConn;
+
+  try {
+    // Exchange code → Access Token
+    const tokenResp = await axios.post(
+      "https://github.com/login/oauth/access_token",
+      {
+        client_id: process.env.GITHUB_CLIENT_ID,
+        client_secret: process.env.GITHUB_CLIENT_SECRET,
+        code,
+        redirect_uri: process.env.GITHUB_REDIRECT_URL,
+      },
+      { headers: { Accept: "application/json" } }
+    );
+
+    const access_token = tokenResp.data.access_token;
+    if (!access_token) throw new Error("Invalid access token response");
+
+    // Get GitHub profile
+    const userResp = await axios.get("https://api.github.com/user", {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+
+    const emailResp = await axios.get("https://api.github.com/user/emails", {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+
+    const username = userResp.data.login;
+    const githubId = userResp.data.id;
+    const emailObj = emailResp.data.find(e => e.primary) || emailResp.data[0];
+    const email = emailObj?.email || `${username}@github.com`;
+
+    const role = "editor";
+    const password = githubId.toString();
+
+    mysqlConn = await getMySQLConnection();
+
+    // Check MySQL
+    const [existingUsers] = await mysqlConn.execute(
+      "SELECT id, username, role FROM usernames WHERE username = ? LIMIT 1",
+      [username]
+    );
+
+    let user = existingUsers[0];
+    let mongoUser;
+
+    if (!user) {
+      const hashedPw = await bcrypt.hash(password, 10);
+
+      // Insert MySQL
+      const [result] = await mysqlConn.execute(
+        "INSERT INTO usernames (username, password, role, version_key, created_at, updated_at, Email) VALUES (?, ?, ?, 0, NOW(), NOW(), ?)",
+        [username, hashedPw, role, email]
+      );
+
+      const newUserId = result.insertId;
+
+      // Insert MongoDB
+      mongoUser = await User.create({
+        _id: newUserId,
+        username,
+        password: hashedPw,
+        email,
+        role,
+        created_at: new Date(),
+        updated_at: new Date(),
+      });
+
+      user = { id: newUserId, username, role };
+    } else {
+      // Mongo sync
+      mongoUser = await User.findOne({ _id: user.id });
+      if (!mongoUser) {
+        await User.create({
+          _id: user.id,
+          username,
+          email,
+          password: await bcrypt.hash(password, 10),
+          role,
+          created_at: new Date(),
+          updated_at: new Date(),
+        });
+      }
+    }
+
+    // Generate JWT
+    const token = jwt.sign(
+      { id: user.id, username: user.username, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
+
+    // Redirect Frontend
+    const redirect_url = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/login?token=${token}`;
+    return res.redirect(redirect_url);
+  } catch (err) {
+    console.error("GitHub OAuth callback failed:", err);
+    return res.status(500).json({
+      error: "OAuth error or server failure",
+      details: err.message,
+    });
+  } finally {
+    if (mysqlConn) await mysqlConn.end();
+  }
+});
+
+
 module.exports = router;

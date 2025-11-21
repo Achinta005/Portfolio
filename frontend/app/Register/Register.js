@@ -126,132 +126,135 @@ const RegisterPage = () => {
           </Link>
           <div className="max-w-md w-full space-y-8 p-8">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-gray-100 mb-2">
+              <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
                 Create an Account
               </h2>
-              <p className="text-gray-200">
+              <p className="text-neutral-400 text-sm md:text-base">
                 Get started by creating your admin account
               </p>
             </div>
 
-            <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-              <div className="space-y-4">
-                <LabelInputContainer>
-                  <Label
-                    htmlFor="username"
-                    className="block text-sm font-medium mb-1"
-                  >
-                    Username
-                  </Label>
-                  <Input
-                    id="username"
-                    name="username"
-                    type="text"
-                    required
-                    placeholder="Choose a username"
-                    value={formData.username}
-                    onChange={handleChange}
-                  />
-                </LabelInputContainer>
-                <LabelInputContainer>
-                  <Label
-                    htmlFor="email"
-                    className="block text-sm font-medium mb-1"
-                  >
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="text"
-                    required
-                    placeholder="Choose a Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                </LabelInputContainer>
-
-                <LabelInputContainer>
-                  <Label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-green-600 mb-1"
-                  >
-                    Password
-                  </Label>
-                  <div className="relative">
+            <div className="backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl p-6 md:p-8 shadow-2xl">
+              <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                <div className="space-y-4">
+                  <LabelInputContainer>
+                    <Label
+                      htmlFor="username"
+                      className="text-sm font-medium text-neutral-300"
+                    >
+                      Username
+                    </Label>
                     <Input
-                      id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
+                      id="username"
+                      name="username"
+                      type="text"
                       required
-                      placeholder="Choose a strong password"
-                      value={formData.password}
+                      placeholder="Choose a username"
+                      value={formData.username}
                       onChange={handleChange}
-                      className="pr-10"
+                      className="h-10 md:h-11 bg-white/5 border border-white/10 text-white placeholder:text-neutral-500 focus:border-cyan-500 focus:bg-white/10 transition-all duration-300"
                     />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-700 hover:text-cyan-400 transition-colors duration-200"
+                  </LabelInputContainer>
+                  <LabelInputContainer>
+                    <Label
+                      htmlFor="email"
+                      className="text-sm font-medium text-neutral-300"
                     >
-                      {showPassword ? (
-                        <IconEyeOff className="h-5 w-5 cursor-pointer" />
-                      ) : (
-                        <IconEye className="h-5 w-5 cursor-pointer" />
-                      )}
-                    </button>
+                      Email
+                    </Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="text"
+                      required
+                      placeholder="Choose a Email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="h-10 md:h-11 bg-white/5 border border-white/10 text-white placeholder:text-neutral-500 focus:border-cyan-500 focus:bg-white/10 transition-all duration-300"
+                    />
+                  </LabelInputContainer>
+
+                  <LabelInputContainer>
+                    <Label
+                      htmlFor="password"
+                      className="text-sm font-medium text-neutral-300"
+                    >
+                      Password
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        required
+                        placeholder="Choose a strong password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        className="h-10 md:h-11 bg-white/5 border border-white/10 text-white placeholder:text-neutral-500 focus:border-cyan-500 focus:bg-white/10 transition-all duration-300"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-700 hover:text-cyan-400 transition-colors duration-200"
+                      >
+                        {showPassword ? (
+                          <IconEyeOff className="h-5 w-5 cursor-pointer" />
+                        ) : (
+                          <IconEye className="h-5 w-5 cursor-pointer" />
+                        )}
+                      </button>
+                    </div>
+                  </LabelInputContainer>
+                </div>
+
+                {error && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+                    {error}
                   </div>
-                </LabelInputContainer>
-              </div>
-
-              {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
-                  {error}
-                </div>
-              )}
-
-              {success && (
-                <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md text-sm">
-                  {success}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={loading || success}
-                className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset] disabled:cursor-not-allowed"
-              >
-                {loading ? (
-                  <span className="flex items-center">
-                    <svg
-                      className="animate-spin ml-32 mr-3 h-5 w-5 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    Creating Account...
-                  </span>
-                ) : (
-                  "Create Account"
                 )}
-                <BottomGradient />
-              </button>
-            </form>
 
+                {success && (
+                  <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-md text-sm">
+                    {success}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={loading || success}
+                  className="group/btn relative w-full h-12 md:h-13 rounded-lg font-semibold text-white bg-gradient-to-br from-black to-neutral-600 hover:from-neutral-900 hover:to-neutral-700 transition-all duration-300 overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-neutral-500/50"
+                >
+                  {loading ? (
+                    <span className="flex items-center">
+                      <svg
+                        className="animate-spin ml-32 mr-3 h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      Creating Account...
+                    </span>
+                  ) : (
+                    "Create Account"
+                  )}
+                  <BottomGradient />
+                </button>
+              </form>
+            </div>
             <div className="text-center">
               <button
                 onClick={() => router.push("/login")}
