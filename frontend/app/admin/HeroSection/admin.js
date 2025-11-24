@@ -10,7 +10,7 @@ import {
 import Project from "../Components/Project";
 import ContactResponse from "../Components/ContactResponse";
 import Notepad from "../Components/Notepad";
-import Image from "next/image";
+import RenderServiceDashboard from "../Components/backendHealthCheck";
 import PythonFlask from "../Components/PythonFlask";
 import Blog from "../Components/Blog";
 import Ipaddress from "../Components/Ipaddress";
@@ -26,6 +26,7 @@ import {
   ChevronRight,
   User,
   Wifi,
+  Server,
 } from "lucide-react";
 
 const AdminPage = () => {
@@ -106,6 +107,14 @@ const AdminPage = () => {
         "https://res.cloudinary.com/dc1fkirb4/image/upload/v1755754879/a1_cqsx8x.jpg",
     },
     {
+      id: "render",
+      title: "Render Health Check",
+      icon: Server,
+      gradient: "from-blue-500 to-purple-500",
+      image:
+        "https://res.cloudinary.com/dc1fkirb4/image/upload/v1763994657/render-dashboard_qyvptu.png",
+    },
+    {
       id: "anime",
       title: "AnimeList",
       icon: BookOpen,
@@ -167,6 +176,20 @@ const AdminPage = () => {
           ← Back to Dashboard
         </button>
         <Project />
+      </div>
+    );
+  }
+
+    if (user.role === "admin" && activeView === "render") {
+    return (
+      <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-gradient-to-tr from-blue-700 via-pink-600 to-yellow-300">
+        <button
+          onClick={() => setActiveView("dashboard")}
+          className="mb-4 px-4 py-2 cursor-pointer bg-white/40 backdrop-blur-3xl text-white rounded-lg hover:bg-white/20 transition-colors"
+        >
+          ← Back to Dashboard
+        </button>
+        <RenderServiceDashboard />
       </div>
     );
   }

@@ -40,6 +40,13 @@ app.get('/',(req,res)=>{
 app.use(bodyparser.json());
 app.use(express.json());
 
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    uptime: process.uptime(),
+    timestamp: Date.now(),
+  });
+});
 
 //Routes
 app.use("/contact", contact);
