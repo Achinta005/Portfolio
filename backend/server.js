@@ -26,7 +26,8 @@ app.use(
       "https://portfolio-achinta-hazras-projects.vercel.app",
       "https://portfolio-git-main-achinta-hazras-projects.vercel.app",
       "https://portfolio-sooty-xi-67.vercel.app",
-      'https://portfolio-91hnq85ho-achinta-hazras-projects.vercel.app'
+      'https://portfolio-91hnq85ho-achinta-hazras-projects.vercel.app',
+      "https://appsy-ivory.vercel.app"
     ],
     methods: ["GET", "POST", "OPTIONS","DELETE","PUT"],
     credentials: true,
