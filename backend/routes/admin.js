@@ -13,19 +13,6 @@ const DocumentModel = require("../models/documentmodel");
 const BlogModel = require("../models/blogmodel");
 const IPModel = require("../models/ipaddressmodel");
 
-// JWT helper
-const JWT_SECRET = process.env.JWT_SECRET || "your_jwt_secret";
-const getUserFromToken = (req) => {
-  try {
-    const authHeader = req.headers["authorization"];
-    if (!authHeader) return null;
-    const token = authHeader.replace("Bearer ", "");
-    return jwt.verify(token, JWT_SECRET);
-  } catch {
-    return null;
-  }
-};
-
 // -------- Get IP --------
 router.get("/get-ip", async (req, res) => {
   let ipAddress =
@@ -109,20 +96,22 @@ router.get("/view-ip", async (req, res) => {
 });
 
 // -------- Fetch documents --------
-router.get("/fetch_documents", async (req, res) => {
+router.post("/fetch_documents", async (req, res) => {
   try {
-    const user = getUserFromToken(req);
-    if (!user) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    // 1️⃣ user coming directly from frontend
+    const user = req.body;
+    console.log("USER:", user);
 
+    // 2️⃣ extract ownerId
     const ownerId = user.userId ?? user.id ?? user._id;
     if (!ownerId) {
-      return res.status(500).json({ error: "User id missing in token" });
+      return res.status(500).json({ error: "User id missing in request" });
     }
+    console.log("owner id:", ownerId);
 
     await connectMongoDB();
 
+    // 3️⃣ Fetch from MySQL
     const mysqlPromise = (async () => {
       const mysqlConn = await getMySQLConnection();
       try {
@@ -136,29 +125,31 @@ router.get("/fetch_documents", async (req, res) => {
       }
     })();
 
+    // 4️⃣ Fetch from MongoDB
     const mongoPromise = (async () => {
       const result = await DocumentModel.find(
         { owner_id: ownerId },
         "-_id doc_id owner_username title content created_at updated_at"
-      ).sort({ updated_at: -1 });
+      )
+        .sort({ updated_at: -1 })
+        .lean();
 
       return { source: "mongodb", data: result };
     })();
 
+    // 5️⃣ Combine results
     const results = await Promise.allSettled([mysqlPromise, mongoPromise]);
-
     const mysqlData =
       results[0].status === "fulfilled" ? results[0].value.data : [];
     const mongoData =
       results[1].status === "fulfilled" ? results[1].value.data : [];
 
-    // Merge by doc_id (remove duplicates)
     const mergedMap = new Map();
     [...mysqlData, ...mongoData].forEach((doc) => {
       mergedMap.set(doc.doc_id, {
         ...doc,
         owner: doc.owner ?? user.username.trim(),
-        owner_id: ownerId
+        owner_id: ownerId,
       });
     });
 
@@ -173,18 +164,16 @@ router.get("/fetch_documents", async (req, res) => {
       sync: {
         mysql: results[0].status,
         mongodb: results[1].status,
-      }
+      },
     });
-
   } catch (err) {
     console.error("Fetch documents error:", err);
     res.status(500).json({
       error: "Failed to fetch documents",
-      message: err.message
+      message: err.message,
     });
   }
 });
-
 
 // -------- AI Summarization --------
 router.post("/ai-enhance", async (req, res) => {
@@ -447,74 +436,93 @@ router.post("/get-ip", async (req, res) => {
 
 // -------- Create document --------
 router.post("/create_documents", async (req, res) => {
-  const user = getUserFromToken(req);
-  if (!user) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-  const ownerId = user.userId ?? user.id ?? user._id;
-  if (!ownerId) {
-    console.error("No numeric ownerId on user payload:", user);
-    return res.status(500).json({ error: "User id missing in token" });
-  }
-  const { title, content } = req.body;
-  if (!title || !content) {
-    return res.status(400).json({ error: "Title and content required" });
-  }
-
-  await connectMongoDB();
-
-  let mysqlConn;
-  let nextDocId;
-
   try {
-    mysqlConn = await getMySQLConnection();
+    // (1) Extract user directly from body
+    const user = req.body.user;
 
-    // MySQL insert FIRST for valid doc_id
-    const [result] = await mysqlConn.execute(
-      "INSERT INTO documents (owner, title, content, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())",
-      [user.username.trim(), title, content] // IMPORTANT FIX
-    );
+    if (!user) {
+      return res
+        .status(400)
+        .json({ error: "User data missing in request body" });
+    }
 
-    nextDocId = result.insertId;
+    // (2) Extract ownerId from user object
+    const ownerId = user.userId ?? user.id ?? user._id;
+    if (!ownerId) {
+      return res.status(500).json({
+        error: "User id missing in provided user object",
+      });
+    }
 
-    const mysqlWrite = Promise.resolve({
-      db: "mysql",
-      id: nextDocId,
-      status: "inserted",
-    });
+    // (3) Extract title + content
+    const { title, content } = req.body;
+    if (!title || !content) {
+      return res.status(400).json({ error: "Title and content required" });
+    }
 
-    const mongoWrite = await DocumentModel.create({
-      doc_id: nextDocId,
-      owner_id: ownerId,
-      owner_username: user.username.trim(),
-      title,
-      content,
-      created_at: new Date(),
-      updated_at: new Date(),
-    })
+    await connectMongoDB();
 
-      .then(() => ({
-        db: "mongodb",
+    let mysqlConn;
+    let nextDocId;
+
+    try {
+      mysqlConn = await getMySQLConnection();
+
+      // (4) INSERT into MySQL first to generate doc_id
+      const [result] = await mysqlConn.execute(
+        "INSERT INTO documents (owner, title, content, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())",
+        [user.username.trim(), title, content]
+      );
+
+      nextDocId = result.insertId;
+
+      const mysqlWrite = Promise.resolve({
+        db: "mysql",
         id: nextDocId,
         status: "inserted",
-      }))
-      .catch((err) => Promise.reject(err));
+      });
 
-    const results = await Promise.allSettled([mysqlWrite, mongoWrite]);
-    const success = results.filter((r) => r.status === "fulfilled");
-    const failure = results.filter((r) => r.status === "rejected");
+      // (5) INSERT into MongoDB with same doc_id
+      const mongoWrite = await DocumentModel.create({
+        doc_id: nextDocId,
+        owner_id: ownerId,
+        owner_username: user.username.trim(),
+        title,
+        content,
+        created_at: new Date(),
+        updated_at: new Date(),
+      })
+        .then(() => ({
+          db: "mongodb",
+          id: nextDocId,
+          status: "inserted",
+        }))
+        .catch((err) => Promise.reject(err));
 
-    return res.status(success.length ? 201 : 500).json({
-      message: success.length ? "Document stored" : "Failed to store document",
-      doc_id: nextDocId,
-      stored_in: success.map((r) => r.value.db),
-      fallback: failure.length > 0,
-    });
+      const results = await Promise.allSettled([mysqlWrite, mongoWrite]);
+      const success = results.filter((r) => r.status === "fulfilled");
+      const failure = results.filter((r) => r.status === "rejected");
+
+      return res.status(success.length ? 201 : 500).json({
+        message: success.length
+          ? "Document stored"
+          : "Failed to store document",
+        doc_id: nextDocId,
+        stored_in: success.map((r) => r.value.db),
+        fallback: failure.length > 0,
+      });
+    } catch (err) {
+      console.error("Create document failed:", err);
+      return res.status(500).json({ error: err.message });
+    } finally {
+      if (mysqlConn) await mysqlConn.end();
+    }
   } catch (err) {
-    console.error("Create document failed:", err);
-    res.status(500).json({ error: err.message });
-  } finally {
-    if (mysqlConn) await mysqlConn.end();
+    console.error("Create documents outer error:", err);
+    res.status(500).json({
+      error: "Failed to create document",
+      message: err.message,
+    });
   }
 });
 

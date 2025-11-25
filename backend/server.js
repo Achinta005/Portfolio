@@ -20,6 +20,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
+      "http://localhost:3001",
       "https://achintahazra.shop",
       "https://www.achintahazra.shop",
       "https://portfolio-achinta-hazras-projects.vercel.app",

@@ -23,30 +23,9 @@ export default function HeroSection() {
   const vantaEffect = useRef(null);
   const [vantaLoaded, setVantaLoaded] = useState(false);
 
-  const requestAccessToken = async (user_id) => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/auth/check-access`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id }),
-        }
-      );
-      if (res.ok) {
-        const data = await res.json();
-        localStorage.setItem("admin_token", data.token);
-      } else {
-        localStorage.removeItem("admin_token");
-      }
-    } catch (err) {
-      console.error("Access request failed:", err);
-    }
-  };
 
   useEffect(() => {
     setIsLoaded(true);
-    requestAccessToken();
   }, []);
 
   // Load Vanta.js lazily after component mounts
