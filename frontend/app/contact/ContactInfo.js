@@ -11,13 +11,6 @@ export default function ContactInfo() {
       onClick: () => window.open("mailto:achintahazra8515@gmail.com"),
     },
     {
-      icon: "ri-phone-line",
-      title: "Phone",
-      details: "+91 7602699715",
-      description: "Mon-Fri from 8am to 6pm",
-      onClick: () => window.open("tel:+917602699715"),
-    },
-    {
       icon: "ri-map-pin-line",
       title: "Location",
       details: "Arambagh West Bengal",
