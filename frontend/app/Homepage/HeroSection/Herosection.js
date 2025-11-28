@@ -97,7 +97,7 @@ export default function HeroSection() {
 
   const handleView = async () => {
     setPdfUrl(
-      "https://drive.google.com/file/d/1p7NKQpOci-ZVZAb6lwZF93nc5KmkRAw4/view?usp=sharing"
+      "https://drive.google.com/file/d/1WNeyAoiHDn_zRkJX-pKGPHA10hbJLAxN/view?usp=sharing"
     );
     setIsModalOpen(true);
   };

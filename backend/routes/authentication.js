@@ -207,8 +207,9 @@ router.get("/google-oAuth", (req, res) => {
   try {
     const redirect_uri = process.env.REDIRECT_URL;
     const client_id = process.env.GOOGLE_CLIENT_ID;
-    const scope = "email profile";
-    const oauth_url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${scope}&access_type=offline`;
+
+    const oauth_url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=email%20profile&access_type=offline`;
+
     res.redirect(oauth_url);
   } catch (err) {
     res.status(500).json({ error: "Failed to redirect", message: err.message });
@@ -218,14 +219,13 @@ router.get("/google-oAuth", (req, res) => {
 // -------- Google OAuth Callback --------
 router.get("/google_auth_callback", async (req, res) => {
   const code = req.query.code;
-  if (!code)
-    return res.status(400).json({ error: "Missing authorization code" });
+  if (!code) return res.status(400).json({ error: "Missing authorization code" });
 
   await connectMongoDB();
   let mysqlConn;
 
   try {
-    //Exchange auth code → Access Token
+    // Exchange code -> access token
     const tokenResp = await axios.post(
       "https://oauth2.googleapis.com/token",
       new URLSearchParams({
@@ -233,63 +233,54 @@ router.get("/google_auth_callback", async (req, res) => {
         client_secret: process.env.GOOGLE_CLIENT_SECRET,
         code,
         grant_type: "authorization_code",
-        redirect_uri: process.env.REDIRECT_URL,
+        redirect_uri: process.env.REDIRECT_URL, // your backend callback URL
       }),
       { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
     );
 
     const access_token = tokenResp.data.access_token;
 
-    //Fetch Google Profile
-    const userInfoResp = await axios.get(
+    // Fetch Google Profile
+    const { data: googleUser } = await axios.get(
       "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
       { headers: { Authorization: `Bearer ${access_token}` } }
     );
 
-    const { name: username, id: googleId, email } = userInfoResp.data;
-
+    const { name: username, id: googleId, email } = googleUser;
     const role = "editor";
     const password = googleId;
 
     mysqlConn = await getMySQLConnection();
 
-    //Check MySQL
-    const [existingUsers] = await mysqlConn.execute(
+    // Check in MySQL
+    const [existing] = await mysqlConn.execute(
       "SELECT id, username, role FROM usernames WHERE username = ? LIMIT 1",
       [username]
     );
 
-    let user = existingUsers[0];
-    let mongoUser;
+    let user = existing[0];
 
     if (!user) {
       const hashedPw = await bcrypt.hash(password, 10);
 
-      // Insert MySQL User
       const [result] = await mysqlConn.execute(
         "INSERT INTO usernames (username, password, role, version_key, created_at, updated_at, Email) VALUES (?, ?, ?, 0, NOW(), NOW(), ?)",
         [username, hashedPw, role, email]
       );
 
-      const newUserId = result.insertId;
+      const newId = result.insertId;
 
-      // Insert MongoDB User with SAME ID
-      mongoUser = await User.create({
-        _id: newUserId,
+      await User.create({
+        _id: newId,
         username,
         password: hashedPw,
         email,
         role,
-        created_at: new Date(),
-        updated_at: new Date(),
       });
 
-      user = { id: newUserId, username, role };
+      user = { id: newId, username, role };
     } else {
-      // User found in MySQL → fetch Mongo copy
-      mongoUser = await User.findOne({ _id: user.id });
-
-      // If missing in Mongo → create copy
+      const mongoUser = await User.findOne({ _id: user.id });
       if (!mongoUser) {
         await User.create({
           _id: user.id,
@@ -297,20 +288,48 @@ router.get("/google_auth_callback", async (req, res) => {
           email,
           password: await bcrypt.hash(password, 10),
           role,
-          created_at: new Date(),
-          updated_at: new Date(),
         });
       }
     }
 
-    //Generate JWT
+    // Generate JWT
     const token = jwt.sign(
       { id: user.id, username: user.username, role: user.role },
       JWT_SECRET,
       { expiresIn: "2h" }
     );
 
-    const redirect_url = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/login?token=${token}`;
+    // -------------------------
+    // Determine where to send token
+    // -------------------------
+    const userAgent = (req.headers["user-agent"] || "").toLowerCase();
+    console.log("[oauth] user-agent:", userAgent);
+
+    // Robust Android detection:
+    // - webview UA often contains "wv" or "android" and "chrome"
+    // - some embedded browsers include "android"
+    const looksLikeAndroid =
+      userAgent.includes("android") ||
+      userAgent.includes("wv") ||
+      userAgent.includes("mobile");
+
+    // Also allow an explicit query param override if you want to force mobile redirect:
+    // Example: /google_auth_callback?code=...&mobile=1
+    const explicitMobile = req.query.mobile === "1" || req.query.mobile === "true";
+
+    if (looksLikeAndroid || explicitMobile) {
+      // Redirect to app deep link
+      const scheme = process.env.APP_SCHEME || "appsy";
+      const host = process.env.APP_HOST || "auth";
+      const deepLink = `${scheme}://${host}?token=${encodeURIComponent(token)}`;
+      console.log("[oauth] redirecting to deepLink:", deepLink);
+      return res.redirect(deepLink);
+    }
+
+    // Default: web redirect
+    const frontendUrl = process.env.FRONTEND_WEB_URL || process.env.NEXT_PUBLIC_FRONTEND_URL || "https://appsy-ivory.vercel.app";
+    const redirect_url = `${frontendUrl}/login?token=${encodeURIComponent(token)}`;
+    console.log("[oauth] redirecting to web:", redirect_url);
     return res.redirect(redirect_url);
   } catch (err) {
     console.error("Google OAuth callback failed:", err);
