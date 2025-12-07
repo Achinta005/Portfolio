@@ -55,9 +55,7 @@ export const PortfolioApiService = {
 
   // About 
   fetchSkill: async () => {
-    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/about/Skilldata`, {
-      next: { revalidate: 86400 },
-    });
+    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/about/Skilldata`);
   },
 
   fetchEducation: async () => {
