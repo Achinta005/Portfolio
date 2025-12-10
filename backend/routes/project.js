@@ -4,6 +4,7 @@ const cloudinary = require("cloudinary").v2;
 const multer = require("multer");
 const dotenv = require("dotenv");
 dotenv.config();
+const { getCache, setCache, clearCache } = require("../utils/cache");
 
 const getMySQLConnection = require("../config/mysqldb");
 const connectMongoDB = require("../config/mongodb");
@@ -17,12 +18,23 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-
 // =======================================================================
 // 📌 GET PROJECTS → FASTEST DB + FALLBACK (CLEAN LOGGING)
 // =======================================================================
 router.get("/projects_data", async (req, res) => {
   console.log("\n[GET] /projects_data");
+
+  const CACHE_KEY = "projects_data";
+
+  // 1️⃣ RETURN FROM CACHE IF AVAILABLE
+  const cached = getCache(CACHE_KEY);
+  if (cached) {
+    console.log("✔ Returning Projects from CACHE");
+    return res.status(200).json({
+      from: "cache",
+      data: cached,
+    });
+  }
 
   try {
     await connectMongoDB();
@@ -32,9 +44,13 @@ router.get("/projects_data", async (req, res) => {
     const mysqlPromise = new Promise(async (resolve, reject) => {
       try {
         const conn = await getMySQLConnection();
+
         const [rows] = await conn.execute(
           "SELECT * FROM project_model ORDER BY order_position DESC"
         );
+
+        console.log("MySQL projects:", rows.length);
+
         resolve({ source: "mysql", data: rows });
       } catch (err) {
         reject({ source: "mysql", error: err });
@@ -45,6 +61,9 @@ router.get("/projects_data", async (req, res) => {
     const mongoPromise = new Promise(async (resolve, reject) => {
       try {
         const docs = await ProjectModelMongo.find().sort({ order: -1 });
+
+        console.log("Mongo projects:", docs.length);
+
         resolve({ source: "mongodb", data: docs });
       } catch (err) {
         reject({ source: "mongodb", error: err });
@@ -56,12 +75,6 @@ router.get("/projects_data", async (req, res) => {
     try {
       fastest = await Promise.race([mysqlPromise, mongoPromise]);
       console.log("✔ Fastest DB:", fastest.source);
-
-      return res.status(200).json({
-        from: fastest.source,
-        data: fastest.data,
-      });
-
     } catch (err) {
       console.log("⚠ Fastest DB failed:", err.source);
 
@@ -69,13 +82,34 @@ router.get("/projects_data", async (req, res) => {
         err.source === "mysql" ? await mongoPromise : await mysqlPromise;
 
       console.log("✔ Fallback DB:", fallback.source);
-
-      return res.status(200).json({
-        from: fallback.source,
-        data: fallback.data,
-        fallback: true,
-      });
+      fastest = fallback;
     }
+
+    // 2️⃣ IF FASTEST RETURNS EMPTY → TRY OTHER DB
+    if (!Array.isArray(fastest.data) || fastest.data.length === 0) {
+      console.log("⚠ Fastest DB returned EMPTY → trying fallback");
+
+      const fallback =
+        fastest.source === "mysql" ? await mongoPromise : await mysqlPromise;
+
+      console.log("✔ Fallback DB:", fallback.source);
+
+      fastest = fallback;
+    }
+
+    // 3️⃣ CACHE ONLY IF DATA EXISTS
+    if (Array.isArray(fastest.data) && fastest.data.length > 0) {
+      setCache(CACHE_KEY, fastest.data);
+      console.log("✔ Projects data CACHED");
+    } else {
+      console.log("⚠ Not caching EMPTY result");
+    }
+
+    // 4️⃣ SEND RESPONSE
+    return res.status(200).json({
+      from: fastest.source,
+      data: fastest.data,
+    });
   } catch (err) {
     console.log("❌ GET Error:", err.message);
     return res.status(500).json({
@@ -84,7 +118,6 @@ router.get("/projects_data", async (req, res) => {
     });
   }
 });
-
 
 // =======================================================================
 // 📌 POST PROJECT UPLOAD → STORE IN MYSQL + MONGO (CLEAN LOGGING)
@@ -97,8 +130,15 @@ router.post("/project_upload", upload.single("image"), async (req, res) => {
     await connectMongoDB();
     console.log("MongoDB connected");
 
-    const { title, description, category, technologies, githubUrl, liveUrl, order } =
-      req.body;
+    const {
+      title,
+      description,
+      category,
+      technologies,
+      githubUrl,
+      liveUrl,
+      order,
+    } = req.body;
     const file = req.file;
 
     if (!file) {
@@ -167,6 +207,10 @@ router.post("/project_upload", upload.single("image"), async (req, res) => {
 
           const results = await Promise.allSettled([mysqlInsert, mongoInsert]);
 
+          // CLEAR CACHE because new project added
+          clearCache();
+          console.log("✔ Cache Cleared After Upload");
+
           res.status(200).json({
             message: "Project stored in both databases",
             mysql: results[0],
@@ -175,7 +219,6 @@ router.post("/project_upload", upload.single("image"), async (req, res) => {
         }
       )
       .end(file.buffer);
-
   } catch (err) {
     console.log("❌ POST Error:", err.message);
     res.status(500).json({ error: err.message });

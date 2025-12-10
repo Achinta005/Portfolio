@@ -8,7 +8,7 @@ const schema = new mongoose.Schema(
     experience_level: Number,
     created_at: Date,
   },
-  { collection: "skill_categories", strict: false }
+  { collection: "skills_categories", strict: false }
 );
 
 module.exports = mongoose.model("SkillCategoryMongo", schema);

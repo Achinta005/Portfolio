@@ -8,7 +8,7 @@ const Projects = nextDynamic(() => import("./Project"), {
   ssr: true,
 });
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 // Beautiful loading skeleton component
 function ProjectsLoadingSkeleton() {
@@ -101,12 +101,18 @@ function ProjectsLoadingSkeleton() {
 
 async function getProjectsData() {
   try {
-    const { PortfolioApiService } = await import(
-      "@/services/PortfolioApiService"
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/project/projects_data`,
+      {
+        next: { revalidate: 3600 },
+      }
     );
-    return await PortfolioApiService.fetchProjects();
+
+    if (!res.ok) return [];
+
+    return await res.json();
   } catch (error) {
-    console.error("❌ Error fetching projects data:", error);
+    console.error("❌ Error fetching projects:", error);
     return [];
   }
 }
