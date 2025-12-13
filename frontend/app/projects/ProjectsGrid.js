@@ -18,7 +18,6 @@ const AnimatedTestimonials = dynamic(
     ssr: false,
   }
 );
-
 const shuffleArray = (array) => {
   const newArray = [...array];
   for (let i = newArray.length - 1; i > 0; i--) {
@@ -39,7 +38,6 @@ export default function ProjectsGrid({ projectsData }) {
     if (projectsData && projectsData.length > 0) {
       setShuffledProjects(shuffleArray(projectsData));
       setIsLoading(false);
-      console.log(projectsData)
     }
   }, [projectsData]);
 
