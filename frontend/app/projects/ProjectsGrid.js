@@ -79,7 +79,7 @@ export default function ProjectsGrid({ projectsData }) {
         name: project.title || "Untitled Project",
         src: project.image || "/placeholder-image.jpg",
         githubUrl: project.github_url||project.githubUrl,
-        liveUrl: project.liveUrl||project.liveUrl,
+        liveUrl: project.live_url||project.liveUrl,
         designation: techList,
         category: project.category,
         accuracy: isMachineLearning ? project.model_accuracy : undefined,
