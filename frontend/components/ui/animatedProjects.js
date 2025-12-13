@@ -37,6 +37,7 @@ export const AnimatedTestimonials = ({ testimonials, autoplay = false }) => {
   const [active, setActive] = useState(0);
   const [showFullDescription, setShowFullDescription] = useState(false);
 
+  
   const handleNext = () => {
     setActive((prev) => (prev + 1) % testimonials.length);
     setShowFullDescription(false);

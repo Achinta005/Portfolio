@@ -39,6 +39,7 @@ export default function ProjectsGrid({ projectsData }) {
     if (projectsData && projectsData.length > 0) {
       setShuffledProjects(shuffleArray(projectsData));
       setIsLoading(false);
+      console.log(projectsData)
     }
   }, [projectsData]);
 
@@ -77,8 +78,8 @@ export default function ProjectsGrid({ projectsData }) {
         quote: project.description || "No description available",
         name: project.title || "Untitled Project",
         src: project.image || "/placeholder-image.jpg",
-        githubUrl: project.github_url,
-        liveUrl: project.live_url,
+        githubUrl: project.github_url||project.githubUrl,
+        liveUrl: project.liveUrl||project.liveUrl,
         designation: techList,
         category: project.category,
         accuracy: isMachineLearning ? project.model_accuracy : undefined,
