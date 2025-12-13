@@ -1,12 +1,7 @@
-import React from "react";
 import BlogPage from "./Blog";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
 
-// export const dynamic = "force-dynamic";
-// export const fetchCache = "force-no-store";
-
 export default async function BlogPostPage() {
-
   try {
     const blogPostData = await PortfolioApiService.fetchBlog();
 

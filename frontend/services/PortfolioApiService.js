@@ -1,14 +1,34 @@
 import { apiCall } from "./baseApi";
 
 export const PortfolioApiService = {
-  fetchBlog: async () => {
-    return apiCall(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/blog/blog_data`);
+fetchBlog: async () => {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/blog/blog_data`,
+      {
+        next: { revalidate: 3600 }, // ISR: 1 hour
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch blogs");
+    }
+
+    return res.json();
   },
 
   fetchBlogBySlug: async (slug) => {
-    return apiCall(
-      `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/blog/blog_data/${slug}`
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/blog/blog_data/${slug}`,
+      {
+        next: { revalidate: 3600 },
+      }
     );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch blog");
+    }
+
+    return res.json();
   },
 
   //Download Resume
