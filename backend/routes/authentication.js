@@ -108,7 +108,7 @@ router.post("/login", async (req, res) => {
       mysqlConn = await getMySQLConnection();
 
       const [rows] = await mysqlConn.execute(
-        "SELECT id, username, password, role FROM usernames WHERE username = ? LIMIT 1",
+        "SELECT id, username, password, role,Email FROM usernames WHERE username = ? LIMIT 1",
         [username]
       );
       if (!rows.length) throw new Error("No MySQL user");
@@ -122,6 +122,7 @@ router.post("/login", async (req, res) => {
         id: user.id,
         username: user.username,
         role: user.role,
+        email:user.Email,
       };
     };
 
@@ -138,6 +139,7 @@ router.post("/login", async (req, res) => {
         id: user._id,
         username: user.username,
         role: user.role,
+        email:user.Email,
       };
     };
 
@@ -149,6 +151,7 @@ router.post("/login", async (req, res) => {
         id: fastest.id,
         username: fastest.username,
         role: fastest.role,
+        email:fastest.email,
       },
       JWT_SECRET,
       { expiresIn: "2h" }
