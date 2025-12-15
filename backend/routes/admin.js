@@ -1,12 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
-const mysql = require("mysql2/promise");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 // DB helper
-const getMySQLConnection = require("../config/mysqldb");
 const connectMongoDB = require("../config/mongodb");
 const User = require("../models/usermodel");
 const DocumentModel = require("../models/documentmodel");
@@ -40,53 +38,33 @@ router.get("/view-ip", async (req, res) => {
   try {
     await connectMongoDB();
 
-    const mysqlPromise = (async () => {
-      const mysqlConn = await getMySQLConnection();
-      try {
-        const [rows] = await mysqlConn.execute(`
-          SELECT u.id, u.username, i.ipaddress, i.timestamp
-          FROM usernames u
-          LEFT JOIN ipaddress i ON u.id = i.user_id
-          ORDER BY i.timestamp DESC
-        `);
-        return { source: "mysql", data: rows };
-      } finally {
-        await mysqlConn.end();
-      }
-    })();
-
-    const mongoPromise = (async () => {
-      const result = await User.aggregate([
-        {
-          $lookup: {
-            from: "ipaddress", // correct collection name from your DB
-            localField: "_id",
-            foreignField: "user_id",
-            as: "ipInfo",
-          },
+    const result = await User.aggregate([
+      {
+        $lookup: {
+          from: "ipaddress",
+          localField: "_id",
+          foreignField: "user_id",
+          as: "ipInfo",
         },
-        {
-          $unwind: {
-            path: "$ipInfo",
-            preserveNullAndEmptyArrays: true,
-          },
+      },
+      {
+        $unwind: {
+          path: "$ipInfo",
+          preserveNullAndEmptyArrays: true,
         },
-        {
-          $project: {
-            _id: 1,
-            username: 1,
-            ipaddress: "$ipInfo.ipaddress",
-            timestamp: "$ipInfo.timestamp",
-          },
+      },
+      {
+        $project: {
+          _id: 1,
+          username: 1,
+          ipaddress: "$ipInfo.ipaddress",
+          timestamp: "$ipInfo.timestamp",
         },
-        { $sort: { timestamp: -1 } },
-      ]);
+      },
+      { $sort: { timestamp: -1 } },
+    ]);
 
-      return { source: "mongodb", data: result };
-    })();
-
-    const fastest = await Promise.race([mysqlPromise, mongoPromise]);
-    res.status(200).json(fastest);
+    res.status(200).json({ source: "mongodb", data: result });
   } catch (err) {
     res.status(500).json({
       error: "Failed to fetch IP addresses",
@@ -98,11 +76,9 @@ router.get("/view-ip", async (req, res) => {
 // -------- Fetch documents --------
 router.post("/fetch_documents", async (req, res) => {
   try {
-    // 1️⃣ user coming directly from frontend
     const user = req.body;
     console.log("USER:", user);
 
-    // 2️⃣ extract ownerId
     const ownerId = user.userId ?? user.id ?? user._id;
     if (!ownerId) {
       return res.status(500).json({ error: "User id missing in request" });
@@ -111,60 +87,23 @@ router.post("/fetch_documents", async (req, res) => {
 
     await connectMongoDB();
 
-    // 3️⃣ Fetch from MySQL
-    const mysqlPromise = (async () => {
-      const mysqlConn = await getMySQLConnection();
-      try {
-        const [rows] = await mysqlConn.execute(
-          "SELECT id AS doc_id, owner, title, content, created_at, updated_at FROM documents WHERE owner = ? ORDER BY updated_at DESC",
-          [user.username.trim()]
-        );
-        return { source: "mysql", data: rows };
-      } finally {
-        await mysqlConn.end();
-      }
-    })();
+    const result = await DocumentModel.find(
+      { owner_id: ownerId },
+      "-_id doc_id owner_username title content created_at updated_at"
+    )
+      .sort({ updated_at: -1 })
+      .lean();
 
-    // 4️⃣ Fetch from MongoDB
-    const mongoPromise = (async () => {
-      const result = await DocumentModel.find(
-        { owner_id: ownerId },
-        "-_id doc_id owner_username title content created_at updated_at"
-      )
-        .sort({ updated_at: -1 })
-        .lean();
-
-      return { source: "mongodb", data: result };
-    })();
-
-    // 5️⃣ Combine results
-    const results = await Promise.allSettled([mysqlPromise, mongoPromise]);
-    const mysqlData =
-      results[0].status === "fulfilled" ? results[0].value.data : [];
-    const mongoData =
-      results[1].status === "fulfilled" ? results[1].value.data : [];
-
-    const mergedMap = new Map();
-    [...mysqlData, ...mongoData].forEach((doc) => {
-      mergedMap.set(doc.doc_id, {
-        ...doc,
-        owner: doc.owner ?? user.username.trim(),
-        owner_id: ownerId,
-      });
-    });
-
-    const mergedDocs = [...mergedMap.values()].sort(
-      (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
-    );
+    const documents = result.map((doc) => ({
+      ...doc,
+      owner: doc.owner_username ?? user.username.trim(),
+      owner_id: ownerId,
+    }));
 
     return res.status(200).json({
       message: "Documents fetched",
-      count: mergedDocs.length,
-      data: mergedDocs,
-      sync: {
-        mysql: results[0].status,
-        mongodb: results[1].status,
-      },
+      count: documents.length,
+      data: documents,
     });
   } catch (err) {
     console.error("Fetch documents error:", err);
@@ -225,8 +164,6 @@ const validateBlogPostData = (data) => {
 };
 
 router.post("/upload_blog", async (req, res) => {
-  let mysqlConn;
-
   try {
     const formData = req.body;
     validateBlogPostData(formData);
@@ -244,7 +181,14 @@ router.post("/upload_blog", async (req, res) => {
     } = formData;
     date = date || new Date().toISOString();
 
-    // Generate slug before DB operations
+    // Get next post_id from MongoDB
+    const lastPost = await BlogModel.findOne()
+      .sort({ post_id: -1 })
+      .select("post_id")
+      .lean();
+    const nextPostId = lastPost ? lastPost.post_id + 1 : 1;
+
+    // Generate slug
     if (!slug) {
       slug = title
         .toLowerCase()
@@ -254,71 +198,23 @@ router.post("/upload_blog", async (req, res) => {
         .replace(/^-|-$|/g, "");
     }
 
-    // First: Get next post_id from MySQL
-    mysqlConn = await getMySQLConnection();
-    const [lastPost] = await mysqlConn.execute(
-      "SELECT post_id FROM blog_data ORDER BY post_id DESC LIMIT 1"
-    );
-    const nextPostId = lastPost.length ? lastPost[0].post_id + 1 : 1;
-
     // Ensure unique slug using post_id
     slug = `${slug}-${nextPostId}`;
 
-    const tagsJson = JSON.stringify(tags);
-
-    // MySQL Write Promise
-    const mysqlPromise = (async () => {
-      await mysqlConn.execute(
-        `INSERT INTO blog_data 
-         (post_id, title, content, excerpt, slug, tags, date, readTime, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
-        [nextPostId, title, content, excerpt, slug, tagsJson, date, readTime]
-      );
-
-      return {
-        db: "mysql",
-        id: nextPostId,
-      };
-    })();
-
-    // MongoDB Write Promise
-    const mongoPromise = (async () => {
-      const doc = await BlogModel.create({
-        post_id: nextPostId, // SAME ID AS MYSQL
-        title,
-        excerpt,
-        content,
-        slug,
-        tags,
-        date,
-        readTime,
-      });
-
-      return {
-        db: "mongodb",
-        id: doc.post_id,
-      };
-    })();
-
-    // Run both without failing first response
-    const results = await Promise.allSettled([mysqlPromise, mongoPromise]);
-
-    const success = results.filter((r) => r.status === "fulfilled");
-
-    // Error if both failed
-    if (success.length === 0) {
-      return res.status(500).json({
-        message: "Both MySQL and MongoDB failed",
-        details: {
-          mysql: results[0].reason?.message,
-          mongodb: results[1].reason?.message,
-        },
-      });
-    }
+    // Create blog post in MongoDB
+    const doc = await BlogModel.create({
+      post_id: nextPostId,
+      title,
+      excerpt,
+      content,
+      slug,
+      tags,
+      date,
+      readTime,
+    });
 
     return res.status(201).json({
       message: "Blog stored successfully",
-      stored_in: success.map((r) => r.value.db),
       slug,
       title,
       excerpt,
@@ -326,13 +222,11 @@ router.post("/upload_blog", async (req, res) => {
       date,
       readTime,
       tags,
-      fallback: results.some((r) => r.status === "rejected"),
+      post_id: nextPostId,
     });
   } catch (err) {
     console.error("Blog upload failed:", err);
     return res.status(500).json({ message: err.message });
-  } finally {
-    if (mysqlConn) await mysqlConn.end();
   }
 });
 
@@ -357,87 +251,44 @@ router.post("/get-ip", async (req, res) => {
     }
   }
 
-  await connectMongoDB();
+  try {
+    await connectMongoDB();
 
-  // MySQL check/insert
-  const mysqlWrite = (async () => {
-    const mysqlConn = await getMySQLConnection();
-    try {
-      const [rows] = await mysqlConn.execute(
-        "SELECT user_id FROM ipaddress WHERE ipaddress = ? LIMIT 1",
-        [ipAddress]
-      );
-
-      if (rows.length) {
-        return { db: "mysql", status: "existing", user_id: rows[0].user_id };
-      }
-
-      await mysqlConn.execute(
-        "INSERT INTO ipaddress (user_id, ipaddress) VALUES (?, ?)",
-        [user_id, ipAddress]
-      );
-
-      return { db: "mysql", status: "inserted", user_id };
-    } finally {
-      await mysqlConn.end();
-    }
-  })();
-
-  // Mongo check/insert
-  const mongoWrite = (async () => {
+    // Check if IP exists
     const existing = await IPModel.findOne({ ipaddress: ipAddress });
 
     if (existing) {
-      return {
-        db: "mongodb",
-        status: "existing",
+      return res.status(200).json({
+        ip: ipAddress,
         user_id: existing.user_id,
-      };
+        status: "existing",
+      });
     }
 
+    // Insert new IP
     await IPModel.create({
       user_id: user_id,
       ipaddress: ipAddress,
       timestamp: new Date(),
     });
 
-    return { db: "mongodb", status: "inserted", user_id };
-  })();
-
-  // Race for fastest response, but complete both tasks
-  const results = await Promise.allSettled([mysqlWrite, mongoWrite]);
-
-  const fastest =
-    results[0].status === "fulfilled"
-      ? results[0]
-      : results[1].status === "fulfilled"
-      ? results[1]
-      : null;
-
-  const success = results.filter((r) => r.status === "fulfilled");
-  const failure = results.filter((r) => r.status === "rejected");
-
-  if (!fastest) {
-    console.error(
-      "Both IP writes failed:",
-      failure.map((f) => f.reason)
-    );
-    return res.status(500).json({ error: "Failed to store or lookup IP" });
+    return res.status(201).json({
+      ip: ipAddress,
+      user_id: user_id,
+      status: "inserted",
+    });
+  } catch (err) {
+    console.error("IP storage error:", err);
+    return res.status(500).json({ 
+      error: "Failed to store or lookup IP",
+      message: err.message 
+    });
   }
-
-  return res.status(fastest.value.status === "inserted" ? 201 : 200).json({
-    ip: ipAddress,
-    user_id: fastest.value.user_id,
-    status: fastest.value.status,
-    primary_db: fastest.value.db,
-    synced: failure.length === 0,
-  });
 });
 
 // -------- Create document --------
 router.post("/create_documents", async (req, res) => {
   try {
-    // (1) Extract user directly from body
     const user = req.body.user;
 
     if (!user) {
@@ -446,7 +297,6 @@ router.post("/create_documents", async (req, res) => {
         .json({ error: "User data missing in request body" });
     }
 
-    // (2) Extract ownerId from user object
     const ownerId = user.userId ?? user.id ?? user._id;
     if (!ownerId) {
       return res.status(500).json({
@@ -454,7 +304,6 @@ router.post("/create_documents", async (req, res) => {
       });
     }
 
-    // (3) Extract title + content
     const { title, content } = req.body;
     if (!title || !content) {
       return res.status(400).json({ error: "Title and content required" });
@@ -462,63 +311,30 @@ router.post("/create_documents", async (req, res) => {
 
     await connectMongoDB();
 
-    let mysqlConn;
-    let nextDocId;
+    // Get next doc_id from MongoDB
+    const lastDoc = await DocumentModel.findOne()
+      .sort({ doc_id: -1 })
+      .select("doc_id")
+      .lean();
+    const nextDocId = lastDoc ? lastDoc.doc_id + 1 : 1;
 
-    try {
-      mysqlConn = await getMySQLConnection();
+    // Create document in MongoDB
+    await DocumentModel.create({
+      doc_id: nextDocId,
+      owner_id: ownerId,
+      owner_username: user.username.trim(),
+      title,
+      content,
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
 
-      // (4) INSERT into MySQL first to generate doc_id
-      const [result] = await mysqlConn.execute(
-        "INSERT INTO documents (owner, title, content, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())",
-        [user.username.trim(), title, content]
-      );
-
-      nextDocId = result.insertId;
-
-      const mysqlWrite = Promise.resolve({
-        db: "mysql",
-        id: nextDocId,
-        status: "inserted",
-      });
-
-      // (5) INSERT into MongoDB with same doc_id
-      const mongoWrite = await DocumentModel.create({
-        doc_id: nextDocId,
-        owner_id: ownerId,
-        owner_username: user.username.trim(),
-        title,
-        content,
-        created_at: new Date(),
-        updated_at: new Date(),
-      })
-        .then(() => ({
-          db: "mongodb",
-          id: nextDocId,
-          status: "inserted",
-        }))
-        .catch((err) => Promise.reject(err));
-
-      const results = await Promise.allSettled([mysqlWrite, mongoWrite]);
-      const success = results.filter((r) => r.status === "fulfilled");
-      const failure = results.filter((r) => r.status === "rejected");
-
-      return res.status(success.length ? 201 : 500).json({
-        message: success.length
-          ? "Document stored"
-          : "Failed to store document",
-        doc_id: nextDocId,
-        stored_in: success.map((r) => r.value.db),
-        fallback: failure.length > 0,
-      });
-    } catch (err) {
-      console.error("Create document failed:", err);
-      return res.status(500).json({ error: err.message });
-    } finally {
-      if (mysqlConn) await mysqlConn.end();
-    }
+    return res.status(201).json({
+      message: "Document stored",
+      doc_id: nextDocId,
+    });
   } catch (err) {
-    console.error("Create documents outer error:", err);
+    console.error("Create documents error:", err);
     res.status(500).json({
       error: "Failed to create document",
       message: err.message,
