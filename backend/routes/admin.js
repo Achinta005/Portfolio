@@ -11,68 +11,6 @@ const DocumentModel = require("../models/documentmodel");
 const BlogModel = require("../models/blogmodel");
 const IPModel = require("../models/ipaddressmodel");
 
-// -------- Get IP --------
-router.get("/get-ip", async (req, res) => {
-  let ipAddress =
-    req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
-    req.headers["x-real-ip"] ||
-    req.ip;
-  let source = "request headers or remote_addr";
-
-  if (!ipAddress || ["::1", "127.0.0.1"].includes(ipAddress)) {
-    try {
-      const resp = await axios.get("https://api.ipify.org?format=json");
-      ipAddress = resp.data.ip;
-      source = "external (ipify.org)";
-    } catch {
-      return res
-        .status(500)
-        .json({ error: "Unable to detect public IP", source: "localhost" });
-    }
-  }
-  res.json({ IP: ipAddress, source });
-});
-
-// -------- View IPs --------
-router.get("/view-ip", async (req, res) => {
-  try {
-    await connectMongoDB();
-
-    const result = await User.aggregate([
-      {
-        $lookup: {
-          from: "ipaddress",
-          localField: "_id",
-          foreignField: "user_id",
-          as: "ipInfo",
-        },
-      },
-      {
-        $unwind: {
-          path: "$ipInfo",
-          preserveNullAndEmptyArrays: true,
-        },
-      },
-      {
-        $project: {
-          _id: 1,
-          username: 1,
-          ipaddress: "$ipInfo.ipaddress",
-          timestamp: "$ipInfo.timestamp",
-        },
-      },
-      { $sort: { timestamp: -1 } },
-    ]);
-
-    res.status(200).json({ source: "mongodb", data: result });
-  } catch (err) {
-    res.status(500).json({
-      error: "Failed to fetch IP addresses",
-      message: err.message,
-    });
-  }
-});
-
 // -------- Fetch documents --------
 router.post("/fetch_documents", async (req, res) => {
   try {
@@ -282,6 +220,63 @@ router.post("/get-ip", async (req, res) => {
     return res.status(500).json({ 
       error: "Failed to store or lookup IP",
       message: err.message 
+    });
+  }
+});
+
+// -------- View IPs with Username --------
+router.get("/view-ip", async (req, res) => {
+  try {
+    await connectMongoDB();
+
+    const result = await IPModel.aggregate([
+      // Join with users collection
+      {
+        $lookup: {
+          from: "usernames",           // MongoDB collection name
+          localField: "user_id",   // field in IPModel
+          foreignField: "_id",     // field in User model
+          as: "userInfo",
+        },
+      },
+      // Flatten userInfo array
+      {
+        $unwind: {
+          path: "$userInfo",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      // Format output
+      {
+        $project: {
+          _id: 0,
+          ipaddress: "$ipaddress",
+          user_id: "$user_id",
+          username: "$userInfo.username",
+          timestamp: 1,
+          status: {
+            $cond: [
+              { $ifNull: ["$userInfo", false] },
+              "stored",
+              "user_not_found",
+            ],
+          },
+        },
+      },
+      // Latest first
+      { $sort: { timestamp: -1 } },
+    ]);
+
+    return res.status(200).json({
+      source: "mongodb",
+      count: result.length,
+      data: result,
+    });
+  } catch (err) {
+    console.error("View IP error:", err);
+    return res.status(500).json({
+      error: "Failed to fetch IP addresses",
+      message: err.message,
     });
   }
 });
