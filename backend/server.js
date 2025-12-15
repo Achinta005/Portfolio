@@ -14,6 +14,7 @@ const admin = require('./routes/admin')
 const adminIp = require('./routes/adminip')
 const auth = require('./routes/authentication')
 const Alist=require('./routes/animelist')
+const trackVisit =require('./routes/trackVisit')
 
 //CORS POLICY
 app.use(
@@ -59,6 +60,7 @@ app.use('/admin',admin)
 app.use('/adminIp',adminIp)
 app.use('/auth',auth)
 app.use('/alist',Alist)
+app.use('/track',trackVisit)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

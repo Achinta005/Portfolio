@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
+import VisitTracker from "@/components/VisitTracker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -61,6 +62,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+      <VisitTracker/>
         {children}
 
         <Script
