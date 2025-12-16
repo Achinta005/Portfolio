@@ -36,27 +36,4 @@ router.post("/upload_response", async (req, res) => {
   }
 });
 
-// -------- GET: Fetch Contact Responses --------
-router.get("/contact_responses", async (req, res) => {
-  try {
-    await connectMongoDB();
-    console.log("MongoDB connected");
-
-    const docs = await contactSchema.find().sort({ created_at: -1 });
-
-    console.log("✔ Fetched from MongoDB:", docs.length, "documents");
-
-    return res.status(200).json({
-      source: "mongodb",
-      data: docs,
-    });
-  } catch (err) {
-    console.error("Error fetching contact info:", err);
-    res.status(500).json({
-      error: "Failed to fetch contact info",
-      message: err.message,
-    });
-  }
-});
-
 module.exports = router;

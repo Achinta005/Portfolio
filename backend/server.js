@@ -10,10 +10,6 @@ const contact = require("./routes/contact");
 const projects = require("./routes/project");
 const about = require('./routes/about')
 const blog = require('./routes/blog')
-const admin = require('./routes/admin')
-const auth = require('./routes/authentication')
-const Alist=require('./routes/animelist')
-const trackVisit =require('./routes/trackVisit')
 
 //CORS POLICY
 app.use(
@@ -55,10 +51,6 @@ app.use("/contact", contact);
 app.use("/project", projects);
 app.use("/blog",blog)
 app.use('/about',about)
-app.use('/admin',admin)
-app.use('/auth',auth)
-app.use('/alist',Alist)
-app.use('/track',trackVisit)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
