@@ -45,11 +45,12 @@ async function getBlogPost(slug) {
    PAGE
 ================================ */
 export default async function BlogPostPage({ params }) {
-  const post = await getBlogPost(params.slug);
-
+  // Await params in Next.js 13+
+  const resolvedParams = await params;
+  const post = await getBlogPost(resolvedParams.slug);
+  
   if (!post || !post.slug) {
     notFound(); // IMPORTANT for SSG
   }
-
   return <BlogPost post={post} />;
 }
