@@ -80,8 +80,8 @@ export default function ProjectsGrid({ projectsData }) {
         liveUrl: project.live_url||project.liveUrl,
         designation: techList,
         category: project.category,
-        accuracy: isMachineLearning ? project.model_accuracy : undefined,
-        features: isMachineLearning ? project.model_features : undefined,
+        accuracy: isMachineLearning ? project.modelAccuracy : undefined,
+        features: isMachineLearning ? project.modelFeatures : undefined,
         showAllButtons: isMachineLearning,
       };
     });
