@@ -1,16 +1,17 @@
 import { apiCall } from "./baseApi";
 
 export const PortfolioApiService = {
-fetchBlog: async () => {
+  fetchBlog: async () => {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/blog/blog_data`,
       {
-        next: { revalidate: 3600 }, // ISR: 1 hour
+        next: { revalidate: 3600 }, // ISR 1 hour
       }
     );
 
     if (!res.ok) {
-      throw new Error("Failed to fetch blogs");
+      console.error("fetchBlog failed:", res.status);
+      return null;
     }
 
     return res.json();
@@ -20,12 +21,12 @@ fetchBlog: async () => {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/blog/blog_data/${slug}`,
       {
-        next: { revalidate: 3600 },
+        next: { revalidate: 3600 }, // ISR
       }
     );
 
     if (!res.ok) {
-      throw new Error("Failed to fetch blog");
+      return null;
     }
 
     return res.json();

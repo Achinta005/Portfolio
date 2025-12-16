@@ -1,43 +1,54 @@
+import { notFound } from "next/navigation";
 import BlogPost from "./BlogPost";
 import { PortfolioApiService } from "@/services/PortfolioApiService";
 
-/* Optional but recommended: controls fallback behavior */
+/* Allow fallback ISR pages */
 export const dynamicParams = true;
 
-/* Pre-build all blog pages */
+/* ================================
+   STATIC PATH GENERATION
+================================ */
 export async function generateStaticParams() {
-  const result = await PortfolioApiService.fetchBlog();
+  try {
+    const result = await PortfolioApiService.fetchBlog();
 
-  const posts = Array.isArray(result.data)
-    ? result.data
-    : Array.isArray(result.posts)
-    ? result.posts
-    : result;
+    const posts = Array.isArray(result?.data)
+      ? result.data
+      : Array.isArray(result?.posts)
+      ? result.posts
+      : [];
 
-  if (!Array.isArray(posts)) {
-    console.error("Unexpected blog API response:", result);
+    return posts
+      .filter((post) => post?.slug)
+      .map((post) => ({
+        slug: post.slug,
+      }));
+  } catch (err) {
+    console.error("generateStaticParams failed:", err);
     return [];
   }
-
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
 }
 
+/* ================================
+   FETCH SINGLE BLOG (BUILD SAFE)
+================================ */
 async function getBlogPost(slug) {
-  const result = await PortfolioApiService.fetchBlogBySlug(slug);
-  return result.data || result;
+  try {
+    const result = await PortfolioApiService.fetchBlogBySlug(slug);
+    return result?.data ?? result ?? null;
+  } catch {
+    return null;
+  }
 }
 
+/* ================================
+   PAGE
+================================ */
 export default async function BlogPostPage({ params }) {
   const post = await getBlogPost(params.slug);
 
-  if (!post?.slug) {
-    return (
-      <div className="p-10 text-center text-red-500">
-        Post not found
-      </div>
-    );
+  if (!post || !post.slug) {
+    notFound(); // IMPORTANT for SSG
   }
 
   return <BlogPost post={post} />;
