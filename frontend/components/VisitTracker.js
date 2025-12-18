@@ -7,7 +7,7 @@ export default function VisitTracker() {
   useEffect(() => {
     const sessionId = getVisitSessionId();
 
-    fetch(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/track/visit`, {
+    fetch(`${process.env.NEXT_PUBLIC_SERVER_API}/track/visit`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
