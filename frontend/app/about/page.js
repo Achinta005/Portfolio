@@ -144,14 +144,14 @@ export default async function AboutPage() {
 
   try {
     const [skillsRes, eduRes, certRes] = await Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/about/Skilldata`, {
+      fetch(`${process.env.NEXT_SERVER_API_URL}/about/Skilldata`, {
         next: { revalidate: 3600 },
       }),
-      fetch(`${process.env.NEXT_PUBLIC_PYTHON_API_URL}/about/Educationdata`, {
+      fetch(`${process.env.NEXT_SERVER_API_URL}/about/Educationdata`, {
         next: { revalidate: 3600 },
       }),
       fetch(
-        `${process.env.NEXT_PUBLIC_PYTHON_API_URL}/about/Certificatesdata`,
+        `${process.env.NEXT_SERVER_API_URL}/about/Certificatesdata`,
         {
           next: { revalidate: 3600 },
         }
