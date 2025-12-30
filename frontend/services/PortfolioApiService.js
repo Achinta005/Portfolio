@@ -3,7 +3,7 @@ import { apiCall } from "./baseApi";
 export const PortfolioApiService = {
   fetchBlog: async () => {
     const res = await fetch(
-      `${process.env.NEXT_SERVER_API_URL}/blog/blog_data`,
+      `${process.env.NEXT_PUBLIC_SERVER_API_URL}/blog/blog_data`,
       {
         next: { revalidate: 3600 }, // ISR 1 hour
       }
@@ -19,7 +19,7 @@ export const PortfolioApiService = {
 
   fetchBlogBySlug: async (slug) => {
     const res = await fetch(
-      `${process.env.NEXT_SERVER_API_URL}/blog/blog_data/${slug}`,
+      `${process.env.NEXT_PUBLIC_SERVER_API_URL}/blog/blog_data/${slug}`,
       {
         next: { revalidate: 3600 }, // ISR
       }
@@ -35,7 +35,7 @@ export const PortfolioApiService = {
   //Download Resume
   downloadResume: async () => {
     const response = await fetch(
-      `${process.env.NEXT_SERVER_API_URL}/about/resume`
+      `${process.env.NEXT_PUBLIC_SERVER_API_URL}/about/resume`
     );
 
     if (!response.ok) throw new Error("Download failed");
@@ -56,7 +56,7 @@ export const PortfolioApiService = {
   //Post Contact response
   PostContactResponse: async (data) => {
     return apiCall(
-      `${process.env.NEXT_SERVER_API_URL}/contact/upload_response`,
+      `${process.env.NEXT_PUBLIC_SERVER_API_URL}/contact/upload_response`,
       {
         method: "POST",
         body: JSON.stringify(data),
