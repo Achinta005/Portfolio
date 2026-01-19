@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
-<url><loc>https://achintahazra.shop/about</loc><lastmod>2025-12-27T06:24:35.068Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://achintahazra.shop/admin/exclude</loc><lastmod>2025-12-27T06:24:35.069Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://achintahazra.shop/blog/future-of-ai</loc><lastmod>2025-12-27T06:24:35.069Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://achintahazra.shop/blog/future-of-ai-ml</loc><lastmod>2025-12-27T06:24:35.069Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://achintahazra.shop/blog/networking-security-practices</loc><lastmod>2025-12-27T06:24:35.069Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://achintahazra.shop/blog/no-code-low-code-vibe-code</loc><lastmod>2025-12-27T06:24:35.069Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://achintahazra.shop/blog/numpy-data-manipulation</loc><lastmod>2025-12-27T06:24:35.069Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://achintahazra.shop/blog/scope-opportunity-ai-ml</loc><lastmod>2025-12-27T06:24:35.069Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://achintahazra.shop/blog/tailwind-nextjs-modern-websites</loc><lastmod>2025-12-27T06:24:35.069Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://achintahazra.shop/blog</loc><lastmod>2025-12-27T06:24:35.069Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://achintahazra.shop/contact</loc><lastmod>2025-12-27T06:24:35.069Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://achintahazra.shop/Homepage</loc><lastmod>2025-12-27T06:24:35.069Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://achintahazra.shop</loc><lastmod>2025-12-27T06:24:35.069Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
-<url><loc>https://achintahazra.shop/projects</loc><lastmod>2025-12-27T06:24:35.069Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://achintahazra.shop/about</loc><lastmod>2026-01-19T08:00:54.948Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://achintahazra.shop/admin/exclude</loc><lastmod>2026-01-19T08:00:54.949Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://achintahazra.shop/blog/future-of-ai</loc><lastmod>2026-01-19T08:00:54.949Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://achintahazra.shop/blog/future-of-ai-ml</loc><lastmod>2026-01-19T08:00:54.949Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://achintahazra.shop/blog/networking-security-practices</loc><lastmod>2026-01-19T08:00:54.949Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://achintahazra.shop/blog/no-code-low-code-vibe-code</loc><lastmod>2026-01-19T08:00:54.949Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://achintahazra.shop/blog/numpy-data-manipulation</loc><lastmod>2026-01-19T08:00:54.949Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://achintahazra.shop/blog/scope-opportunity-ai-ml</loc><lastmod>2026-01-19T08:00:54.949Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://achintahazra.shop/blog/tailwind-nextjs-modern-websites</loc><lastmod>2026-01-19T08:00:54.949Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://achintahazra.shop/blog</loc><lastmod>2026-01-19T08:00:54.949Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://achintahazra.shop/contact</loc><lastmod>2026-01-19T08:00:54.949Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://achintahazra.shop/Homepage</loc><lastmod>2026-01-19T08:00:54.949Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://achintahazra.shop</loc><lastmod>2026-01-19T08:00:54.949Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
+<url><loc>https://achintahazra.shop/projects</loc><lastmod>2026-01-19T08:00:54.949Z</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>
 </urlset>
