@@ -5,50 +5,51 @@ import { useState, useEffect, useRef, useCallback } from "react";
 export default function WallpaperViewer() {
   const [mediaList, setMediaList] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isMuted, setIsMuted] = useState(true); // Always true for auto-play
-  const [autoRotateEnabled, setAutoRotateEnabled] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const autoRotateRef = useRef(null);
   const videoRef = useRef(null);
 
-  // Load media files from public folder
+  // Load wallpapers from API route (server-side, no CORS issues)
   useEffect(() => {
-    const loadMedia = async () => {
+    const loadWallpapers = async () => {
       try {
         setIsLoading(true);
+        console.log("🌩️ Fetching from Cloudinary via API...");
+
         const response = await fetch("/api/wallpapers");
         const data = await response.json();
-        console.log("Loaded wallpapers:", data.wallpapers?.length || 0);
-        setMediaList(data.wallpapers || []);
-        setError(null);
-        if (data.wallpapers && data.wallpapers.length > 0) {
-          setCurrentIndex(0);
+
+        if (data.success) {
+          setMediaList(data.wallpapers);
+          setError(null);
+          console.log(`✅ Loaded ${data.wallpapers.length} wallpapers`);
+        } else {
+          setError(data.error || "Failed to load wallpapers");
+          console.error("❌ Error:", data.error);
         }
       } catch (err) {
         console.error("Failed to load wallpapers:", err);
-        setError("Failed to load wallpapers.");
+        setError(err.message);
       } finally {
         setIsLoading(false);
       }
     };
 
-    loadMedia();
+    loadWallpapers();
   }, []);
 
-  // Auto-play video when media changes or loads
+  // Auto-play video when media changes
   useEffect(() => {
     if (!isLoading && mediaList.length > 0) {
       const currentMedia = mediaList[currentIndex];
 
       if (currentMedia?.type === "video" && videoRef.current) {
-        console.log("Video loaded:", currentMedia.name);
+        console.log("🎬 Playing:", currentMedia.name);
 
         const playVideo = async () => {
           try {
-            console.log("🎬 Starting auto-play...");
-            // Ensure video is muted for auto-play
             videoRef.current.muted = true;
             videoRef.current.volume = 0.5;
 
@@ -62,36 +63,29 @@ export default function WallpaperViewer() {
           }
         };
 
-        // Small delay to ensure DOM is ready
         const timer = setTimeout(playVideo, 300);
         return () => clearTimeout(timer);
-      } else if (currentMedia?.type === "image") {
-        console.log("🖼️ Image loaded:", currentMedia.name);
       }
     }
   }, [currentIndex, isLoading, mediaList]);
 
   // Auto-rotate every 30 minutes
   useEffect(() => {
-    if (!autoRotateEnabled || mediaList.length === 0) {
-      if (autoRotateRef.current) clearInterval(autoRotateRef.current);
-      return;
-    }
+    if (mediaList.length === 0) return;
 
     const handleAutoRotate = () => {
       console.log("⏰ Auto-rotating...");
       setCurrentIndex((prev) => (prev + 1) % mediaList.length);
     };
 
-    // 30 minutes = 1800000 ms
     autoRotateRef.current = setInterval(handleAutoRotate, 30 * 60 * 1000);
 
     return () => {
       if (autoRotateRef.current) clearInterval(autoRotateRef.current);
     };
-  }, [autoRotateEnabled, mediaList.length]);
+  }, [mediaList.length]);
 
-  // Define handlers BEFORE keyboard effect
+  // Keyboard controls
   const handleNext = useCallback(() => {
     if (mediaList.length === 0) return;
     const nextIndex = (currentIndex + 1) % mediaList.length;
@@ -113,16 +107,9 @@ export default function WallpaperViewer() {
     setCurrentIndex(randomIndex);
   }, [mediaList.length, currentIndex]);
 
-  const handleMute = useCallback(() => {
-    console.log("🔊 Mute toggled");
-    setIsMuted((prev) => !prev);
-  }, []);
-
-  // Keyboard shortcuts - with dependencies
+  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e) => {
-      console.log("⌨️  Key pressed:", e.key);
-
       switch (e.key) {
         case "ArrowRight":
           e.preventDefault();
@@ -137,52 +124,68 @@ export default function WallpaperViewer() {
           e.preventDefault();
           handleShuffle();
           break;
-        case "m":
-        case "M":
-          e.preventDefault();
-          handleMute();
-          break;
         default:
           break;
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    console.log("✅ Keyboard listener attached");
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [handleNext, handlePrevious, handleShuffle, handleMute]);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleNext, handlePrevious, handleShuffle]);
 
   const currentMedia = mediaList[currentIndex];
   const isVideo = currentMedia?.type === "video";
 
-  // Loading state - completely black
+  // Loading state
   if (isLoading) {
     return <div className="w-full h-screen bg-black" />;
   }
 
-  // Error state - completely black
+  // Error state
   if (error) {
-    console.error("❌ Error state:", error);
-    return <div className="w-full h-screen bg-black" />;
+    console.error("❌ Error:", error);
+    return (
+      <div className="w-full h-screen bg-black flex items-center justify-center p-4">
+        <div className="bg-red-900/30 border border-red-500 rounded-lg p-6 max-w-md">
+          <h2 className="text-red-400 font-bold mb-2">
+            Error Loading Wallpapers
+          </h2>
+          <p className="text-red-300 text-sm">{error}</p>
+          <p className="text-red-200 text-xs mt-4">
+            Make sure CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET are set in
+            .env.local
+          </p>
+        </div>
+      </div>
+    );
   }
 
-  // No media state - completely black
+  // No media state
   if (mediaList.length === 0) {
-    console.warn("⚠️ No media found");
-    return <div className="w-full h-screen bg-black" />;
+    console.warn("⚠️ No wallpapers found");
+    return (
+      <div className="w-full h-screen bg-black flex items-center justify-center p-4">
+        <div className="bg-yellow-900/30 border border-yellow-500 rounded-lg p-6 max-w-md">
+          <h2 className="text-yellow-400 font-bold mb-2">
+            No Wallpapers Found
+          </h2>
+          <p className="text-yellow-300 text-sm">
+            Upload videos/images to the "wallpapers" folder in your Cloudinary
+            account.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="w-full h-screen bg-black overflow-hidden">
-      {/* Media Display - Full Screen Only */}
+      {/* Full Screen Media Display */}
       <div className="w-full h-full">
         {isVideo ? (
           <video
             ref={videoRef}
-            key={currentMedia.src}
+            key={currentMedia.publicId}
             src={currentMedia.src}
             muted={true}
             loop
@@ -196,6 +199,7 @@ export default function WallpaperViewer() {
             src={currentMedia.src}
             alt="wallpaper"
             className="w-full h-full object-cover"
+            loading="eager"
           />
         )}
       </div>
