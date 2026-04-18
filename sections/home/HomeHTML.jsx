@@ -60,7 +60,7 @@ export default function HomeHTML({ bootDone, onOpenPdf }) {
               transition: "opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s",
             }}
           >
-            Hi, I'm (test)
+            Hi, I'm
           </p>
         </div>
 
