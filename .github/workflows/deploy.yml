@@ -23,7 +23,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-            NEXT_PUBLIC_SERVER_API_URL: https://ficxus.onrender.com/api/portfolio
+            NEXT_PUBLIC_SERVER_API_URL: https://server.achintahazra.shop/api/portfolio
             NODE_ENV: production
 
       - name: Upload build to VM
