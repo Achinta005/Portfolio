@@ -172,63 +172,37 @@ export default function CertHTML() {
     useEffect(() => {
         const controller = new AbortController();
 
-        const url = `${process.env.NEXT_PUBLIC_SERVER_API_URL}/about/Certificatesdata`;
-
-        console.log("🚀 API CALL →", url);
-
-        fetch(url, {
+        fetch(`${process.env.NEXT_PUBLIC_SERVER_API_URL}/about/Certificatesdata`, {
             signal: controller.signal,
         })
             .then(res => {
-                console.log("📥 RAW RESPONSE →", res);
-
-                if (!res.ok) {
-                    console.error("❌ HTTP ERROR →", res.status);
-                    throw new Error(`HTTP ${res.status}`);
-                }
-
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 return res.json();
             })
             .then(data => {
-                console.log("✅ RESPONSE DATA →", data);
-
-                const mapped = data.map((item, idx) => {
-                    const mappedItem = {
-                        _id: item._id,
-                        title: item.name,
-                        org: item.issuer,
-                        year: item.year,
-                        accent: ACCENT_PALETTE[idx % ACCENT_PALETTE.length],
-                        icon: item.icon || "",
-                        emoji: "🏆",
-                        num: String(idx + 1).padStart(2, "0"),
-                        path: item.path || "#",
-                    };
-
-                    console.log(`🔄 MAPPED ITEM ${idx} →`, mappedItem);
-
-                    return mappedItem;
-                });
-
-                console.log("🎯 FINAL STATE DATA →", mapped);
-
+                const mapped = data.map((item, idx) => ({
+                    _id: item._id,
+                    title: item.name,
+                    org: item.issuer,
+                    year: item.year,
+                    accent: ACCENT_PALETTE[idx % ACCENT_PALETTE.length],
+                    icon: item.icon || "",
+                    emoji: "🏆",
+                    num: String(idx + 1).padStart(2, "0"),
+                    path: item.path || "#",
+                }));
                 setCerts(mapped);
                 setLoading(false);
             })
             .catch(err => {
                 if (err.name !== "AbortError") {
-                    console.error("🔥 FETCH ERROR →", err);
+                    console.error("Failed to fetch certificates:", err);
                     setError("Failed to load certificates.");
                     setLoading(false);
-                } else {
-                    console.warn("⚠️ Request Aborted");
                 }
             });
 
-        return () => {
-            console.log("🛑 Aborting API call...");
-            controller.abort();
-        };
+        return () => controller.abort();
     }, []);
 
     /* ── animation & interaction (runs after certs load) ── */
