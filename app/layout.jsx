@@ -10,6 +10,7 @@ export default function Layout({ children }) {
           *::-webkit-scrollbar { display: none !important; width: 0px !important; height: 0px !important; }
           *::-webkit-scrollbar-track { display: none !important; }
           *::-webkit-scrollbar-thumb { display: none !important; }
+          body { min-width: 1100px; }
         `}} />
       </head>
       <body>{children}</body>
