@@ -1,31 +1,49 @@
 @import "tailwindcss";
 
-
-html, body {
+html {
   width: 100%;
-  height: 100%;
-  overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+html::-webkit-scrollbar { display: none; width: 0; }
 
-/* kills ALL scrollbars everywhere including drei's */
-::-webkit-scrollbar {
-  display: none;
+body {
+  width: 100%;
+  min-width: 320px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+body::-webkit-scrollbar { display: none; width: 0; }
 
 * {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-
-/* drei's scroll container */
-div[style*="overflow: auto"],
-div[style*="overflow:auto"] {
-  scrollbar-width: none !important;
-  -ms-overflow-style: none !important;
-}
+*::-webkit-scrollbar { display: none; }
 
 div[style*="overflow: auto"]::-webkit-scrollbar,
 div[style*="overflow:auto"]::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
+}
+
+@keyframes scanDown {
+  0%   { top: calc(50% - 32px); opacity: 0; }
+  20%  { opacity: 1; }
+  100% { top: calc(50% + 30px); opacity: 0; }
+}
+@keyframes bracketPulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(0,255,200,0.5); }
+  50%       { box-shadow: 0 0 18px rgba(0,255,200,0.9); }
+}
+@keyframes fadeInLine { to { opacity: 1; } }
+@keyframes blink { 50% { opacity: 0; } }
+
+
+* {
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (max-width: 768px) {
+  * { backdrop-filter: none !important; }
 }

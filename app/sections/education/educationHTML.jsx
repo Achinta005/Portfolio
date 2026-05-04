@@ -1,11 +1,13 @@
 "use client";
-import { useRef, useEffect, forwardRef } from "react";
-import { scrollProgressRef } from "../../components/ImmersiveView/scrollState";
+import { useRef, useEffect, forwardRef, useState } from "react";
+import { portfolioApi } from "../../lib/api/portfolioApi";
+import { scrollProgressRef } from "../../../components/ImmersiveView/scrollState";
+import { subscribeToScroll } from "../../../components/ImmersiveView/scrollState";
 
-const SECTION_START = 0.46 ;
-const SECTION_END = 0.66 ;
+const SECTION_START = 0.471;  // ≈ 0.571 — starts right after Projects
+const SECTION_END = 0.55;  // ≈ 0.714
 
-const EDUCATION = [
+const DEFAULT_EDUCATION = [
     {
         degree: "Secondary Education",
         university: "West Bengal Board of Secondary Education",
@@ -34,9 +36,6 @@ const EDUCATION = [
         accent: "#a78bfa", status: "ongoing", num: "03",
     },
 ];
-
-// Each of 3 nodes gets equal 1/3 of section scroll
-const NUM = EDUCATION.length;
 
 function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
 function easeIn(t) { return t * t * t * t; }
@@ -133,20 +132,27 @@ const NodeCard = forwardRef(function NodeCard({ edu }, ref) {
 });
 
 export default function EducationHTML() {
-    const wrapperRef = useRef();
-    const cardRefs = [useRef(), useRef(), useRef()];
-    const headerRef = useRef();
-    const progressRef = useRef(); // the thin bottom progress bar
-    const dotRefs = [useRef(), useRef(), useRef()];
+    const [education, setEducation] = useState(null);
 
     useEffect(() => {
-        let raf;
+        portfolioApi.getEducation().then(setEducation).catch(console.error);
+    }, []);
 
-        const tick = () => {
-            const offset = scrollProgressRef.current?.offset ?? 0;
+    
+    const EDUCATION = education ?? DEFAULT_EDUCATION;
+    const NUM = EDUCATION.length;
+
+    const wrapperRef = useRef();
+    const headerRef = useRef();
+    const progressRef = useRef();
+    const cardRefs = useRef([]);
+    const dotRefs = useRef([]);
+
+
+    useEffect(() => {
+        return subscribeToScroll((offset) => {
             const secT = clamp((offset - SECTION_START) / (SECTION_END - SECTION_START), 0, 1);
 
-            // ── Wrapper visibility ──────────────────────────────────────────
             const wrap = wrapperRef.current;
             if (wrap) {
                 const wIn = clamp(secT / 0.04, 0, 1);
@@ -157,22 +163,18 @@ export default function EducationHTML() {
                 wrap.style.visibility = wOp < 0.01 ? "hidden" : "visible";
             }
 
-            // ── Which node is active ────────────────────────────────────────
             const slotSize = 1 / NUM;
             const activeIndex = Math.min(Math.floor(secT / slotSize), NUM - 1);
-            const slotT = (secT - activeIndex * slotSize) / slotSize; // 0→1 within slot
+            const slotT = (secT - activeIndex * slotSize) / slotSize;
 
-            // per-node fade: zoom in from scale 0.85, hold, zoom out to 1.08
             const fadeIn = clamp(slotT / 0.28, 0, 1);
             const fadeOut = slotT > 0.72 ? clamp((slotT - 0.72) / 0.28, 0, 1) : 0;
             const cardOp = easeOut(fadeIn) * (1 - easeIn(fadeOut));
 
-            // zoom feel: scale starts small (far), peaks at 1, shrinks slightly on exit
-            const zoomIn = 0.82 + easeOut(fadeIn) * 0.18;   // 0.82 → 1.00
-            const zoomOut = 1 - easeIn(fadeOut) * 0.06;       // 1.00 → 0.94
+            const zoomIn = 0.82 + easeOut(fadeIn) * 0.18;
+            const zoomOut = 1 - easeIn(fadeOut) * 0.06;
 
-            cardRefs.forEach((r, i) => {
-                const el = r.current;
+            cardRefs.current.forEach((el, i) => {
                 if (!el) return;
                 const isActive = i === activeIndex;
                 if (isActive) {
@@ -186,7 +188,6 @@ export default function EducationHTML() {
                 }
             });
 
-            // ── Header ──────────────────────────────────────────────────────
             const hdr = headerRef.current;
             if (hdr) {
                 const hIn = clamp(secT / 0.06, 0, 1);
@@ -196,28 +197,17 @@ export default function EducationHTML() {
                 hdr.style.visibility = hOp < 0.01 ? "hidden" : "visible";
             }
 
-            // ── Step dots (which node we're on) ────────────────────────────
-            dotRefs.forEach((r, i) => {
-                const el = r.current;
+            dotRefs.current.forEach((el, i) => {
                 if (!el) return;
                 const isActive = i === activeIndex;
-                el.style.background = isActive
-                    ? EDUCATION[i].accent
-                    : `${EDUCATION[i].accent}30`;
-                el.style.boxShadow = isActive
-                    ? `0 0 12px ${EDUCATION[i].accent}` : "none";
+                el.style.background = isActive ? EDUCATION[i].accent : `${EDUCATION[i].accent}30`;
+                el.style.boxShadow = isActive ? `0 0 12px ${EDUCATION[i].accent}` : "none";
                 el.style.transform = isActive ? "scale(1.4)" : "scale(1)";
             });
 
-            // ── Progress bar ────────────────────────────────────────────────
             const pb = progressRef.current;
             if (pb) pb.style.width = `${secT * 100}%`;
-
-            raf = requestAnimationFrame(tick);
-        };
-
-        raf = requestAnimationFrame(tick);
-        return () => cancelAnimationFrame(raf);
+        });
     }, []);
 
     return (
@@ -231,7 +221,7 @@ export default function EducationHTML() {
 
             <div ref={wrapperRef} style={{
                 position: "absolute",
-                top: "280vh",
+                top: "450vh",
                 left: "50%",
                 transform: "translateX(-50%)",
                 transformOrigin: "center top",
@@ -279,7 +269,7 @@ export default function EducationHTML() {
                             top: 0, left: 0, width: "100%",
                             transformOrigin: "center center",
                         }}>
-                            <NodeCard ref={cardRefs[i]} edu={edu} />
+                            <NodeCard ref={el => cardRefs.current[i] = el} edu={edu} />
                         </div>
                     ))}
                 </div>
@@ -287,7 +277,7 @@ export default function EducationHTML() {
                 {/* ── Step indicator dots ── */}
                 <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                     {EDUCATION.map((edu, i) => (
-                        <div key={i} ref={dotRefs[i]} style={{
+                        <div key={i} ref={el => dotRefs.current[i] = el} style={{
                             width: 8, height: 8, borderRadius: "50%",
                             background: `${edu.accent}30`,
                             transition: "transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease",

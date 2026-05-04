@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useEffect } from "react";
-import { scrollProgressRef } from "../../../components/ImmersiveView/scrollState";
+import { scrollProgressRef } from "../../../../components/ImmersiveView/scrollState";
 
 export function useParallax(ref, speed, sectionEnd = 0.17) {
   const raf = useRef();

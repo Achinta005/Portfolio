@@ -4,7 +4,6 @@ import { useChromatic } from "./hooks/useChromatic";
 import HUDBrackets from "./HUDBrackets";
 
 const GLITCH_CHARS = "!<>-_\\/[]{}—=+*^?#_ABCDEF01";
-const TARGET_TEXT = "ACHINTA HAZRA";
 
 function scramble(progress, target) {
   return target
@@ -18,11 +17,12 @@ function scramble(progress, target) {
     .join("");
 }
 
-export default function DecodeTitle() {
+export default function DecodeTitle({ name }) {
   const [text, setText] = useState("");
   const [done, setDone] = useState(false);
   const progress = useRef(0);
   const h1Ref = useRef();
+  const TARGET_TEXT = name ?? "ACHINTA HAZRA";
   useChromatic(h1Ref);
 
   useEffect(() => {

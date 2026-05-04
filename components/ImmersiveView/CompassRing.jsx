@@ -1,26 +1,27 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { scrollProgressRef } from "./scrollState";
 
 const SECTION_BOUNDARIES = [
-  { name: "Home", start: 0.000, end: 0.125 },
-  { name: "About", start: 0.125, end: 0.2786 },
-  { name: "Skills", start: 0.2786, end: 0.3064 },
-  { name: "Projects", start: 0.3064, end: 0.52 },
-  { name: "Education", start: 0.52, end: 0.7613 },
-  { name: "Certs", start: 0.7613, end: 0.9840 },
-  { name: "Contact", start: 0.9840, end: 1.000 },
+  { name: "Home", start: 0, end: 0.123 },
+  { name: "About", start: 0.123, end: 0.198 },
+  { name: "Skills", start: 0.198, end: 0.3464 },
+  { name: "Projects", start: 0.3464, end: 0.4826 },
+  { name: "Education", start: 0.4826, end: 0.5815 },
+  { name: "Certs", start: 0.5815, end: 0.858 },
+  { name: "Contact", start: 0.858, end: 1.000 },
 ];
 
-const SECTION_DEG = [0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5];
+const SECTION_DEG = [22, 58, 98, 149, 191, 259, 334];
+
 const SECTION_LABELS = {
-  0: "HOME",
-  22.5: "ABOUT",
-  45: "SKILLS",
-  67.5: "PROJ",
-  90: "EDU",
-  112.5: "CERTS",
-  135: "CONTACT",
+  22: "HOME",
+  58: "ABOUT",
+  98: "SKILLS",
+  149: "PROJ",
+  191: "EDU",
+  259: "CERTS",
+  334: "CONTACT",
 };
 
 export default function CompassRing() {
@@ -29,27 +30,30 @@ export default function CompassRing() {
   const sectionRef = useRef();
   const subRef = useRef();
   const progressRef = useRef();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true); // ✅ add this
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+
     let animFrame = null;
     let currentDeg = 0;
     let targetDeg = 0;
-
     const animate = () => {
-      const offset = scrollProgressRef.current?.offset ?? 0;
-      targetDeg = offset * 360;
+      const offset = scrollProgressRef.current?.offset ?? 0; // ✅ still works — Lenis updates this
+      const targetDeg = offset * 360;
 
-      // Find active section by offset boundaries
       const found =
         SECTION_BOUNDARIES.find(s => offset >= s.start && offset < s.end) ??
         SECTION_BOUNDARIES[SECTION_BOUNDARIES.length - 1];
-      const active = found.name;
-      const sectionIndex = SECTION_BOUNDARIES.indexOf(found);
 
       if (sectionRef.current)
-        sectionRef.current.textContent = active.toUpperCase();
+        sectionRef.current.textContent = found.name.toUpperCase();
       if (subRef.current)
-        subRef.current.textContent = `${String(sectionIndex + 1).padStart(2, "0")} · ${String(SECTION_BOUNDARIES.length).padStart(2, "0")}`;
+        subRef.current.textContent = `${String(SECTION_BOUNDARIES.indexOf(found) + 1).padStart(2, "0")} · ${String(SECTION_BOUNDARIES.length).padStart(2, "0")}`;
 
       let diff = targetDeg - currentDeg;
       if (diff > 180) diff -= 360;
@@ -58,15 +62,13 @@ export default function CompassRing() {
       if (currentDeg < 0) currentDeg += 360;
       if (currentDeg >= 360) currentDeg -= 360;
 
-      const deg = currentDeg;
-      const rounded = Math.round(deg);
-
       if (ringRef.current)
-        ringRef.current.style.transform = `rotate(${deg}deg)`;
-      if (degRef.current) degRef.current.textContent = `${rounded}°`;
+        ringRef.current.style.transform = `rotate(${currentDeg}deg)`;
+      if (degRef.current)
+        degRef.current.textContent = `${Math.round(currentDeg)}°`;
       if (progressRef.current) {
         const c = 2 * Math.PI * 138;
-        progressRef.current.style.strokeDashoffset = c - (deg / 360) * c;
+        progressRef.current.style.strokeDashoffset = c - (currentDeg / 360) * c;
       }
 
       animFrame = requestAnimationFrame(animate);
@@ -74,7 +76,9 @@ export default function CompassRing() {
 
     animFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animFrame);
-  }, []);
+  }, [mounted]);
+
+  if (!mounted) return null;
 
   const sectionSet = new Set(SECTION_DEG);
   const midSet = new Set(
@@ -86,7 +90,8 @@ export default function CompassRing() {
   const ticks = [];
   for (let i = 0; i < 360; i += 3) {
     const deg = i;
-    const isSection = sectionSet.has(+(deg.toFixed(4)));
+    // Check if close to any section deg (within 1.5°)
+    const isSection = SECTION_DEG.some(s => Math.abs(s - deg) < 1.5);
     const isMid = !isSection && midSet.has(+(deg.toFixed(4)));
     const rad = ((deg - 90) * Math.PI) / 180;
     const outerR = 138;
@@ -98,22 +103,21 @@ export default function CompassRing() {
       x2: Math.cos(rad) * innerR, y2: Math.sin(rad) * innerR,
       lx: Math.cos(rad) * labelR, ly: Math.sin(rad) * labelR,
       isSection, isMid,
+      label: SECTION_DEG.find(s => Math.abs(s - deg) < 1.5),
     });
   }
+
   SECTION_DEG.forEach(deg => {
-    if (deg % 3 !== 0) {
-      const rad = ((deg - 90) * Math.PI) / 180;
-      const outerR = 138;
-      const innerR = 110;
-      const labelR = 94;
-      ticks.push({
-        deg, rad,
-        x1: Math.cos(rad) * outerR, y1: Math.sin(rad) * outerR,
-        x2: Math.cos(rad) * innerR, y2: Math.sin(rad) * innerR,
-        lx: Math.cos(rad) * labelR, ly: Math.sin(rad) * labelR,
-        isSection: true, isMid: false,
-      });
-    }
+    const rad = ((deg - 90) * Math.PI) / 180;
+    const outerR = 138;
+    const labelR = 94;
+    ticks.push({
+      deg, rad,
+      x1: Math.cos(rad) * outerR, y1: Math.sin(rad) * outerR,
+      x2: Math.cos(rad) * 110, y2: Math.sin(rad) * 110,
+      lx: Math.cos(rad) * labelR, ly: Math.sin(rad) * labelR,
+      isSection: true, isMid: false, label: deg,
+    });
   });
 
   const hex = (cx, cy, r, flat = false) => {
@@ -127,6 +131,7 @@ export default function CompassRing() {
 
   const HEX_R = 168;
   const MID_R = 150;
+
 
   return (
     <div
@@ -236,15 +241,15 @@ export default function CompassRing() {
           <circle cx="0" cy="0" r="145" fill="rgba(0,3,14,0.5)" />
           <circle cx="0" cy="0" r="145" fill="none" stroke="rgba(0,210,255,0.1)" strokeWidth="0.8" />
 
-          {ticks.map(({ deg, x1, y1, x2, y2, lx, ly, isSection, isMid }) => (
-            <g key={deg}>
+          {ticks.map(({ deg, x1, y1, x2, y2, lx, ly, isSection, isMid, label }) => (
+            <g key={`${deg}-${label}`}>
               <line
                 x1={x1} y1={y1} x2={x2} y2={y2}
                 stroke={isSection ? "#00ffcc" : isMid ? "rgba(0,210,255,0.25)" : "rgba(0,210,255,0.08)"}
                 strokeWidth={isSection ? 2 : isMid ? 0.8 : 0.35}
                 filter={isSection ? "url(#g2)" : undefined}
               />
-              {isSection && SECTION_LABELS[deg] && (
+              {isSection && SECTION_LABELS[label] && (
                 <>
                   <circle
                     cx={Math.cos(((deg - 90) * Math.PI) / 180) * 124}
@@ -259,7 +264,7 @@ export default function CompassRing() {
                     transform={`rotate(${deg}, ${lx}, ${ly})`}
                     filter="url(#g2)"
                   >
-                    {SECTION_LABELS[deg]}
+                    {SECTION_LABELS[label]}
                   </text>
                 </>
               )}
