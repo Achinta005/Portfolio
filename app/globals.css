@@ -44,6 +44,24 @@ div[style*="overflow:auto"]::-webkit-scrollbar {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── Performance: promote fixed layers to GPU ─────────────────── */
+canvas[style*="position: fixed"],
+canvas[style*="position:fixed"] {
+  will-change: transform;
+  contain: strict;
+}
+
+/* ── Performance: limit backdrop-filter on mobile ─────────────── */
 @media (max-width: 768px) {
   * { backdrop-filter: none !important; }
 }
+
+/* ── Performance: reduce backdrop-filter quality for smoother scroll ── */
+@media (min-width: 769px) {
+  [style*="backdrop-filter: blur(18px)"],
+  [style*="backdrop-filter: blur(24px)"],
+  [style*="backdrop-filter:blur(18px)"],
+  [style*="backdrop-filter:blur(24px)"] {
+    backdrop-filter: blur(10px) !important;
+  }
+}

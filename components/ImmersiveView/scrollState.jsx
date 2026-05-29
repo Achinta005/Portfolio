@@ -10,24 +10,30 @@ export function updateScrollProgress(scrollY, maxScroll) {
 // ── Single global RAF ticker ──────────────────────────────────────────────────
 const subscribers = new Set();
 let rafId = null;
+let lastOffset = -1;
 
 function globalTick() {
   const offset = scrollProgressRef.current?.offset ?? 0;
-  subscribers.forEach(fn => {
-    try { fn(offset); } catch (e) { console.error(e); }
-  });
+  // Only call subscribers when scroll position actually changed
+  if (offset !== lastOffset) {
+    lastOffset = offset;
+    subscribers.forEach(fn => {
+      try { fn(offset); } catch (e) { console.error(e); }
+    });
+  }
   rafId = requestAnimationFrame(globalTick);
 }
 
 export function subscribeToScroll(fn) {
   if (subscribers.size === 0) {
-    rafId = requestAnimationFrame(globalTick); // start loop only when first subscriber joins
+    lastOffset = -1; // reset on first subscribe
+    rafId = requestAnimationFrame(globalTick);
   }
   subscribers.add(fn);
   return () => {
     subscribers.delete(fn);
     if (subscribers.size === 0 && rafId) {
-      cancelAnimationFrame(rafId); // stop loop when no subscribers
+      cancelAnimationFrame(rafId);
       rafId = null;
     }
   };

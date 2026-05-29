@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { subscribeToScroll } from "../../../components/ImmersiveView/scrollState.jsx";
 import { scrollProgressRef } from "../../../components/ImmersiveView/scrollState.jsx";
 import { portfolioApi } from "../../lib/api/portfolioApi";
+import useIsMobile from "../../../utils/useIsMobile";
 
 const SECTION_START = 0.1;
 const SECTION_END = 0.2;
@@ -251,6 +252,7 @@ const StatChip = forwardRef(function StatChip({ s }, ref) {
 
 // ── Main export ───────────────────────────────────────────────────────────────
 export default function AboutHTML() {
+  const isMobile = useIsMobile();
   const blockRefs = useRef([]);
   const statRefs = useRef([null, null, null, null]);
   const sectionRef = useRef();
@@ -371,8 +373,8 @@ export default function AboutHTML() {
       {/* Cards grid */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "1fr 60px 1fr",
-        gap: "14px 0",
+        gridTemplateColumns: isMobile ? "1fr" : "1fr 60px 1fr",
+        gap: isMobile ? "10px" : "14px 0",
         maxWidth: "920px", width: "92%",
         pointerEvents: "auto",
       }}>
@@ -380,7 +382,7 @@ export default function AboutHTML() {
           <div data-corner style={{ position: "absolute", top: 0, left: 0, width: 36, height: 36, borderTop: `1.5px solid ${BLOCK_CFG[0].color}`, borderLeft: `1.5px solid ${BLOCK_CFG[0].color}`, borderRadius: "16px 0 0 0", opacity: 0.5, pointerEvents: "none", transformOrigin: "top left" }} />
           <HeaderCard header={header} />
         </Card>
-        <div />
+        {!isMobile && <div />}
         <Card ref={el => blockRefs.current[1] = el} color={BLOCK_CFG[1].color}>
           <div data-corner style={{ position: "absolute", top: 0, left: 0, width: 36, height: 36, borderTop: `1.5px solid ${BLOCK_CFG[1].color}`, borderLeft: `1.5px solid ${BLOCK_CFG[1].color}`, borderRadius: "16px 0 0 0", opacity: 0.5, pointerEvents: "none", transformOrigin: "top left" }} />
           <BioCard bio={bio} />
@@ -389,7 +391,7 @@ export default function AboutHTML() {
           <div data-corner style={{ position: "absolute", top: 0, left: 0, width: 36, height: 36, borderTop: `1.5px solid ${BLOCK_CFG[2].color}`, borderLeft: `1.5px solid ${BLOCK_CFG[2].color}`, borderRadius: "16px 0 0 0", opacity: 0.5, pointerEvents: "none", transformOrigin: "top left" }} />
           <TraitsCard traits={traits} />
         </Card>
-        <div />
+        {!isMobile && <div />}
         <Card ref={el => blockRefs.current[3] = el} color={BLOCK_CFG[3].color}>
           <div data-corner style={{ position: "absolute", top: 0, left: 0, width: 36, height: 36, borderTop: `1.5px solid ${BLOCK_CFG[3].color}`, borderLeft: `1.5px solid ${BLOCK_CFG[3].color}`, borderRadius: "16px 0 0 0", opacity: 0.5, pointerEvents: "none", transformOrigin: "top left" }} />
           <CodeCard code={code} />
@@ -400,8 +402,10 @@ export default function AboutHTML() {
       <div style={{
         display: "flex", flexDirection: "row",
         justifyContent: "center", alignItems: "stretch",
-        gap: "20px", maxWidth: "920px", width: "92%",
+        gap: isMobile ? "10px" : "20px",
+        maxWidth: "920px", width: "92%",
         pointerEvents: "auto",
+        flexWrap: isMobile ? "wrap" : "nowrap",
       }}>
         {stats.map((s, i) => (
           <StatChip key={s.label} s={s} ref={el => { statRefs.current[i] = el; }} />

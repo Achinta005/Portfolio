@@ -12,6 +12,7 @@ import {
     ArrowUpRight,
 } from "lucide-react";
 import { subscribeToScroll } from "../../../components/ImmersiveView/scrollState";
+import useIsMobile from "../../../utils/useIsMobile";
 
 const SECTION_START_CONTACT = 6 / 7;
 const SECTION_END = 1.0;
@@ -37,6 +38,7 @@ function easeIn(t) { return t * t * t; }
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
 export default function ContactHTML() {
+    const isMobile = useIsMobile();
     const [email, setEmail] = useState("achintahazra815@gmail.com");
     const [location, setLocation] = useState("Arambagh, West Bengal");
     const [socialLinks, setSocialLinks] = useState(DEFAULT_SOCIAL_LINKS);
@@ -256,7 +258,7 @@ export default function ContactHTML() {
                     }}
                 >
                     {/* Name + Email row */}
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+                    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12, marginBottom: 12 }}>
                         <div className="c-field">
                             <label className="c-label">Full Name *</label>
                             <input ref={nameRef} className="c-input" type="text" placeholder="Your name" />
@@ -338,7 +340,7 @@ export default function ContactHTML() {
                         </div>
 
                         {/* Contact info — paddingRight keeps it clear of the lottie (250px wide, abs positioned) */}
-                        <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingRight: "260px" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingRight: isMobile ? 0 : "260px" }}>
                             <a
                                 href={`mailto:${email}`}
                                 style={{
@@ -367,8 +369,9 @@ export default function ContactHTML() {
                         </div>
                     </div>
 
-                    {/* Lottie */}
-                    <div style={{ position: "absolute", bottom: -35, right: 0, width: 250, height: 250, pointerEvents: "none" }}>
+                    {/* Lottie — hidden on mobile */}
+                    {!isMobile && (
+                      <div style={{ position: "absolute", bottom: -35, right: 0, width: 250, height: 250, pointerEvents: "none" }}>
                         <lottie-player
                             src="/Lottifiles/contact_us.json"
                             background="transparent"
@@ -376,7 +379,8 @@ export default function ContactHTML() {
                             style={{ width: "250px", height: "250px" }}
                             loop autoplay
                         />
-                    </div>
+                      </div>
+                    )}
                 </div >
             </div >
         </>

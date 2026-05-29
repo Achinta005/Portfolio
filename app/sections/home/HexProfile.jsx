@@ -101,17 +101,7 @@ export default function HexProfile({ bootDone, imageUrl }) {
     return () => tween.kill();
   }, [bootDone, revealMV]);
 
-  // ── Lenis RAF: push scroll offset into dissolveMV ──
-  useEffect(() => {
-    let raf;
-    const tick = () => {
-      const o = scrollProgressRef.current?.offset ?? 0;
-      dissolveMV.set(Math.min(o / 0.125, 1));
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [dissolveMV]);
+  // dissolveMV is now updated directly in useFrame below — no extra RAF needed
 
   // ── GSAP: entrance rotation + scale ──
   useEffect(() => {
@@ -205,6 +195,10 @@ export default function HexProfile({ bootDone, imageUrl }) {
   useFrame(({ clock }) => {
     const t        = clock.elapsedTime;
     const reveal   = revealMV.get();
+
+    // Update dissolve from scroll progress inline (avoids separate RAF)
+    const scrollO = scrollProgressRef.current?.offset ?? 0;
+    dissolveMV.set(Math.min(scrollO / 0.125, 1));
     const dissolve = dissolveMV.get();
 
     photoMat.uniforms.uTime.value     = t;

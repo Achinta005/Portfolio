@@ -17,15 +17,18 @@ export default function Layout({ children }) {
     const lenis = new Lenis({
       smoothWheel: true,
       syncTouch: false,
-      duration: 1.4,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: 0.9,
+      lerp: 0.12,
+      easing: (t) => 1 - Math.pow(1 - t, 3),
     });
 
     const onRefresh = () => lenis.resize();
 
+    let stTick = 0;
     lenis.on("scroll", (e) => {
       updateScrollProgress(e.scroll, e.limit);
-      ScrollTrigger.update();
+      // Throttle ScrollTrigger.update to every 2nd frame for performance
+      if (++stTick % 2 === 0) ScrollTrigger.update();
     });
 
     ScrollTrigger.scrollerProxy(document.body, {
@@ -61,7 +64,10 @@ export default function Layout({ children }) {
 
   return (
     <html lang="en">
-      <body><VisitTracker />{children}</body>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+      </head>
+      <body style={{ touchAction: "pan-y" }}><VisitTracker />{children}</body>
     </html>
   );
 }

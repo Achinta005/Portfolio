@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import useIsMobile from "../../utils/useIsMobile";
 
 const STEPS = [
   { id: "id",  cmd: "identify --user",  result: "ACHINTA HAZRA",    lottie: "Lottifiles/face.json",    time: 520 },
@@ -14,6 +15,7 @@ const V2 = "#7c3aed";
 const V3 = "#c4b5fd";
 
 export default function BootOverlay({ onDone }) {
+  const isMobile = useIsMobile();
   const [done, setDone]           = useState([]);
   const [active, setActive]       = useState(null);
   const [exiting, setExiting]     = useState(false);
@@ -117,6 +119,7 @@ export default function BootOverlay({ onDone }) {
           position: "fixed", inset: 0, zIndex: 9999,
           background: "#08060f",
           display: "flex",
+          flexDirection: isMobile ? "column" : "row",
           alignItems: "center",
           justifyContent: "center",
           gap: 0,
@@ -124,12 +127,16 @@ export default function BootOverlay({ onDone }) {
       >
         {/* ── LEFT — lottie panel ── */}
         <div style={{
-          width: "38vw", height: "100vh",
-          borderRight: `1px solid ${V2}33`,
-          display: "flex", flexDirection: "column",
+          width: isMobile ? "100vw" : "38vw",
+          height: isMobile ? "auto" : "100vh",
+          borderRight: isMobile ? "none" : `1px solid ${V2}33`,
+          borderBottom: isMobile ? `1px solid ${V2}33` : "none",
+          display: isMobile ? "none" : "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center",
           position: "relative",
           background: `radial-gradient(ellipse at 50% 60%, ${V2}0d 0%, transparent 70%)`,
+          padding: isMobile ? "20px 0" : 0,
+          flexShrink: 0,
         }}>
           {/* top-left mark */}
           <div style={{
@@ -144,8 +151,8 @@ export default function BootOverlay({ onDone }) {
               key={active.id}
               className="lottie-wrap"
               style={{
-                width: 180, height: 180,
-                filter: `drop-shadow(0 0 32px ${V}55)`,
+                width: isMobile ? 100 : 180, height: isMobile ? 100 : 180,
+                filter: isMobile ? "none" : `drop-shadow(0 0 32px ${V}55)`,
               }}
             >
               <lottie-player
@@ -186,10 +193,10 @@ export default function BootOverlay({ onDone }) {
 
         {/* ── RIGHT — terminal panel ── */}
         <div style={{
-          flex: 1, height: "100vh",
+          flex: 1, height: isMobile ? "auto" : "100vh",
           display: "flex", flexDirection: "column",
           justifyContent: "center",
-          padding: "0 10vw",
+          padding: isMobile ? "24px 6vw" : "0 10vw",
           gap: 0,
         }}>
           {/* header */}

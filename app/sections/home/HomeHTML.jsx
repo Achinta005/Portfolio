@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
+import useIsMobile from "../../../utils/useIsMobile";
 import { Github, Linkedin, Mail, Twitter } from "lucide-react";
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from "framer-motion";
 import { gsap } from "gsap";
@@ -42,6 +43,7 @@ const iconVariant = {
 
 // ── Component ───────────────────────────────────────────────────────────────
 export default function HomeHTML({ bootDone, onOpenPdf }) {
+  const isMobile = useIsMobile();
   const [hero, setHero] = useState(null);
   const sectionRef = useRef(null);
   const canvasWrap = useRef(null);   // wrapper for HexProfile + HUDBrackets
@@ -87,7 +89,7 @@ export default function HomeHTML({ bootDone, onOpenPdf }) {
     target: sectionRef,
     offset: ["start start", "end start"],
   });
-  const smooth = useSpring(scrollYProgress, { stiffness: 55, damping: 20 });
+  const smooth = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
 
   const greetY = useTransform(smooth, [0, 1], ["0%", "-22%"]);
   const nameY = useTransform(smooth, [0, 1], ["0%", "-14%"]);
@@ -114,9 +116,11 @@ export default function HomeHTML({ bootDone, onOpenPdf }) {
         position: "relative",
         height: "100vh",
         display: "flex",
+        flexDirection: isMobile ? "column" : "row",
         alignItems: "center",
-        paddingLeft: "clamp(1.5rem, 10vw, 14rem)",
-        paddingRight: "clamp(1.5rem, 6vw,  8rem)",
+        justifyContent: isMobile ? "center" : "flex-start",
+        paddingLeft: isMobile ? "1.25rem" : "clamp(1.5rem, 10vw, 14rem)",
+        paddingRight: isMobile ? "1.25rem" : "clamp(1.5rem, 6vw,  8rem)",
         overflow: "hidden",
         pointerEvents: "auto",
       }}
@@ -128,7 +132,7 @@ export default function HomeHTML({ bootDone, onOpenPdf }) {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            style={{ position: "relative", zIndex: 2, maxWidth: "520px" }}
+            style={{ position: "relative", zIndex: 2, maxWidth: isMobile ? "100%" : "520px", textAlign: isMobile ? "center" : "left" }}
           >
             {/* Greeting */}
             <motion.div
@@ -137,6 +141,7 @@ export default function HomeHTML({ bootDone, onOpenPdf }) {
                 y: greetY,
                 display: "flex",
                 alignItems: "center",
+                justifyContent: isMobile ? "center" : "flex-start",
                 gap: "12px",
                 marginBottom: "8px",
               }}
@@ -215,6 +220,7 @@ export default function HomeHTML({ bootDone, onOpenPdf }) {
                 display: "flex",
                 gap: "10px",
                 marginBottom: "20px",
+                justifyContent: isMobile ? "center" : "flex-start",
               }}
             >
               {socialLinks.map((s) => (
@@ -286,35 +292,34 @@ export default function HomeHTML({ bootDone, onOpenPdf }) {
       </AnimatePresence>
 
       {/* ── RIGHT: HexProfile (Three.js Canvas) + HUDBrackets ─────────── */}
-      <motion.div
-        ref={canvasWrap}
-        style={{
-          y: canvasY,
-          position: "absolute",
-          right: "clamp(2rem, 14vw, 18rem)",
-          top: "50%",
-          translateY: "-50%",
-          width: "clamp(260px, 28vw, 420px)",
-          aspectRatio: "1 / 1",
-          opacity: 0,           // GSAP drives this to 1
-          pointerEvents: "none",
-          zIndex: 1,
-        }}
-      >
-        {/* HUDBrackets is purely DOM — sits behind the canvas */}
-        <HUDBrackets />
-
-        {/* Three.js canvas for HexProfile */}
-        <Canvas
-          camera={{ position: [0, 0, 5], fov: 42 }}
-          style={{ width: "100%", height: "100%" }}
-          gl={{ alpha: true, antialias: true }}
+      {!isMobile && (
+        <motion.div
+          ref={canvasWrap}
+          style={{
+            y: canvasY,
+            position: "absolute",
+            right: "clamp(2rem, 14vw, 18rem)",
+            top: "50%",
+            translateY: "-50%",
+            width: "clamp(260px, 28vw, 420px)",
+            aspectRatio: "1 / 1",
+            opacity: 0,
+            pointerEvents: "none",
+            zIndex: 1,
+          }}
         >
-          <ambientLight intensity={0.6} />
-          <pointLight position={[4, 4, 4]} intensity={1.2} color="#00d2ff" />
-          <HexProfile bootDone={bootDone} imageUrl={imageUrl} />
-        </Canvas>
-      </motion.div>
+          <HUDBrackets />
+          <Canvas
+            camera={{ position: [0, 0, 5], fov: 42 }}
+            style={{ width: "100%", height: "100%" }}
+            gl={{ alpha: true, antialias: false, powerPreference: "high-performance" }}
+          >
+            <ambientLight intensity={0.6} />
+            <pointLight position={[4, 4, 4]} intensity={1.2} color="#00d2ff" />
+            <HexProfile bootDone={bootDone} imageUrl={imageUrl} />
+          </Canvas>
+        </motion.div>
+      )}
     </section>
   );
 }

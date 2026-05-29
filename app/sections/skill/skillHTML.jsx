@@ -8,6 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import * as THREE from "three";
 import { scrollProgressRef } from "../../../components/ImmersiveView/scrollState";
 import { subscribeToScroll } from "../../../components/ImmersiveView/scrollState";
+import useIsMobile from "../../../utils/useIsMobile";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -144,6 +145,7 @@ function SkillGLB({ glb, color, modelScale }) {
 function SkillIcon({ skill, lane }) {
   const groupRef = useRef();
   const rotRef = useRef(0);
+  const materialsRef = useRef(null);
   // Framer Motion value: opacity driven by scroll, read in useFrame
   const opacityMV = useMotionValue(0);
 
@@ -179,12 +181,20 @@ function SkillIcon({ skill, lane }) {
     const fadeOut = t > 0.72 ? Math.max(0, 1 - (t - 0.72) / 0.28) : 1;
     const opacity = fadeIn * fadeOut;
     opacityMV.set(opacity);
-    groupRef.current.traverse((child) => {
-      if (child.isMesh && child.material) {
-        child.material.transparent = true;
-        child.material.opacity = opacity;
-      }
-    });
+    // Cache materials on first access to avoid traverse() every frame
+    if (!materialsRef.current) {
+      const mats = [];
+      groupRef.current.traverse((child) => {
+        if (child.isMesh && child.material) {
+          child.material.transparent = true;
+          mats.push(child.material);
+        }
+      });
+      materialsRef.current = mats;
+    }
+    for (let k = 0; k < materialsRef.current.length; k++) {
+      materialsRef.current[k].opacity = opacity;
+    }
 
     // Rotation — continuous spin (GSAP entrance kicks scale, this maintains spin)
     rotRef.current += lane.spinSpeed;
@@ -242,6 +252,7 @@ function SkillsScene() {
 
 // ── HTML wrapper — GSAP ScrollTrigger fades canvas in/out ─────────────────────
 export default function SkillsHTML() {
+  const isMobile = useIsMobile();
   const wrapRef = useRef();
   const labelRef = useRef();
   const [canvasActive, setCanvasActive] = useState(false);
@@ -334,13 +345,72 @@ export default function SkillsHTML() {
           opacity: 0,
         }}
       >
-        <Canvas
-          camera={{ position: [0, 0, 14], fov: 50 }}
-          style={{ width: "100%", height: "100%" }}
-          gl={{ alpha: true, antialias: true }}
-        >
-          <SkillsScene />
-        </Canvas>
+        {isMobile ? (
+          /* Mobile: lightweight CSS grid fallback */
+          <div style={{
+            width: "100%", height: "100%",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            padding: "10vh 6vw",
+            boxSizing: "border-box",
+          }}>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: "16px",
+              maxWidth: "360px",
+              width: "100%",
+            }}>
+              {SKILLS.map((skill) => {
+                const isPng = /\.(png|jpg|jpeg|webp)$/i.test(skill.glb);
+                return (
+                  <div key={skill.id} style={{
+                    display: "flex", flexDirection: "column",
+                    alignItems: "center", gap: "6px",
+                  }}>
+                    <div style={{
+                      width: "52px", height: "52px",
+                      borderRadius: "12px",
+                      border: `1px solid ${skill.color}40`,
+                      background: "rgba(0,8,24,0.8)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      boxShadow: `0 0 16px ${skill.color}15`,
+                    }}>
+                      {isPng ? (
+                        <img src={skill.glb} alt={skill.id}
+                          style={{ width: 32, height: 32, objectFit: "contain" }}
+                        />
+                      ) : (
+                        <div style={{
+                          width: 28, height: 28, borderRadius: 6,
+                          background: `${skill.color}30`,
+                          border: `1px solid ${skill.color}50`,
+                        }} />
+                      )}
+                    </div>
+                    <span style={{
+                      fontFamily: "monospace",
+                      fontSize: "0.55rem",
+                      color: `${skill.color}cc`,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      textAlign: "center",
+                    }}>
+                      {skill.id}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <Canvas
+            camera={{ position: [0, 0, 14], fov: 50 }}
+            style={{ width: "100%", height: "100%" }}
+            gl={{ alpha: true, antialias: false, powerPreference: "high-performance" }}
+          >
+            <SkillsScene />
+          </Canvas>
+        )}
       </div>
     </div>
   );

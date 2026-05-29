@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { portfolioApi } from "@/app/lib/api/portfolioApi";
 import dynamic from "next/dynamic";
 import { subscribeToScroll } from "../../../components/ImmersiveView/scrollState";
+import useIsMobile from "../../../utils/useIsMobile";
 
 
 const PdfModal = dynamic(() => import("../../../utils/PdfModal"), { ssr: false });
@@ -29,33 +30,33 @@ function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
 function easeIn(t) { return t * t * t; }
 
 // ── CertCard ──────────────────────────────────────────────────────────────────
-const CertCard = forwardRef(function CertCard({ cert, side, onOpenPdf }, ref) {
+const CertCard = forwardRef(function CertCard({ cert, side, onOpenPdf, isMobile }, ref) {
   return (
     <div
       ref={ref}
       onClick={onOpenPdf}
       style={{
         position: "absolute",
-        width: "min(42vw, 380px)",
+        width: isMobile ? "85vw" : "min(42vw, 380px)",
         height: CARD_HEIGHT,
         borderRadius: 14,
-        padding: "16px 18px",
+        padding: isMobile ? "12px 14px" : "16px 18px",
         display: "flex",
         gap: 12,
         alignItems: "center",
         cursor: "pointer",
         border: `1px solid ${cert.accent}33`,
         background: "rgba(4,8,28,0.88)",
-        backdropFilter: "blur(20px)",
+        backdropFilter: isMobile ? "none" : "blur(20px)",
         boxShadow: `0 0 50px ${cert.accent}10, inset 0 1px 0 ${cert.accent}18`,
         overflow: "hidden",
         willChange: "transform, opacity",
-        // Position from center spine
-        // left side: right edge touches spine (left: calc(50% - cardWidth - 28px))
-        // right side: left edge touches spine (left: calc(50% + 28px))
-        left: side === "left"
-          ? "calc(50% - min(42vw, 380px) - 28px)"
-          : "calc(50% + 28px)",
+        left: isMobile
+          ? "50%"
+          : side === "left"
+            ? "calc(50% - min(42vw, 380px) - 28px)"
+            : "calc(50% + 28px)",
+        transform: isMobile ? "translateX(-50%)" : "none",
         top: 0,
       }}
     >
@@ -123,6 +124,7 @@ function CertFixedHeader({ headerRef, counterRef, N }) {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function CertHTML() {
+  const isMobile = useIsMobile();
   const [certs, setCerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -315,17 +317,19 @@ export default function CertHTML() {
 
         {!loading && !error && N > 0 && (
           <>
-            {/* Central spine — fixed in viewport center */}
-            <div style={{
-              position: "absolute",
-              left: "50%",
-              top: 0,
-              transform: "translateX(-50%)",
-              width: 2,
-              height: "100%",
-              background: "linear-gradient(180deg,transparent,rgba(0,255,204,0.15) 20%,rgba(0,184,255,0.15) 80%,transparent)",
-              zIndex: 0,
-            }} />
+            {/* Central spine — hidden on mobile */}
+            {!isMobile && (
+              <div style={{
+                position: "absolute",
+                left: "50%",
+                top: 0,
+                transform: "translateX(-50%)",
+                width: 2,
+                height: "100%",
+                background: "linear-gradient(180deg,transparent,rgba(0,255,204,0.15) 20%,rgba(0,184,255,0.15) 80%,transparent)",
+                zIndex: 0,
+              }} />
+            )}
 
             {/* Scrolling track — GSAP moves this up/down */}
             <div
@@ -367,23 +371,26 @@ export default function CertHTML() {
                     }}
                   />
 
-                  {/* Crossbar */}
-                  <div style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: cert.side === "right" ? "50%" : "auto",
-                    right: cert.side === "left" ? "50%" : "auto",
-                    width: "calc(min(42vw, 380px) / 2 + 28px)",
-                    height: 1.5,
-                    background: `linear-gradient(${cert.side === "left" ? "270deg" : "90deg"}, ${cert.accent}88, transparent)`,
-                    transform: "translateY(-50%)",
-                    zIndex: 2,
-                  }} />
+                  {/* Crossbar — hidden on mobile */}
+                  {!isMobile && (
+                    <div style={{
+                      position: "absolute",
+                      top: "50%",
+                      left: cert.side === "right" ? "50%" : "auto",
+                      right: cert.side === "left" ? "50%" : "auto",
+                      width: "calc(min(42vw, 380px) / 2 + 28px)",
+                      height: 1.5,
+                      background: `linear-gradient(${cert.side === "left" ? "270deg" : "90deg"}, ${cert.accent}88, transparent)`,
+                      transform: "translateY(-50%)",
+                      zIndex: 2,
+                    }} />
+                  )}
 
                   <CertCard
                     ref={el => cardRefsRef.current[i] = el}
                     cert={cert}
                     side={cert.side}
+                    isMobile={isMobile}
                     onOpenPdf={() => {
                       setPdfUrl(cert.path);
                       setPdfHeader(`${cert.org} – ${cert.title}`);

@@ -3,6 +3,7 @@ import { useRef, useEffect, forwardRef, useState } from "react";
 import { portfolioApi } from "../../lib/api/portfolioApi";
 import { scrollProgressRef } from "../../../components/ImmersiveView/scrollState";
 import { subscribeToScroll } from "../../../components/ImmersiveView/scrollState";
+import useIsMobile from "../../../utils/useIsMobile";
 
 const SECTION_START = 0.471;  // ≈ 0.571 — starts right after Projects
 const SECTION_END = 0.55;  // ≈ 0.714
@@ -41,13 +42,13 @@ function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
 function easeIn(t) { return t * t * t * t; }
 function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
-const NodeCard = forwardRef(function NodeCard({ edu }, ref) {
+const NodeCard = forwardRef(function NodeCard({ edu, isMobile }, ref) {
     return (
         <div ref={ref} style={{
             visibility: "hidden",
             willChange: "transform, opacity",
-            width: "min(88vw, 780px)",
-            padding: "28px 32px",
+            width: isMobile ? "90vw" : "min(88vw, 780px)",
+            padding: isMobile ? "18px 16px" : "28px 32px",
             background: "rgba(0,6,20,0.82)",
             border: `1px solid ${edu.accent}35`,
             borderRadius: "20px",
@@ -75,10 +76,10 @@ const NodeCard = forwardRef(function NodeCard({ edu }, ref) {
                 color: `${edu.accent}18`, lineHeight: 1,
             }}>{edu.num}</div>
 
-            <div style={{ display: "flex", gap: 20, alignItems: "flex-start" }}>
+            <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", gap: isMobile ? 14 : 20, alignItems: isMobile ? "center" : "flex-start" }}>
                 {/* institution photo */}
                 <div style={{
-                    width: 96, height: 96, flexShrink: 0,
+                    width: isMobile ? 64 : 96, height: isMobile ? 64 : 96, flexShrink: 0,
                     borderRadius: 14,
                     border: `2px solid ${edu.accent}50`,
                     overflow: "hidden",
@@ -91,7 +92,7 @@ const NodeCard = forwardRef(function NodeCard({ edu }, ref) {
                     />
                 </div>
 
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ flex: 1, minWidth: 0, textAlign: isMobile ? "center" : "left" }}>
                     {/* status pill */}
                     <div style={{
                         display: "inline-flex", alignItems: "center", gap: 7, marginBottom: 10,
@@ -132,6 +133,7 @@ const NodeCard = forwardRef(function NodeCard({ edu }, ref) {
 });
 
 export default function EducationHTML() {
+    const isMobile = useIsMobile();
     const [education, setEducation] = useState(null);
 
     useEffect(() => {
@@ -260,7 +262,7 @@ export default function EducationHTML() {
 
                 {/* ── Cards (stacked, only active shown) ── */}
                 <div style={{
-                    position: "relative", width: "min(88vw, 780px)", display: "flex",
+                    position: "relative", width: isMobile ? "90vw" : "min(88vw, 780px)", display: "flex",
                     alignItems: "center", justifyContent: "center"
                 }}>
                     {EDUCATION.map((edu, i) => (
@@ -269,7 +271,7 @@ export default function EducationHTML() {
                             top: 0, left: 0, width: "100%",
                             transformOrigin: "center center",
                         }}>
-                            <NodeCard ref={el => cardRefs.current[i] = el} edu={edu} />
+                            <NodeCard ref={el => cardRefs.current[i] = el} edu={edu} isMobile={isMobile} />
                         </div>
                     ))}
                 </div>

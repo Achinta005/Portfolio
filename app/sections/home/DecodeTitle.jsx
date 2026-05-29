@@ -2,6 +2,7 @@
 import { useRef, useEffect, useState } from "react";
 import { useChromatic } from "./hooks/useChromatic";
 import HUDBrackets from "./HUDBrackets";
+import useIsMobile from "../../../utils/useIsMobile";
 
 const GLITCH_CHARS = "!<>-_\\/[]{}—=+*^?#_ABCDEF01";
 
@@ -18,6 +19,7 @@ function scramble(progress, target) {
 }
 
 export default function DecodeTitle({ name }) {
+  const isMobile = useIsMobile();
   const [text, setText] = useState("");
   const [done, setDone] = useState(false);
   const progress = useRef(0);
@@ -62,10 +64,10 @@ export default function DecodeTitle({ name }) {
             margin: 0,
             letterSpacing: done ? "0.02em" : "0.08em",
             transition: "letter-spacing 0.6s ease",
-            fontSize: "clamp(1.6rem, 4vw, 4.2rem)",
-            whiteSpace: "nowrap",
+            fontSize: isMobile ? "clamp(1.4rem, 8vw, 2.2rem)" : "clamp(1.6rem, 4vw, 4.2rem)",
+            whiteSpace: isMobile ? "normal" : "nowrap",
             wordBreak: "break-word",
-            minWidth: "max-content",
+            minWidth: isMobile ? "auto" : "max-content",
             display: "block",
           }}
         >

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { scrollProgressRef } from "./scrollState";
+import useIsMobile from "../../utils/useIsMobile";
 
 const SECTION_BOUNDARIES = [
   { name: "Home", start: 0, end: 0.123 },
@@ -25,6 +26,7 @@ const SECTION_LABELS = {
 };
 
 export default function CompassRing() {
+  const isMobile = useIsMobile();
   const ringRef = useRef();
   const degRef = useRef();
   const sectionRef = useRef();
@@ -58,17 +60,20 @@ export default function CompassRing() {
       let diff = targetDeg - currentDeg;
       if (diff > 180) diff -= 360;
       if (diff < -180) diff += 360;
-      currentDeg += diff * 0.06;
+      currentDeg += diff * 0.1;
       if (currentDeg < 0) currentDeg += 360;
       if (currentDeg >= 360) currentDeg -= 360;
 
-      if (ringRef.current)
-        ringRef.current.style.transform = `rotate(${currentDeg}deg)`;
-      if (degRef.current)
-        degRef.current.textContent = `${Math.round(currentDeg)}°`;
-      if (progressRef.current) {
-        const c = 2 * Math.PI * 138;
-        progressRef.current.style.strokeDashoffset = c - (currentDeg / 360) * c;
+      // Skip DOM writes if delta is negligible (< 0.1°)
+      if (Math.abs(diff) > 0.1) {
+        if (ringRef.current)
+          ringRef.current.style.transform = `rotate(${currentDeg}deg)`;
+        if (degRef.current)
+          degRef.current.textContent = `${Math.round(currentDeg)}°`;
+        if (progressRef.current) {
+          const c = 2 * Math.PI * 138;
+          progressRef.current.style.strokeDashoffset = c - (currentDeg / 360) * c;
+        }
       }
 
       animFrame = requestAnimationFrame(animate);
@@ -78,7 +83,7 @@ export default function CompassRing() {
     return () => cancelAnimationFrame(animFrame);
   }, [mounted]);
 
-  if (!mounted) return null;
+  if (!mounted || isMobile) return null;
 
   const sectionSet = new Set(SECTION_DEG);
   const midSet = new Set(
@@ -184,11 +189,11 @@ export default function CompassRing() {
             <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
           <filter id="g5" x="-60%" y="-60%" width="220%" height="220%">
-            <feGaussianBlur stdDeviation="5" result="b" />
+            <feGaussianBlur stdDeviation="3" result="b" />
             <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
           <filter id="g14" x="-120%" y="-120%" width="340%" height="340%">
-            <feGaussianBlur stdDeviation="14" result="b" />
+            <feGaussianBlur stdDeviation="6" result="b" />
             <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
           <clipPath id="hexClip">
@@ -247,7 +252,6 @@ export default function CompassRing() {
                 x1={x1} y1={y1} x2={x2} y2={y2}
                 stroke={isSection ? "#00ffcc" : isMid ? "rgba(0,210,255,0.25)" : "rgba(0,210,255,0.08)"}
                 strokeWidth={isSection ? 2 : isMid ? 0.8 : 0.35}
-                filter={isSection ? "url(#g2)" : undefined}
               />
               {isSection && SECTION_LABELS[label] && (
                 <>
