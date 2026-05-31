@@ -60,8 +60,38 @@ canvas[style*="position:fixed"] {
 @media (min-width: 769px) {
   [style*="backdrop-filter: blur(18px)"],
   [style*="backdrop-filter: blur(24px)"],
+  [style*="backdrop-filter: blur(28px)"],
   [style*="backdrop-filter:blur(18px)"],
-  [style*="backdrop-filter:blur(24px)"] {
+  [style*="backdrop-filter:blur(24px)"],
+  [style*="backdrop-filter:blur(28px)"] {
     backdrop-filter: blur(10px) !important;
   }
-}
+}
+
+/* ── Performance: GPU layer promotion for scroll-animated elements ─── */
+[style*="will-change: transform"],
+[style*="will-change:transform"] {
+  contain: layout style;
+  backface-visibility: hidden;
+}
+
+/* Force GPU compositing on fixed elements */
+[style*="position: fixed"],
+[style*="position:fixed"] {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Reduce paint cost on border-radius + overflow:hidden combos */
+[style*="border-radius"][style*="overflow: hidden"],
+[style*="border-radius"][style*="overflow:hidden"] {
+  contain: paint;
+}
+
+/* Smooth font rendering across all browsers */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+

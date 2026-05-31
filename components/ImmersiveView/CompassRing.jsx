@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { scrollProgressRef } from "./scrollState";
+import { scrollProgressRef, subscribeToScroll } from "./scrollState";
 import useIsMobile from "../../utils/useIsMobile";
 
 const SECTION_BOUNDARIES = [
@@ -38,49 +38,70 @@ export default function CompassRing() {
     setMounted(true); // ✅ add this
   }, []);
 
+  // Store lerped degree in a ref for smooth interpolation
+  const currentDegRef = useRef(0);
+  const lastFoundRef = useRef(null);
+
   useEffect(() => {
     if (!mounted) return;
 
-    let animFrame = null;
-    let currentDeg = 0;
-    let targetDeg = 0;
-    const animate = () => {
-      const offset = scrollProgressRef.current?.offset ?? 0; // ✅ still works — Lenis updates this
+    // Use the global scroll ticker instead of a standalone RAF loop
+    let rafId = null;
+    let needsUpdate = false;
+
+    const onScroll = (offset) => {
+      needsUpdate = true;
+      // Mark that we need a lerp frame
+      if (!rafId) {
+        rafId = requestAnimationFrame(lerpFrame);
+      }
+    };
+
+    const lerpFrame = () => {
+      rafId = null;
+      const offset = scrollProgressRef.current?.offset ?? 0;
       const targetDeg = offset * 360;
 
       const found =
         SECTION_BOUNDARIES.find(s => offset >= s.start && offset < s.end) ??
         SECTION_BOUNDARIES[SECTION_BOUNDARIES.length - 1];
 
-      if (sectionRef.current)
-        sectionRef.current.textContent = found.name.toUpperCase();
-      if (subRef.current)
-        subRef.current.textContent = `${String(SECTION_BOUNDARIES.indexOf(found) + 1).padStart(2, "0")} · ${String(SECTION_BOUNDARIES.length).padStart(2, "0")}`;
+      // Only update text when section changes
+      if (found !== lastFoundRef.current) {
+        lastFoundRef.current = found;
+        if (sectionRef.current)
+          sectionRef.current.textContent = found.name.toUpperCase();
+        if (subRef.current)
+          subRef.current.textContent = `${String(SECTION_BOUNDARIES.indexOf(found) + 1).padStart(2, "0")} · ${String(SECTION_BOUNDARIES.length).padStart(2, "0")}`;
+      }
 
-      let diff = targetDeg - currentDeg;
+      let diff = targetDeg - currentDegRef.current;
       if (diff > 180) diff -= 360;
       if (diff < -180) diff += 360;
-      currentDeg += diff * 0.1;
-      if (currentDeg < 0) currentDeg += 360;
-      if (currentDeg >= 360) currentDeg -= 360;
+      currentDegRef.current += diff * 0.1;
+      if (currentDegRef.current < 0) currentDegRef.current += 360;
+      if (currentDegRef.current >= 360) currentDegRef.current -= 360;
 
       // Skip DOM writes if delta is negligible (< 0.1°)
       if (Math.abs(diff) > 0.1) {
         if (ringRef.current)
-          ringRef.current.style.transform = `rotate(${currentDeg}deg)`;
+          ringRef.current.style.transform = `rotate(${currentDegRef.current}deg)`;
         if (degRef.current)
-          degRef.current.textContent = `${Math.round(currentDeg)}°`;
+          degRef.current.textContent = `${Math.round(currentDegRef.current)}°`;
         if (progressRef.current) {
           const c = 2 * Math.PI * 138;
-          progressRef.current.style.strokeDashoffset = c - (currentDeg / 360) * c;
+          progressRef.current.style.strokeDashoffset = c - (currentDegRef.current / 360) * c;
         }
+        // Continue lerping if still moving
+        rafId = requestAnimationFrame(lerpFrame);
       }
-
-      animFrame = requestAnimationFrame(animate);
     };
 
-    animFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animFrame);
+    const unsub = subscribeToScroll(onScroll);
+    return () => {
+      unsub();
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [mounted]);
 
   if (!mounted || isMobile) return null;

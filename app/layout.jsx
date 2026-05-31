@@ -17,18 +17,18 @@ export default function Layout({ children }) {
     const lenis = new Lenis({
       smoothWheel: true,
       syncTouch: false,
-      duration: 0.9,
-      lerp: 0.12,
+      duration: 1.1,
+      lerp: 0.08,
+      wheelMultiplier: 0.85,
+      touchMultiplier: 1.5,
       easing: (t) => 1 - Math.pow(1 - t, 3),
     });
 
     const onRefresh = () => lenis.resize();
 
-    let stTick = 0;
     lenis.on("scroll", (e) => {
       updateScrollProgress(e.scroll, e.limit);
-      // Throttle ScrollTrigger.update to every 2nd frame for performance
-      if (++stTick % 2 === 0) ScrollTrigger.update();
+      ScrollTrigger.update();
     });
 
     ScrollTrigger.scrollerProxy(document.body, {
@@ -66,8 +66,19 @@ export default function Layout({ children }) {
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preload"
+          as="style"
+          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        />
       </head>
       <body style={{ touchAction: "pan-y" }}><VisitTracker />{children}</body>
     </html>
   );
-}
+}

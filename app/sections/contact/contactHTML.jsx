@@ -169,41 +169,119 @@ export default function ContactHTML() {
     return (
         <>
             <style>{`
-            .c-field { display: flex; flex-direction: column; gap: 5px; }
-            .c-label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: rgba(148,163,184,0.7); }
+            @keyframes c-spin { to { transform: rotate(360deg); } }
+            @keyframes c-glow-pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+            @keyframes c-gradient-shift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+            .c-field { display: flex; flex-direction: column; gap: 7px; position: relative; }
+            .c-label {
+                font-size: 10.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+                font-family: monospace; color: #64748b;
+                display: flex; align-items: center; gap: 6px;
+            }
+            .c-label-dot {
+                width: 5px; height: 5px; border-radius: 50%;
+                background: #00ffcc; box-shadow: 0 0 6px #00ffcc80;
+                display: inline-block; flex-shrink: 0;
+            }
+            .c-label .c-req { color: #00ffcc; font-weight: 700; font-size: 12px; margin-left: 1px; }
             .c-input {
-                width: 100%; background: rgba(255,255,255,0.04);
-                border: 1px solid rgba(255,255,255,0.08); border-radius: 6px;
-                padding: 9px 13px; font-family: inherit; font-size: 13.5px;
-                color: #e2e8f0; outline: none; box-sizing: border-box;
-                transition: border-color 0.2s, background 0.2s; -webkit-appearance: none;
+                width: 100%;
+                background: rgba(0,8,24,0.6);
+                border: 1px solid rgba(0,210,255,0.12);
+                border-radius: 10px;
+                padding: 12px 16px;
+                font-family: 'Inter', system-ui, -apple-system, sans-serif;
+                font-size: 14px;
+                color: #e2e8f0;
+                outline: none;
+                box-sizing: border-box;
+                transition: border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+                -webkit-appearance: none;
             }
-            .c-input::placeholder { color: rgba(148,163,184,0.35); }
-            .c-input:hover  { border-color: rgba(255,255,255,0.15); }
-            .c-input:focus  { border-color: rgba(255,255,255,0.35); background: rgba(255,255,255,0.06); }
+            .c-input::placeholder { color: rgba(100,116,139,0.5); font-style: italic; }
+            .c-input:hover  { border-color: rgba(0,210,255,0.25); background: rgba(0,12,32,0.7); }
+            .c-input:focus  {
+                border-color: #00ffcc55;
+                background: rgba(0,12,32,0.8);
+                box-shadow: 0 0 0 3px rgba(0,255,204,0.08), 0 0 20px rgba(0,255,204,0.05);
+            }
             .c-send-btn {
-                display: flex; align-items: center; justify-content: center; gap: 8px;
-                width: 100%; padding: 10px 0; font-family: inherit; font-size: 13px;
-                font-weight: 600; letter-spacing: 0.04em; color: #0f172a;
-                background: #e2e8f0; border: none; border-radius: 6px;
-                cursor: pointer; transition: background 0.18s, transform 0.1s;
+                display: flex; align-items: center; justify-content: center; gap: 10px;
+                width: 100%; padding: 13px 0;
+                font-family: monospace; font-size: 13px;
+                font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+                color: #0a0e1e;
+                background: linear-gradient(135deg, #00ffcc, #00b8ff, #7c3aed, #00ffcc);
+                background-size: 300% 300%;
+                animation: c-gradient-shift 6s ease infinite;
+                border: none; border-radius: 10px;
+                cursor: pointer;
+                transition: transform 0.15s ease, box-shadow 0.25s ease;
+                box-shadow: 0 4px 20px rgba(0,255,204,0.2), 0 0 0 1px rgba(0,255,204,0.15);
+                position: relative; overflow: hidden;
             }
-            .c-send-btn:hover:not(:disabled)  { background: #f8fafc; transform: translateY(-1px); }
-            .c-send-btn:active:not(:disabled)  { transform: translateY(0); }
-            .c-send-btn:disabled               { opacity: 0.45; cursor: not-allowed; }
-            .c-status { font-size: 12px; text-align: center; min-height: 16px; color: transparent; font-weight: 400; letter-spacing: 0.01em; }
+            .c-send-btn::before {
+                content: ''; position: absolute; inset: 0;
+                background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%);
+                background-size: 250% 100%; background-position: 100% 0;
+                transition: background-position 0.5s ease;
+            }
+            .c-send-btn:hover:not(:disabled)::before { background-position: 0 0; }
+            .c-send-btn:hover:not(:disabled) {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 32px rgba(0,255,204,0.3), 0 0 0 1px rgba(0,255,204,0.3);
+            }
+            .c-send-btn:active:not(:disabled) { transform: translateY(0); }
+            .c-send-btn:disabled { opacity: 0.45; cursor: not-allowed; animation: none; }
+
+            .c-status {
+                font-size: 12px; text-align: center; min-height: 18px;
+                color: transparent; font-weight: 500; letter-spacing: 0.02em;
+                font-family: monospace;
+            }
             .c-status[data-type="success"] { color: #34d399; }
             .c-status[data-type="error"]   { color: #f87171; }
+
             .c-social-btn {
-                width: 34px; height: 34px; border-radius: 6px;
-                background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+                width: 38px; height: 38px; border-radius: 10px;
+                background: rgba(0,8,24,0.6);
+                border: 1px solid rgba(0,210,255,0.12);
                 display: flex; align-items: center; justify-content: center;
-                color: rgba(148,163,184,0.75); text-decoration: none;
-                transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.18s; flex-shrink: 0;
+                color: #64748b; text-decoration: none;
+                transition: all 0.25s ease; flex-shrink: 0;
+                position: relative;
             }
-            .c-social-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.22); color: #e2e8f0; transform: translateY(-2px); }
-            .c-divider { width: 100%; height: 1px; background: rgba(255,255,255,0.07); margin: 14px 0; }
-            .c-tag { font-size: 10.5px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(148,163,184,0.4); display: block; margin-bottom: 10px; }
+            .c-social-btn::after {
+                content: ''; position: absolute; inset: -1px;
+                border-radius: 10px; opacity: 0;
+                background: linear-gradient(135deg, #00ffcc33, #00b8ff33, #7c3aed33);
+                transition: opacity 0.25s ease; z-index: -1;
+            }
+            .c-social-btn:hover {
+                background: rgba(0,210,255,0.08);
+                border-color: rgba(0,255,204,0.3);
+                color: #00ffcc;
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(0,255,204,0.12);
+            }
+            .c-social-btn:hover::after { opacity: 1; }
+
+            .c-divider {
+                width: 100%; height: 1px;
+                background: linear-gradient(90deg, transparent, rgba(0,210,255,0.15), rgba(124,58,237,0.1), transparent);
+                margin: 18px 0;
+            }
+            .c-tag {
+                font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+                font-family: monospace; color: #475569;
+                display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
+            }
+            .c-tag-line {
+                width: 16px; height: 1.5px;
+                background: linear-gradient(90deg, #00ffcc, transparent);
+                border-radius: 2px;
+            }
         `}</style>
 
             <div
@@ -228,14 +306,33 @@ export default function ContactHTML() {
                 }}
             >
                 {/* Header */}
-                <div ref={headerRef} style={{ textAlign: "center", marginBottom: 24, visibility: "hidden", flexShrink: 0 }}>
-                    <span style={{ display: "inline-block", fontSize: 11, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(148,163,184,0.5)", marginBottom: 8 }}>
-                        Get in touch
-                    </span>
-                    <h2 style={{ margin: "0 0 6px", fontSize: "clamp(1.5rem,3vw,2rem)", fontWeight: 700, color: "#f1f5f9", letterSpacing: "-0.025em", lineHeight: 1.2 }}>
-                        Let&apos;s work together
+                <div ref={headerRef} style={{ textAlign: "center", marginBottom: 28, visibility: "hidden", flexShrink: 0 }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 12 }}>
+                        <div style={{ width: 24, height: 1.5, background: "linear-gradient(90deg, transparent, #00ffcc)", borderRadius: 2 }} />
+                        <span style={{
+                            fontSize: 11, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase",
+                            fontFamily: "monospace", color: "#00ffcc",
+                        }}>
+                            Get in Touch
+                        </span>
+                        <div style={{ width: 24, height: 1.5, background: "linear-gradient(90deg, #00ffcc, transparent)", borderRadius: 2 }} />
+                    </div>
+                    <h2 style={{
+                        margin: "0 0 8px",
+                        fontSize: "clamp(1.6rem, 3.5vw, 2.2rem)",
+                        fontWeight: 800,
+                        background: "linear-gradient(90deg, #fff 30%, #00d2ff 70%, #7c3aed)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        letterSpacing: "-0.02em",
+                        lineHeight: 1.2,
+                    }}>
+                        {"Let's Work Together"}
                     </h2>
-                    <p style={{ fontSize: 13.5, color: "rgba(148,163,184,0.55)", margin: 0, fontWeight: 400 }}>
+                    <p style={{
+                        fontSize: 14, color: "#64748b", margin: 0, fontWeight: 400,
+                        letterSpacing: "0.01em",
+                    }}>
                         Open to opportunities, projects &amp; collaborations.
                     </p>
                 </div>
@@ -246,39 +343,70 @@ export default function ContactHTML() {
                     style={{
                         position: "relative",
                         visibility: "hidden",
-                        background: "rgba(10,14,30,0.88)",
-                        border: "1px solid rgba(255,255,255,0.08)",
-                        borderRadius: 14,
-                        padding: "24px 24px 22px",
-                        backdropFilter: "blur(24px)",
+                        background: "rgba(6,10,24,0.92)",
+                        border: "1px solid rgba(0,210,255,0.1)",
+                        borderRadius: 18,
+                        padding: isMobile ? "24px 20px 22px" : "28px 30px 26px",
+                        backdropFilter: "blur(28px)",
                         width: "100%",
-                        maxWidth: 580,
+                        maxWidth: 620,
                         boxSizing: "border-box",
-                        boxShadow: "0 24px 64px rgba(0,0,0,0.5)",
+                        boxShadow: "0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,210,255,0.05), inset 0 1px 0 rgba(255,255,255,0.04)",
                     }}
                 >
+                    {/* Subtle top accent line */}
+                    <div style={{
+                        position: "absolute", top: 0, left: "15%", width: "70%", height: "1px",
+                        background: "linear-gradient(90deg, transparent, rgba(0,255,204,0.3), rgba(0,184,255,0.2), transparent)",
+                        borderRadius: 2,
+                    }} />
+
+                    {/* Corner accent */}
+                    <div style={{
+                        position: "absolute", top: 0, left: 0, width: 28, height: 28,
+                        borderTop: "1.5px solid #00ffcc", borderLeft: "1.5px solid #00ffcc",
+                        borderRadius: "18px 0 0 0", opacity: 0.35, pointerEvents: "none",
+                    }} />
+                    <div style={{
+                        position: "absolute", bottom: 0, right: 0, width: 28, height: 28,
+                        borderBottom: "1.5px solid #7c3aed", borderRight: "1.5px solid #7c3aed",
+                        borderRadius: "0 0 18px 0", opacity: 0.25, pointerEvents: "none",
+                    }} />
+
                     {/* Name + Email row */}
-                    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 12, marginBottom: 12 }}>
+                    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: 14, marginBottom: 14 }}>
                         <div className="c-field">
-                            <label className="c-label">Full Name *</label>
-                            <input ref={nameRef} className="c-input" type="text" placeholder="Your name" />
+                            <label className="c-label">
+                                <span className="c-label-dot" />
+                                Full Name <span className="c-req">*</span>
+                            </label>
+                            <input ref={nameRef} className="c-input" type="text" placeholder="Achinta Hazra" />
                         </div>
                         <div className="c-field">
-                            <label className="c-label">Email *</label>
-                            <input ref={emailRef} className="c-input" type="email" placeholder="you@example.com" />
+                            <label className="c-label">
+                                <span className="c-label-dot" style={{ background: "#00b8ff", boxShadow: "0 0 6px #00b8ff80" }} />
+                                Email <span className="c-req">*</span>
+                            </label>
+                            <input ref={emailRef} className="c-input" type="email" placeholder="achintahazra8515@gmail.com" />
                         </div>
                     </div>
 
                     {/* Subject */}
-                    <div className="c-field" style={{ marginBottom: 12 }}>
-                        <label className="c-label">Subject</label>
-                        <input ref={subjectRef} className="c-input" type="text" placeholder="What's this about?" />
+                    <div className="c-field" style={{ marginBottom: 14 }}>
+                        <label className="c-label">
+                            <span className="c-label-dot" style={{ background: "#a78bfa", boxShadow: "0 0 6px #a78bfa80" }} />
+                            Subject
+                        </label>
+                        <input ref={subjectRef} className="c-input" type="text" placeholder="Project collaboration, freelance work, etc." />
                     </div>
 
                     {/* Message */}
-                    <div className="c-field" style={{ marginBottom: 14 }}>
-                        <label className="c-label">Message *</label>
-                        <textarea ref={msgRef} className="c-input" placeholder="Write your message here…" style={{ resize: "none", lineHeight: 1.6, minHeight: 88 }} />
+                    <div className="c-field" style={{ marginBottom: 18 }}>
+                        <label className="c-label">
+                            <span className="c-label-dot" style={{ background: "#f472b6", boxShadow: "0 0 6px #f472b680" }} />
+                            Message <span className="c-req">*</span>
+                        </label>
+                        <textarea ref={msgRef} className="c-input" placeholder="Tell me about your project or idea…" style={{ resize: "none", lineHeight: 1.7, minHeight: 100 }} />
                     </div>
 
                     {/* Submit */}
@@ -292,7 +420,7 @@ export default function ContactHTML() {
                                 >
                                     <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" fill="none" strokeDasharray="40" strokeDashoffset="10" strokeLinecap="round" />
                                 </svg>
-                                Sending...
+                                Sending…
                             </>
                         ) : (
                             <>
@@ -302,17 +430,19 @@ export default function ContactHTML() {
                         )}
                     </button>
 
-                    <p ref={statusRef} className="c-status" style={{ marginTop: 8, marginBottom: 0 }} />
+                    <p ref={statusRef} className="c-status" style={{ marginTop: 10, marginBottom: 0 }} />
 
                     <div className="c-divider" />
 
-                    {/* Footer row */}
                     {/* Footer row */}
                     <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
 
                         {/* Socials */}
                         <div>
-                            <span className="c-tag">Follow</span>
+                            <span className="c-tag">
+                                <span className="c-tag-line" />
+                                Follow
+                            </span>
                             <div style={{ display: "flex", gap: 8 }}>
                                 {socialLinks.map(({ icon: Icon, href, label, color, iconUrl }) => (
                                     <a
@@ -322,7 +452,6 @@ export default function ContactHTML() {
                                         rel="noreferrer"
                                         className="c-social-btn"
                                         title={label}
-                                        style={{ color: color ?? "rgba(148,163,184,0.75)" }}
                                     >
                                         {iconUrl
                                             ? <img
@@ -333,14 +462,14 @@ export default function ContactHTML() {
                                             />
                                             : null
                                         }
-                                        <Icon size={15} strokeWidth={1.8} style={{ display: iconUrl ? "none" : "block" }} />
+                                        <Icon size={16} strokeWidth={1.8} style={{ display: iconUrl ? "none" : "block" }} />
                                     </a>
                                 ))}
                             </div>
                         </div>
 
-                        {/* Contact info — paddingRight keeps it clear of the lottie (250px wide, abs positioned) */}
-                        <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingRight: isMobile ? 0 : "260px" }}>
+                        {/* Contact info */}
+                        <div style={{ display: "flex", flexDirection: "column", gap: 10, paddingRight: isMobile ? 0 : "260px" }}>
                             <a
                                 href={`mailto:${email}`}
                                 style={{
@@ -348,23 +477,21 @@ export default function ContactHTML() {
                                     alignItems: "center",
                                     gap: 8,
                                     textDecoration: "none",
-                                    color: "rgba(148,163,184,0.75)",
+                                    color: "#64748b",
                                     fontSize: 12.5,
-                                    transition: "color 0.15s",
+                                    fontFamily: "monospace",
+                                    transition: "color 0.2s ease",
                                 }}
-                                onMouseEnter={e => { e.currentTarget.style.color = "#e2e8f0"; }}
-                                onMouseLeave={e => { e.currentTarget.style.color = "rgba(148,163,184,0.75)"; }}
+                                onMouseEnter={e => { e.currentTarget.style.color = "#00ffcc"; }}
+                                onMouseLeave={e => { e.currentTarget.style.color = "#64748b"; }}
                             >
                                 <Mail size={13} strokeWidth={1.8} />
                                 {email}
-                                <ArrowUpRight size={11} strokeWidth={2} style={{ opacity: 0.5 }} />
+                                <ArrowUpRight size={11} strokeWidth={2} style={{ opacity: 0.4 }} />
                             </a>
-                            <div style={{ display: "flex", alignItems: "center", gap: 8, color: "rgba(148,163,184,0.55)", fontSize: 12.5 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#475569", fontSize: 12.5, fontFamily: "monospace" }}>
                                 <MapPin size={13} strokeWidth={1.8} />
                                 <span>{location}</span>
-                                <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", background: "rgba(52,211,153,0.12)", color: "#34d399", padding: "2px 7px", borderRadius: 4 }}>
-                                    Remote OK
-                                </span>
                             </div>
                         </div>
                     </div>
@@ -381,8 +508,8 @@ export default function ContactHTML() {
                         />
                       </div>
                     )}
-                </div >
-            </div >
+                </div>
+            </div>
         </>
     );
 }
