@@ -79,7 +79,7 @@ function Tag({ label, accent }) {
 }
 
 // ── LEFT PANEL ────────────────────────────────────────────────────────────────
-function LeftPanel({ project, visible, sectionOpacity }) {
+function LeftPanel({ project, visible, sectionOpacity, onHoverChange }) {
   const panelRef = useRef();
   const [mediaIdx, setMediaIdx] = useState(0);
   const [mediaFade, setMediaFade] = useState(0);
@@ -145,12 +145,13 @@ function LeftPanel({ project, visible, sectionOpacity }) {
       <div style={{ position: "absolute", top: 0, left: "8%", right: "8%", height: "1px", background: `linear-gradient(90deg, transparent, ${project.accent}, transparent)`, opacity: 0.7, zIndex: 2 }} />
 
       {/* IMAGE — 62% height, full bleed */}
-      <div style={{ position: "relative", flex: "0 0 62%", overflow: "hidden", background: "rgba(0,4,12,0.9)" }}>
+      <div style={{ position: "relative", flex: "0 0 62%", overflow: "hidden", background: "rgba(0,4,12,0.9)" }} onMouseEnter={() => onHoverChange(true)}
+        onMouseLeave={() => onHoverChange(false)}>
         {current
           ? <img key={mediaFade} src={current.src} alt={project.title}
-              style={{ width: "100%", height: "100%", objectFit: "cover", animation: "mediaFadeIn 0.4s ease both" }}
-              onError={e => { e.currentTarget.style.display = "none"; }}
-            />
+            style={{ width: "100%", height: "100%", objectFit: "cover", animation: "mediaFadeIn 0.4s ease both" }}
+            onError={e => { e.currentTarget.style.display = "none"; }}
+          />
           : <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: `${project.accent}20`, fontSize: "40px" }}>⬡</div>
         }
 
@@ -309,7 +310,8 @@ function ProjectCard({ project, fadeKey, onHoverChange, isMobile }) {
         <div style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden", minHeight: 0 }}>
 
           {/* Title block */}
-          <div style={{ flexShrink: 0, marginBottom: "12px" }}>
+          <div style={{ flexShrink: 0, marginBottom: "12px" }} onMouseEnter={() => onHoverChange(true)}
+            onMouseLeave={() => onHoverChange(false)}>
             {/* Category pill */}
             <div style={{ marginBottom: "8px" }}>
               <span style={{
@@ -363,7 +365,8 @@ function ProjectCard({ project, fadeKey, onHoverChange, isMobile }) {
           </div>
 
           {/* About */}
-          <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none", minHeight: 0, marginBottom: "12px" }}>
+          <div style={{ flex: 1, overflowY: "auto", scrollbarWidth: "none", minHeight: 0, marginBottom: "12px" }} onMouseEnter={() => onHoverChange(true)}
+            onMouseLeave={() => onHoverChange(false)}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
               <span style={{ fontSize: "9px", fontFamily: "monospace", color: `${project.accent}70`, letterSpacing: "3px", textTransform: "uppercase" }}>About</span>
               <div style={{ flex: 1, height: "1px", background: `linear-gradient(90deg, ${project.accent}25, transparent)` }} />
@@ -541,7 +544,7 @@ export default function ProjectsHTML() {
       `}</style>
 
       {!loading && !error && project && (
-        <LeftPanel project={project} visible={panelVisible} sectionOpacity={sectionOpacity} />
+        <LeftPanel project={project} visible={panelVisible} sectionOpacity={sectionOpacity} onHoverChange={handleHoverChange} />
       )}
 
       <div
