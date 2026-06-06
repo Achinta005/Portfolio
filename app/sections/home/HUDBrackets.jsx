@@ -2,7 +2,7 @@
 import { useRef, useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { gsap } from "gsap";
-import { scrollProgressRef } from "../../../components/ImmersiveView/scrollState";
+import { scrollProgressRef, subscribeToScroll } from "../../../components/ImmersiveView/scrollState";
 
 // ── Framer Motion variants ──────────────────────────────────────────────────
 const bracketVariants = {
@@ -51,7 +51,6 @@ export default function HUDBrackets() {
   const wrapRef    = useRef();
   const scanRef    = useRef();
   const controls   = useAnimation();
-  const rafRef     = useRef();
 
   // ── Framer Motion: entrance on mount ──
   useEffect(() => {
@@ -82,7 +81,7 @@ export default function HUDBrackets() {
 
   // ── Lenis scroll: fade out brackets as user scrolls ──
   useEffect(() => {
-    const tick = () => {
+    const unsub = subscribeToScroll(() => {
       const o = scrollProgressRef.current?.offset ?? 0;
       if (wrapRef.current) {
         // smooth fade 0.04 → 0.10 scroll offset
@@ -91,10 +90,8 @@ export default function HUDBrackets() {
           wrapRef.current.style.opacity = fade;
         }
       }
-      rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
+    });
+    return unsub;
   }, []);
 
   return (

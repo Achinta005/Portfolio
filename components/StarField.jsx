@@ -126,7 +126,17 @@ export default function StarField() {
 
     // ── Draw (only dynamic elements) ─────────────────────────────────────
     let frame;
+    let frameCount = 0;
+    const frameSkip = mobile ? 3 : 2; // render every Nth frame
+
     function draw() {
+      frameCount++;
+      // Skip frames for performance — twinkling is imperceptible at 30fps
+      if (frameCount % frameSkip !== 0) {
+        frame = requestAnimationFrame(draw);
+        return;
+      }
+
       // Blit the pre-rendered static layer (nebula + all stars)
       ctx.clearRect(0, 0, w, h);
       ctx.drawImage(staticLayer, 0, 0);

@@ -87,6 +87,7 @@ const NodeCard = forwardRef(function NodeCard({ edu, isMobile }, ref) {
                     boxShadow: `0 0 20px ${edu.accent}30`,
                 }}>
                     <img src={edu.icon} alt={edu.college}
+                        loading="lazy" decoding="async"
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         onError={e => { e.currentTarget.style.display = "none"; }}
                     />

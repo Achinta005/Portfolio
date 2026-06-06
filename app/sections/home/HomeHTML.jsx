@@ -8,63 +8,57 @@ import { Canvas } from "@react-three/fiber";
 import { portfolioApi } from "../../lib/api/portfolioApi";
 import DecodeTitle from "./DecodeTitle";
 import HexProfile from "./HexProfile";
-import HUDBrackets from "./HUDBrackets"
-
+import HUDBrackets from "./HUDBrackets";
 
 const ICON_MAP = { Github, Linkedin, Mail, Twitter };
+const FALLBACK_SOCIAL = [];
 
-const FALLBACK_SOCIAL = [
-  // { icon: "Github", href: "https://github.com/Achinta005", label: "GitHub", color: "#ccc" },
-  // { icon: "Linkedin", href: "https://www.linkedin.com/in/achinta-hazra/", label: "LinkedIn", color: "#60a5fa" },
-  // { icon: "Twitter", href: "https://twitter.com/achinta005", label: "Twitter", color: "#38bdf8" },
-  // { icon: "Mail", href: "mailto:achintahazra8515@gmail.com", label: "Email", color: "#34d399" },
-];
-
-// ── Framer Motion variants ──────────────────────────────────────────────────
 const containerVariants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.13, delayChildren: 0.25 } },
 };
-
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] } },
 };
-
 const fadeIn = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { duration: 0.6, ease: "easeOut" } },
 };
-
 const iconVariant = {
   hidden: { opacity: 0, scale: 0.6 },
   visible: { opacity: 1, scale: 1, transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] } },
 };
 
-// ── Component ───────────────────────────────────────────────────────────────
 export default function HomeHTML({ bootDone, onOpenPdf }) {
   const isMobile = useIsMobile();
+  const [hydrated, setHydrated] = useState(false);
   const [hero, setHero] = useState(null);
   const sectionRef = useRef(null);
-  const canvasWrap = useRef(null);   // wrapper for HexProfile + HUDBrackets
 
-  // ── API ──
+  // Separate refs for the outer positioning wrapper and the inner animated element
+  // so GSAP only touches the inner element and never clobbers the centering transform.
+  const canvasPositionerRef = useRef(null); // outer: holds top/right/translateY centering — never touched by GSAP
+  const canvasAnimRef = useRef(null); // inner: GSAP drives opacity + x/y offset only
+
+  useEffect(() => { setHydrated(true); }, []);
+
   useEffect(() => {
     portfolioApi.getHero().then(setHero).catch(console.error);
   }, []);
-  
 
-  // ── GSAP: canvas wrapper slide-in from right on mount ──
+  // GSAP entrance — only animates the INNER wrapper (canvasAnimRef)
+  // so the outer positioner's `transform: translateY(-50%)` is never touched.
   useEffect(() => {
-    if (!bootDone || !canvasWrap.current) return;
+    if (!bootDone || !canvasAnimRef.current) return;
     gsap.fromTo(
-      canvasWrap.current,
-      { x: 80, opacity: 0 },
-      { x: 0, opacity: 1, duration: 1.1, ease: "expo.out", delay: 0.5 }
+      canvasAnimRef.current,
+      { x: isMobile ? 0 : 50, y: isMobile ? 20 : 0, opacity: 0 },
+      { x: 0, y: 0, opacity: 1, duration: 1.1, ease: "expo.out", delay: 0.5 }
     );
-  }, [bootDone]);
+  }, [bootDone, isMobile]);
 
-  // ── GSAP ScrollTrigger: fade + slide whole section out on scroll ──
+  // Scroll-out for the whole section
   useEffect(() => {
     if (!sectionRef.current) return;
     const ctx = gsap.context(() => {
@@ -77,28 +71,25 @@ export default function HomeHTML({ bootDone, onOpenPdf }) {
           start: "80% top",
           end: "bottom top",
           scrub: true,
-          // Lenis keeps native scroll in sync so ScrollTrigger works without extra config
         },
       });
     }, sectionRef);
     return () => ctx.revert();
   }, []);
 
-  // ── Framer Motion scroll-linked parallax (Lenis feeds native scroll) ──
   const { scrollYProgress } = useScroll({
-    target: sectionRef,
+    target: hydrated ? sectionRef : undefined,
     offset: ["start start", "end start"],
   });
   const smooth = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
 
-  const greetY = useTransform(smooth, [0, 1], ["0%", "-22%"]);
-  const nameY = useTransform(smooth, [0, 1], ["0%", "-14%"]);
-  const badgeY = useTransform(smooth, [0, 1], ["0%", "-10%"]);
-  const bioY = useTransform(smooth, [0, 1], ["0%", "-8%"]);
-  const btnsY = useTransform(smooth, [0, 1], ["0%", "-11%"]);
-  const canvasY = useTransform(smooth, [0, 1], ["0%", "-18%"]); // HexProfile drifts up faster
+  const greetY = useTransform(smooth, [0, 1], ["0%", isMobile ? "-8%" : "-22%"]);
+  const nameY = useTransform(smooth, [0, 1], ["0%", isMobile ? "-5%" : "-14%"]);
+  const badgeY = useTransform(smooth, [0, 1], ["0%", isMobile ? "-4%" : "-10%"]);
+  const bioY = useTransform(smooth, [0, 1], ["0%", isMobile ? "-3%" : "-8%"]);
+  const btnsY = useTransform(smooth, [0, 1], ["0%", isMobile ? "-4%" : "-11%"]);
+  const canvasY = useTransform(smooth, [0, 1], ["0%", isMobile ? "-10%" : "-18%"]);
 
-  // ── Data ──
   const socialLinks = (hero?.socialLinks ?? FALLBACK_SOCIAL).map((s) => ({
     ...s, Icon: ICON_MAP[s.icon] ?? Mail,
   }));
@@ -108,31 +99,77 @@ export default function HomeHTML({ bootDone, onOpenPdf }) {
   const bioHTML = hero?.bio;
   const imageUrl = hero?.imageUrl;
 
+  // Don't render with wrong isMobile value during SSR
+  if (!hydrated) return null;
+
   return (
     <section
       ref={sectionRef}
       id="Home"
       style={{
         position: "relative",
-        height: "100vh",
+        minHeight: "100vh",
+        height: isMobile ? "auto" : "100vh",
         display: "flex",
         flexDirection: isMobile ? "column" : "row",
-        alignItems: "center",
-        justifyContent: isMobile ? "center" : "flex-start",
+        alignItems: isMobile ? "stretch" : "center",
+        justifyContent: "flex-start",
         paddingLeft: isMobile ? "1.25rem" : "clamp(1.5rem, 10vw, 14rem)",
         paddingRight: isMobile ? "1.25rem" : "clamp(1.5rem, 6vw,  8rem)",
+        paddingTop: isMobile ? "1.5rem" : 0,
+        paddingBottom: isMobile ? "2rem" : 0,
         overflow: "hidden",
         pointerEvents: "auto",
       }}
     >
-      {/* ── LEFT: text content ─────────────────────────────────────────── */}
+      {/* ── MOBILE: HexProfile above text ────────────────────────────────── */}
+      {isMobile && bootDone && (
+        // On mobile we don't need the two-layer trick because there's no
+        // CSS `translateY(-50%)` centering — just a normal flow element.
+        <div
+          style={{
+            alignSelf: "center",
+            width: "min(260px, 72vw)",
+            aspectRatio: "1 / 1",
+            flexShrink: 0,
+            marginBottom: "1.5rem",
+            position: "relative",
+          }}
+        >
+          {/* Inner: GSAP animates this */}
+          <div
+            ref={canvasAnimRef}
+            style={{ width: "100%", height: "100%", opacity: 0 }}
+          >
+            <HUDBrackets />
+            <Canvas
+              camera={{ position: [0, 0, 5], fov: 42 }}
+              style={{ width: "100%", height: "100%" }}
+              gl={{ alpha: true, antialias: false, powerPreference: "high-performance" }}
+            >
+              <ambientLight intensity={0.6} />
+              <pointLight position={[4, 4, 4]} intensity={1.2} color="#00d2ff" />
+              <HexProfile bootDone={bootDone} imageUrl={imageUrl} />
+            </Canvas>
+          </div>
+        </div>
+      )}
+
+      {/* ── TEXT CONTENT ─────────────────────────────────────────────────── */}
       <AnimatePresence>
         {bootDone && (
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            style={{ position: "relative", zIndex: 2, maxWidth: isMobile ? "100%" : "520px", textAlign: isMobile ? "center" : "left" }}
+            style={{
+              position: "relative",
+              zIndex: 2,
+              maxWidth: isMobile ? "100%" : "520px",
+              width: "100%",
+              textAlign: isMobile ? "center" : "left",
+              flex: isMobile ? "unset" : "0 0 auto",
+            }}
           >
             {/* Greeting */}
             <motion.div
@@ -147,17 +184,16 @@ export default function HomeHTML({ bootDone, onOpenPdf }) {
               }}
             >
               <div style={{
-                width: "3px",
-                height: "38px",
+                width: "3px", height: "38px",
                 background: "linear-gradient(#00ffcc,#7c3aed)",
                 flexShrink: 0,
               }} />
-              <p style={{ color: "#ccc", fontSize: "1.25rem", margin: 0 }}>
+              <p style={{ color: "#ccc", fontSize: isMobile ? "1rem" : "1.25rem", margin: 0 }}>
                 {greeting}
               </p>
             </motion.div>
 
-            {/* Name / DecodeTitle */}
+            {/* Name */}
             <motion.div variants={fadeUp} style={{ y: nameY }}>
               <DecodeTitle name={hero?.name} />
             </motion.div>
@@ -179,11 +215,8 @@ export default function HomeHTML({ bootDone, onOpenPdf }) {
                 }}
               >
                 <div style={{
-                  width: "7px",
-                  height: "7px",
-                  borderRadius: "50%",
-                  background: "#00ff96",
-                  boxShadow: "0 0 6px #00ff96",
+                  width: "7px", height: "7px", borderRadius: "50%",
+                  background: "#00ff96", boxShadow: "0 0 6px #00ff96",
                 }} />
                 <span style={{ color: "#00ff96", fontSize: "0.82rem", letterSpacing: "0.04em" }}>
                   {available}
@@ -197,7 +230,7 @@ export default function HomeHTML({ bootDone, onOpenPdf }) {
               style={{
                 y: bioY,
                 color: "#aaa",
-                fontSize: "0.95rem",
+                fontSize: isMobile ? "0.88rem" : "0.95rem",
                 lineHeight: 1.75,
                 marginBottom: "28px",
               }}
@@ -213,112 +246,137 @@ export default function HomeHTML({ bootDone, onOpenPdf }) {
             </motion.p>
 
             {/* Social icons */}
-            <motion.div
-              variants={containerVariants}
-              style={{
-                y: btnsY,
-                display: "flex",
-                gap: "10px",
-                marginBottom: "20px",
-                justifyContent: isMobile ? "center" : "flex-start",
-              }}
-            >
-              {socialLinks.map((s) => (
-                <motion.a
-                  key={s.label}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={s.label}
-                  variants={iconVariant}
-                  whileHover={{
-                    y: -4,
-                    boxShadow: `0 0 14px ${s.color}55`,
-                    borderColor: `${s.color}88`,
-                  }}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "42px",
-                    height: "42px",
-                    borderRadius: "10px",
-                    background: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.12)",
-                    color: s.color,
-                    backdropFilter: "blur(6px)",
-                    textDecoration: "none",
-                  }}
-                >
-                  {s.iconUrl
-                    ? <img
-                      src={s.iconUrl}
-                      alt={s.label}
-                      style={{ width: 24, height: 24, objectFit: "contain", borderRadius: 3, filter: "brightness(0) invert(1)", opacity: 0.85 }}
-                      onError={e => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "block"; }}
-                    />
-                    : null
-                  }
-                  <s.Icon size={18} style={{ display: s.iconUrl ? "none" : "block" }} />
-                </motion.a>
-              ))}
-            </motion.div>
+            {socialLinks.length > 0 && (
+              <motion.div
+                variants={containerVariants}
+                style={{
+                  y: btnsY,
+                  display: "flex",
+                  gap: "10px",
+                  marginBottom: "20px",
+                  justifyContent: isMobile ? "center" : "flex-start",
+                  flexWrap: "wrap",
+                }}
+              >
+                {socialLinks.map((s) => (
+                  <motion.a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={s.label}
+                    variants={iconVariant}
+                    whileHover={{
+                      y: -4,
+                      boxShadow: `0 0 14px ${s.color}55`,
+                      borderColor: `${s.color}88`,
+                    }}
+                    style={{
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      width: isMobile ? "38px" : "42px",
+                      height: isMobile ? "38px" : "42px",
+                      borderRadius: "10px",
+                      background: "rgba(255,255,255,0.05)",
+                      border: "1px solid rgba(255,255,255,0.12)",
+                      color: s.color,
+                      backdropFilter: "blur(6px)",
+                      textDecoration: "none",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {s.iconUrl
+                      ? <img
+                        src={s.iconUrl}
+                        alt={s.label}
+                        style={{ width: 22, height: 22, objectFit: "contain", borderRadius: 3, filter: "brightness(0) invert(1)", opacity: 0.85 }}
+                        onError={e => { e.currentTarget.style.display = "none"; e.currentTarget.nextSibling.style.display = "block"; }}
+                      />
+                      : null
+                    }
+                    <s.Icon size={isMobile ? 16 : 18} style={{ display: s.iconUrl ? "none" : "block" }} />
+                  </motion.a>
+                ))}
+              </motion.div>
+            )}
 
             {/* Resume button */}
             {onOpenPdf && (
-              <motion.button
+              <motion.div
                 variants={fadeIn}
-                whileHover={{ scale: 1.04, boxShadow: "0 0 18px rgba(0,255,204,0.25)" }}
-                whileTap={{ scale: 0.97 }}
-                onClick={onOpenPdf}
-                style={{
-                  fontFamily: "monospace",
-                  fontSize: "0.8rem",
-                  letterSpacing: "0.12em",
-                  color: "#00ffcc",
-                  background: "rgba(0,255,204,0.07)",
-                  border: "1px solid rgba(0,255,204,0.3)",
-                  borderRadius: "8px",
-                  padding: "8px 20px",
-                  cursor: "pointer",
-                  pointerEvents: "auto",
-                }}
+                style={{ display: "flex", justifyContent: isMobile ? "center" : "flex-start" }}
               >
-                VIEW RESUME
-              </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.04, boxShadow: "0 0 18px rgba(0,255,204,0.25)" }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={onOpenPdf}
+                  style={{
+                    fontFamily: "monospace", fontSize: "0.8rem",
+                    letterSpacing: "0.12em", color: "#00ffcc",
+                    background: "rgba(0,255,204,0.07)",
+                    border: "1px solid rgba(0,255,204,0.3)",
+                    borderRadius: "8px", padding: "8px 20px",
+                    cursor: "pointer", pointerEvents: "auto",
+                  }}
+                >
+                  VIEW RESUME
+                </motion.button>
+              </motion.div>
             )}
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* ── RIGHT: HexProfile (Three.js Canvas) + HUDBrackets ─────────── */}
+      {/* ── DESKTOP: HexProfile — two-layer approach ─────────────────────── */}
+      {/*                                                                     */}
+      {/* THE FIX: split into two divs:                                        */}
+      {/*   canvasPositionerRef — outer, holds CSS centering (top:50% +        */}
+      {/*                         transform:translateY(-50%)), NEVER touched   */}
+      {/*                         by GSAP.                                     */}
+      {/*   canvasAnimRef       — inner, GSAP only drives opacity + x offset.  */}
+      {/*                         No translateY here so GSAP can't clobber it. */}
+      {/*                                                                     */}
+      {/* Previously a single div had both the Framer Motion `translateY`      */}
+      {/* style prop AND was the GSAP target. GSAP's fromTo sets `transform`   */}
+      {/* on the element directly, which on the very first frame overwrote the  */}
+      {/* `translateY(-50%)` with just `translateX(50px)`, dropping the        */}
+      {/* vertical centering until GSAP finished and the browser re-applied it. */}
       {!isMobile && (
-        <motion.div
-          ref={canvasWrap}
+        // Outer positioner — CSS centering only, never a GSAP target
+        <div
+          ref={canvasPositionerRef}
           style={{
-            y: canvasY,
             position: "absolute",
             right: "clamp(2rem, 14vw, 18rem)",
             top: "50%",
-            translateY: "-50%",
+            transform: "translateY(-50%)",  // centering — GSAP must never touch this element
             width: "clamp(260px, 28vw, 420px)",
             aspectRatio: "1 / 1",
-            opacity: 0,
             pointerEvents: "none",
             zIndex: 1,
           }}
         >
-          <HUDBrackets />
-          <Canvas
-            camera={{ position: [0, 0, 5], fov: 42 }}
-            style={{ width: "100%", height: "100%" }}
-            gl={{ alpha: true, antialias: false, powerPreference: "high-performance" }}
+          {/* Inner animated wrapper — GSAP only touches this */}
+          <motion.div
+            ref={canvasAnimRef}
+            style={{
+              y: canvasY,        // Framer Motion handles the parallax y
+              width: "100%",
+              height: "100%",
+              opacity: 0,        // GSAP will animate this to 1
+            }}
           >
-            <ambientLight intensity={0.6} />
-            <pointLight position={[4, 4, 4]} intensity={1.2} color="#00d2ff" />
-            <HexProfile bootDone={bootDone} imageUrl={imageUrl} />
-          </Canvas>
-        </motion.div>
+            <HUDBrackets />
+            <Canvas
+              camera={{ position: [0, 0, 5], fov: 42 }}
+              style={{ width: "100%", height: "100%" }}
+              gl={{ alpha: true, antialias: false, powerPreference: "high-performance" }}
+            >
+              <ambientLight intensity={0.6} />
+              <pointLight position={[4, 4, 4]} intensity={1.2} color="#00d2ff" />
+              <HexProfile bootDone={bootDone} imageUrl={imageUrl} />
+            </Canvas>
+          </motion.div>
+        </div>
       )}
     </section>
   );

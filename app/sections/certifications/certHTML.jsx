@@ -68,7 +68,7 @@ const CertCard = forwardRef(function CertCard({ cert, side, onOpenPdf, isMobile 
       {/* Icon */}
       <div style={{ width: 60, height: 60, borderRadius: 10, overflow: "hidden", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", border: `1.5px solid ${cert.accent}40`, background: "rgba(255,255,255,0.04)", boxShadow: `0 0 16px ${cert.accent}20`, fontSize: "1.8rem" }}>
         {cert.icon
-          ? <img src={cert.icon} alt={cert.org} style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => { e.currentTarget.style.display = "none"; if (e.currentTarget.nextSibling) e.currentTarget.nextSibling.style.display = "block"; }} />
+          ? <img src={cert.icon} alt={cert.org} loading="lazy" decoding="async" style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => { e.currentTarget.style.display = "none"; if (e.currentTarget.nextSibling) e.currentTarget.nextSibling.style.display = "block"; }} />
           : null}
         <span style={{ display: cert.icon ? "none" : "block" }}>{cert.emoji}</span>
       </div>

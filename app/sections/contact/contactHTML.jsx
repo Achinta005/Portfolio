@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { subscribeToScroll } from "../../../components/ImmersiveView/scrollState";
 import useIsMobile from "../../../utils/useIsMobile";
+import { loadLottiePlayer } from "../../../utils/loadLottie";
 
 const SECTION_START_CONTACT = 6 / 7;
 const SECTION_END = 1.0;
@@ -87,11 +88,7 @@ export default function ContactHTML() {
     useEffect(() => {
         if (playerLoaded.current) return;
         playerLoaded.current = true;
-        if (!customElements.get("lottie-player")) {
-            const s = document.createElement("script");
-            s.src = "https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js";
-            document.head.appendChild(s);
-        }
+        loadLottiePlayer();
     }, []);
 
     /* scroll ticker */
