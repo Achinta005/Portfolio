@@ -1,6 +1,5 @@
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import LenisProvider from "@/components/LenisProvider";
 import VisitTracker from "@/components/VisitTracker";
 
 const jetbrains = JetBrains_Mono({
@@ -26,11 +25,9 @@ export const viewport = {
 export default function Layout({ children }) {
   return (
     <html lang="en" className={jetbrains.variable}>
-      <body style={{ touchAction: "pan-y" }}>
-        <LenisProvider>
-          <VisitTracker />
-          {children}
-        </LenisProvider>
+      <body>
+        <VisitTracker />
+        {children}
       </body>
     </html>
   );

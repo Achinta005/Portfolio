@@ -1,0 +1,18 @@
+[
+  { "id": "javascript", "glb": "/Skills/js-logo.glb", "color": "#f7df1e", "scale": 0.5 },
+  { "id": "typescript", "glb": "/Skills/ts-logo.glb", "color": "#3178c6", "scale": 0.5 },
+  { "id": "python", "glb": "/Skills/python.glb", "color": "#3776ab", "scale": 0.5 },
+  { "id": "java", "glb": "/Skills/java.glb", "color": "#ed8b00", "scale": 0.5 },
+  { "id": "cpp", "glb": "/Skills/cpp-logo.glb", "color": "#00599c", "scale": 0.5 },
+  { "id": "react", "glb": "/Skills/react_logo.glb", "color": "#61dafb", "scale": 0.4 },
+  { "id": "nextjs", "glb": "/Skills/icons8-nextjs-480.png", "color": "#ffffff", "scale": 1.0 },
+  { "id": "nestjs", "glb": "/Skills/logo-small-gradient.0ed287ce.png", "color": "#e0234e", "scale": 0.5 },
+  { "id": "nodejs", "glb": "/Skills/node-js-logo.glb", "color": "#339933", "scale": 0.5 },
+  { "id": "tailwind", "glb": "/Skills/tailwind_css_logo__3d_model.glb", "color": "#06b6d4", "scale": 0.5 },
+  { "id": "docker", "glb": "/Skills/docker-logo.glb", "color": "#2496ed", "scale": 0.5 },
+  { "id": "mongodb", "glb": "/Skills/mongodb-logo.glb", "color": "#47a248", "scale": 0.5 },
+  { "id": "postgres", "glb": "/Skills/icons8-postgres-480.png", "color": "#336791", "scale": 0.5 },
+  { "id": "mysql", "glb": "/Skills/mysql-database.png", "color": "#4479a1", "scale": 0.5 },
+  { "id": "tensorflow", "glb": "/Skills/tensor-flow.png", "color": "#ff6f00", "scale": 0.5 },
+  { "id": "github", "glb": "/Skills/3d_github_logo.glb", "color": "#ffffff", "scale": 0.5 }
+]

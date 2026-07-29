@@ -12,6 +12,7 @@ body {
   min-width: 320px;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  touch-action: pan-y;
 }
 body::-webkit-scrollbar { display: none; width: 0; }
 
