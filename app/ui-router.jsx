@@ -18,10 +18,10 @@ export default function UiRouter({ envUi }) {
       import("./_ui/immersive/page").then(m => setPage(() => m.default));
     } else if (pathname === "/2") {
       import("./_ui/responsive/page").then(m => setPage(() => m.default));
-    } else if (ui === "responsive") {
-      import("./_ui/responsive/page").then(m => setPage(() => m.default));
-    } else {
+    } else if (ui === "immersive") {
       import("./_ui/immersive/page").then(m => setPage(() => m.default));
+    } else {
+      import("./_ui/responsive/page").then(m => setPage(() => m.default));
     }
   }, [isMobile, envUi, pathname]);
 
