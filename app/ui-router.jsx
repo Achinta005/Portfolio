@@ -12,11 +12,11 @@ export default function UiRouter({ envUi }) {
     const ui = envUi?.replace(/["'\s]/g, "").toLowerCase();
 
     // Route-based override: /1 → immersive, /2 → responsive
-    if (pathname === "/1") {
+    if (isMobile) {
+      import("./_ui/responsive/page").then(m => setPage(() => m.default));
+    } else if (pathname === "/1") {
       import("./_ui/immersive/page").then(m => setPage(() => m.default));
     } else if (pathname === "/2") {
-      import("./_ui/responsive/page").then(m => setPage(() => m.default));
-    } else if (isMobile) {
       import("./_ui/responsive/page").then(m => setPage(() => m.default));
     } else if (ui === "responsive") {
       import("./_ui/responsive/page").then(m => setPage(() => m.default));
