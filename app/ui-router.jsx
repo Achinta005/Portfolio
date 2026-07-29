@@ -10,7 +10,7 @@ export default function UiRouter({ envUi }) {
 
   useEffect(() => {
     const ui = envUi?.replace(/["'\s]/g, "").toLowerCase();
-
+ 
     // Route-based override: /1 → immersive, /2 → responsive
     if (isMobile) {
       import("./_ui/responsive/page").then(m => setPage(() => m.default));
