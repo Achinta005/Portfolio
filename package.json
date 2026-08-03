@@ -10,7 +10,7 @@
     "lint": "next lint",
     "postbuild": "next-sitemap",
     "vercel-build": "npm install --legacy-peer-deps && next build",
-    "all": "next dev -H 0.0.0.0"
+    "all": "next dev -H 0.0.0.0" 
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
