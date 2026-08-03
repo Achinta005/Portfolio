@@ -2,7 +2,7 @@
 
 const BASE = "https://api.github.com";
 const USERNAME = "Achinta005";
-const TOKEN = process.env.NEXT_PUBLIC_GITHUB_TOKEN ?? "";
+const TOKEN = process.env.NEXT_PUBLIC_ACHINTA005_CLASSIC_GITHUB_TOKEN ?? "";
 
 // ── In-memory cache (10 min TTL) ─────────────────────────────────────────────
 let _ghCache = null;

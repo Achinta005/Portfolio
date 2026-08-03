@@ -22,15 +22,6 @@ export default function NavbarDesktop() {
       }`}
     >
       <nav className="max-w-6xl mx-auto px-6 md:px-12 flex items-center justify-between">
-        <a
-          href="#home"
-          onClick={(e) => handleClick(e, "home")}
-          className="text-lg font-bold tracking-tight text-white"
-        >
-          Portfolio
-          <span className="text-cyan-400">.</span>
-        </a>
-
         <ul className="flex items-center gap-1">
           {NAV_LINKS.filter((l) => l.id !== "home").map((link) => {
             const isActive = activeId === link.id;

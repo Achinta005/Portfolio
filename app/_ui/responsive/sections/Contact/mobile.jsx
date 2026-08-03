@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Mail, MapPin, Send, ArrowUpRight, Linkedin, Github, Twitter, Facebook } from "lucide-react";
+import { motion } from "framer-motion";
+import { Mail, MapPin, Send, ArrowUpRight, Linkedin, Github, Twitter, Facebook, Sparkles } from "lucide-react";
 import { portfolioApi } from "@/app/lib/api/portfolioApi";
 
 const ICON_MAP = {
@@ -12,6 +13,13 @@ const ICON_MAP = {
   Facebook: Facebook,
   Mail: Mail,
 };
+
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-40px" },
+  transition: { duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] },
+});
 
 export default function ContactMobile() {
   const [contact, setContact] = useState(null);
@@ -71,14 +79,28 @@ export default function ContactMobile() {
   }
 
   return (
-    <section id="contact" className="relative py-16 px-5 bg-slate-950 text-white">
-      <div className="text-center mb-8">
-        <span className="text-xs font-mono tracking-widest text-indigo-400">06 · CONTACT</span>
-        <h2 className="mt-2 text-2xl font-bold">Let's work together.</h2>
-        <p className="mt-2 text-sm text-slate-400">Open to opportunities &amp; collaborations.</p>
+    <section id="contact" className="relative py-20 px-5 pb-32 bg-transparent text-white">
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-72 h-72 bg-blue-600/8 rounded-full blur-3xl" />
       </div>
 
-      <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-5">
+      <div className="text-center mb-10">
+        <motion.div {...fadeUp(0)} className="inline-flex items-center gap-2 mb-4">
+          <Sparkles size={14} className="text-cyan-400" />
+          <span className="text-[10px] font-[family-name:var(--font-jetbrains)] font-semibold tracking-[0.25em] uppercase text-cyan-400">
+            06 · CONTACT
+          </span>
+          <Sparkles size={14} className="text-cyan-400" />
+        </motion.div>
+        <motion.h2 {...fadeUp(0.05)} className="text-[28px] font-extrabold tracking-tight">
+          Let&apos;s work together.
+        </motion.h2>
+        <motion.p {...fadeUp(0.1)} className="mt-2 text-[13px] text-slate-400 font-light">
+          Open to opportunities &amp; collaborations.
+        </motion.p>
+      </div>
+
+      <motion.div {...fadeUp(0.15)} className="rounded-2xl border border-slate-800/50 bg-gradient-to-b from-slate-900/50 to-slate-900/20 p-5">
         <form onSubmit={handleSubmit} className="space-y-4">
           <Field label="Full Name" required>
             <input
@@ -124,10 +146,11 @@ export default function ContactMobile() {
             />
           </Field>
 
-          <button
+          <motion.button
             type="submit"
             disabled={submitting}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-medium text-sm bg-gradient-to-r from-blue-600 to-cyan-500 active:scale-[0.98] transition-all disabled:opacity-50"
+            whileTap={{ scale: 0.97 }}
+            className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-blue-600 to-cyan-500 shadow-lg shadow-blue-500/15 transition-all disabled:opacity-50 tracking-wide"
           >
             {submitting ? (
               <>
@@ -136,74 +159,81 @@ export default function ContactMobile() {
               </>
             ) : (
               <>
-                <Send size={14} /> Send Message
+                <Send size={14} strokeWidth={2.5} /> Send Message
               </>
             )}
-          </button>
+          </motion.button>
 
           {status.text && (
-            <p
-              className={`text-xs text-center font-medium ${
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`text-[11px] text-center font-bold tracking-wide ${
                 status.type === "success" ? "text-emerald-400" : "text-red-400"
               }`}
             >
               {status.text}
-            </p>
+            </motion.p>
           )}
         </form>
 
-        <div className="h-px bg-slate-800 my-6" />
+        <div className="h-px bg-gradient-to-r from-transparent via-slate-800 to-transparent my-7" />
 
         {socialLinks.length > 0 && (
-          <div className="flex justify-center gap-3 mb-5">
+          <div className="flex justify-center gap-3 mb-6">
             {socialLinks.map(({ label, href, Icon }) => (
-              <a
+              <motion.a
                 key={label}
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
                 title={label}
-                className="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-800 text-slate-400 active:scale-90 transition-transform"
+                whileTap={{ scale: 0.9 }}
+                className="w-10 h-10 flex items-center justify-center rounded-xl border border-slate-800/50 bg-white/[0.03] text-slate-400 transition-colors"
               >
-                <Icon size={15} />
-              </a>
+                <Icon size={16} strokeWidth={2.2} />
+              </motion.a>
             ))}
           </div>
         )}
 
-        <div className="flex flex-col items-center gap-2 text-xs">
+        <div className="flex flex-col items-center gap-2.5 text-[11px]">
           <a
             href={`mailto:${contact.email}`}
-            className="flex items-center gap-1.5 text-slate-400 font-mono"
+            className="flex items-center gap-2 text-slate-400 font-[family-name:var(--font-jetbrains)] font-medium hover:text-white transition-colors"
           >
-            <Mail size={12} />
+            <Mail size={12} strokeWidth={2.5} />
             {contact.email}
             <ArrowUpRight size={10} className="opacity-40" />
           </a>
-          <div className="flex items-center gap-1.5 text-slate-500 font-mono">
-            <MapPin size={12} />
+          <div className="flex items-center gap-2 text-slate-500 font-[family-name:var(--font-jetbrains)]">
+            <MapPin size={12} strokeWidth={2.5} />
             {contact.location}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <style jsx>{`
         .c-input {
           width: 100%;
-          background: rgba(15, 23, 42, 0.6);
-          border: 1px solid rgba(51, 65, 85, 0.6);
-          border-radius: 10px;
-          padding: 11px 14px;
+          background: rgba(15, 23, 42, 0.5);
+          border: 1px solid rgba(51, 65, 85, 0.4);
+          border-radius: 12px;
+          padding: 12px 14px;
           font-size: 13px;
+          font-weight: 400;
           color: #e2e8f0;
           outline: none;
-          transition: border-color 0.2s ease;
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+          font-family: var(--font-inter);
         }
         .c-input::placeholder {
-          color: #64748b;
+          color: #475569;
+          font-weight: 300;
         }
         .c-input:focus {
-          border-color: #06b6d4;
+          border-color: #22d3ee;
+          box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.08);
         }
       `}</style>
     </section>
@@ -212,8 +242,8 @@ export default function ContactMobile() {
 
 function Field({ label, required, children }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <label className="text-[10px] font-medium tracking-wide uppercase text-slate-500 font-mono">
+    <div className="flex flex-col gap-2">
+      <label className="text-[10px] font-bold tracking-[0.2em] uppercase text-slate-500 font-[family-name:var(--font-jetbrains)]">
         {label} {required && <span className="text-cyan-400">*</span>}
       </label>
       {children}

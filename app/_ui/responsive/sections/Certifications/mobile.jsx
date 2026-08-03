@@ -1,31 +1,36 @@
 "use client";
 import { useEffect, useState, useMemo } from "react";
-import { ExternalLink, Award } from "lucide-react";
+import { motion } from "framer-motion";
+import { ExternalLink, Award, ShieldCheck } from "lucide-react";
 import { portfolioApi } from "@/app/lib/api/portfolioApi";
 
-function CertCardMobile({ cert }) {
+function CertCardMobile({ cert, index }) {
   return (
-    <a
+    <motion.a
+      initial={{ opacity: 0, x: -16 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: "-30px" }}
+      transition={{ duration: 0.4, delay: index * 0.04, ease: [0.22, 1, 0.36, 1] }}
       href={cert.path}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-start gap-3 p-4 rounded-lg border border-slate-800 bg-slate-900/40 active:scale-[0.98] transition-transform"
+      className="flex items-start gap-3.5 p-4 rounded-xl border border-slate-800/50 bg-gradient-to-r from-slate-900/40 to-slate-900/20 active:scale-[0.98] transition-transform"
     >
-      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-white/5 border border-slate-800 overflow-hidden flex items-center justify-center">
+      <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.06] overflow-hidden flex items-center justify-center">
         {cert.icon ? (
-          <img src={cert.icon} alt={cert.issuer} className="w-full h-full object-contain p-1" />
+          <img src={cert.icon} alt={cert.issuer} className="w-full h-full object-contain p-1.5" />
         ) : (
-          <Award size={16} className="text-indigo-400" />
+          <ShieldCheck size={16} className="text-cyan-400" />
         )}
       </div>
 
       <div className="flex-1 min-w-0">
-        <h3 className="text-xs font-semibold leading-snug mb-0.5 line-clamp-2">{cert.name}</h3>
-        <p className="text-[11px] text-slate-500">{cert.issuer}</p>
+        <h3 className="text-[12px] font-bold leading-snug mb-1 line-clamp-2 tracking-tight">{cert.name}</h3>
+        <p className="text-[10px] text-slate-500 font-medium tracking-wide">{cert.issuer}</p>
       </div>
 
-      <ExternalLink size={14} className="flex-shrink-0 text-slate-600 mt-0.5" />
-    </a>
+      <ExternalLink size={13} className="flex-shrink-0 text-slate-600 mt-0.5" strokeWidth={2.5} />
+    </motion.a>
   );
 }
 
@@ -55,21 +60,41 @@ export default function CertificationsMobile() {
   }
 
   return (
-    <section id="certifications" className="relative py-16 px-5 bg-slate-950 text-white">
-      <span className="text-xs font-mono tracking-widest text-indigo-400">05 · CERTIFICATIONS</span>
-      <h2 className="mt-2 text-2xl font-bold mb-8">Credentials & training.</h2>
+    <section id="certifications" className="relative py-20 px-5 bg-transparent text-white">
+      <motion.span
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        className="text-[10px] font-[family-name:var(--font-jetbrains)] font-semibold tracking-[0.25em] uppercase text-cyan-400"
+      >
+        05 · CERTIFICATIONS
+      </motion.span>
+      <motion.h2
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.05 }}
+        className="mt-3 text-[26px] font-extrabold tracking-tight mb-8"
+      >
+        Credentials &amp; training.
+      </motion.h2>
 
       <div className="space-y-8">
         {grouped.map(([year, items]) => (
           <div key={year}>
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-lg font-bold text-indigo-400">{year}</span>
-              <div className="flex-1 h-px bg-slate-800" />
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-lg font-extrabold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                {year}
+              </span>
+              <div className="flex-1 h-px bg-gradient-to-r from-slate-800 to-transparent" />
+              <span className="text-[9px] font-bold text-slate-600 tracking-widest uppercase">
+                {items.length} cert{items.length > 1 ? "s" : ""}
+              </span>
             </div>
 
             <div className="flex flex-col gap-2.5">
-              {items.map((cert) => (
-                <CertCardMobile key={cert._id} cert={cert} />
+              {items.map((cert, i) => (
+                <CertCardMobile key={cert._id} cert={cert} index={i} />
               ))}
             </div>
           </div>

@@ -1,6 +1,13 @@
-import { JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import VisitTracker from "@/components/VisitTracker";
+
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
@@ -24,8 +31,8 @@ export const viewport = {
 
 export default function Layout({ children }) {
   return (
-    <html lang="en" className={jetbrains.variable}>
-      <body>
+    <html lang="en" className={`${inter.variable} ${jetbrains.variable}`}>
+      <body className="font-[family-name:var(--font-inter)]">
         <VisitTracker />
         {children}
       </body>

@@ -1,4 +1,5 @@
 import Navbar from "./components/Navbar";
+import MobileBackground from "./components/MobileBackground";
 import HeroSection from "./sections/HeroSection";
 import AboutSection from "./sections/About";
 import SkillsSection from "./sections/Skills";
@@ -10,14 +11,17 @@ import ContactSection from "./sections/Contact";
 export default function ResponsivePage() {
   return (
     <>
-      <Navbar />
-      <HeroSection />
-      <AboutSection />
-      <SkillsSection />
-      <ProjectsSection />
-      <EducationSection />
-      <CertificationsSection />
-      <ContactSection />
+      <MobileBackground />
+      <div className="relative z-10">
+        <Navbar />
+        <HeroSection />
+        <AboutSection />
+        <SkillsSection />
+        <ProjectsSection />
+        <EducationSection />
+        <CertificationsSection />
+        <ContactSection />
+      </div>
     </>
   );
 }

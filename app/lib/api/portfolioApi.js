@@ -1,6 +1,6 @@
 const BASE_URL =
   process.env.NEXT_PUBLIC_SERVER_API_URL ??
-  "http://localhost:3001/api/portfolio";
+  "http://localhost:3001";
 
 // ── In-memory cache + request deduplication ───────────────────────────────────
 const _cache = new Map();      // path → { data, ts }
@@ -20,7 +20,7 @@ async function apiFetch(path) {
   }
 
   // 3. Fetch + cache
-  const promise = fetch(`${BASE_URL}${path}`, {
+  const promise = fetch(`${BASE_URL}/api/portfolio${path}`, {
     headers: { "Content-Type": "application/json" },
   })
     .then(async (res) => {
@@ -66,7 +66,7 @@ export const portfolioApi = {
 
 
   sendContact: (payload) =>
-    fetch(`${BASE_URL}/contact/upload_response`, {
+    fetch(`${BASE_URL}/api/portfolio/contact/upload_response`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
